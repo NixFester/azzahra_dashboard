@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Halaman Tidak Ditemukan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #8b5cf6;
+            --primary-dark: #7c3aed;
+            --accent: #06b6d4;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 30% 70%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 70% 30%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+            animation: bgMove 25s ease-in-out infinite;
+        }
+
+        @keyframes bgMove {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(20px, -20px) rotate(3deg); }
+            66% { transform: translate(-15px, 15px) rotate(-3deg); }
+        }
+
+        /* Floating Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .float-item {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.1;
+            animation: floatAround 20s infinite;
+        }
+
+        .float-item:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .float-item:nth-child(2) { left: 85%; top: 15%; animation-delay: 3s; }
+        .float-item:nth-child(3) { left: 70%; top: 75%; animation-delay: 6s; }
+        .float-item:nth-child(4) { left: 15%; top: 70%; animation-delay: 9s; }
+        .float-item:nth-child(5) { left: 50%; top: 10%; animation-delay: 2s; }
+        .float-item:nth-child(6) { left: 90%; top: 50%; animation-delay: 5s; }
+
+        @keyframes floatAround {
+            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
+            25% { transform: translateY(-30px) rotate(10deg); opacity: 0.2; }
+            50% { transform: translateY(-15px) rotate(-5deg); opacity: 0.15; }
+            75% { transform: translateY(-40px) rotate(5deg); opacity: 0.2; }
+        }
+
+        /* Main Container - Landscape Layout */
+        .error-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 40px 50px;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+            max-width: 900px;
+            width: 100%;
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Left Section - Error Visual */
+        .error-visual {
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .error-icon-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px;
+        }
+
+        .error-icon-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.15; }
+            50% { transform: scale(1.15); opacity: 0.25; }
+        }
+
+        .error-icon {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .error-icon svg {
+            width: 60px;
+            height: 60px;
+            stroke: var(--primary);
+            stroke-width: 1.5;
+            fill: none;
+        }
+
+        .error-code {
+            font-size: 80px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, #ec4899 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            animation: gradientMove 4s ease infinite;
+            letter-spacing: -3px;
+        }
+
+        @keyframes gradientMove {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        /* Vertical Divider */
+        .divider-vertical {
+            width: 1px;
+            height: 200px;
+            background: linear-gradient(180deg, transparent, rgba(255,255,255,0.15), transparent);
+            flex-shrink: 0;
+        }
+
+        /* Right Section - Content */
+        .error-content {
+            flex: 1;
+            text-align: left;
+        }
+
+        .error-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .error-message {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Contact Info */
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px;
+            color: var(--gray);
+            flex-wrap: wrap;
+        }
+
+        .contact-label {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .contact-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .contact-link:hover {
+            color: #a78bfa;
+        }
+
+        .contact-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Responsive - Portrait / Mobile */
+        @media (max-width: 768px) {
+            .error-container {
+                flex-direction: column;
+                text-align: center;
+                padding: 35px 25px;
+                gap: 25px;
+            }
+
+            .divider-vertical {
+                width: 80%;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            }
+
+            .error-content {
+                text-align: center;
+            }
+
+            .error-icon-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+
+            .error-icon svg {
+                width: 48px;
+                height: 48px;
+            }
+
+            .error-code {
+                font-size: 64px;
+            }
+
+            .error-title {
+                font-size: 22px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .contact-info {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        /* Large Screens */
+        @media (min-width: 1024px) {
+            .error-container {
+                padding: 50px 60px;
+                gap: 60px;
+            }
+
+            .error-icon-wrapper {
+                width: 140px;
+                height: 140px;
+            }
+
+            .error-icon svg {
+                width: 70px;
+                height: 70px;
+            }
+
+            .error-code {
+                font-size: 100px;
+            }
+
+            .error-title {
+                font-size: 30px;
+            }
+
+            .error-message {
+                font-size: 15px;
+            }
+
+            .divider-vertical {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="float-item">📄</div>
+        <div class="float-item">🔍</div>
+        <div class="float-item">❓</div>
+        <div class="float-item">📁</div>
+        <div class="float-item">🔗</div>
+        <div class="float-item">📂</div>
+    </div>
+
+    <!-- Main Content - Landscape Layout -->
+    <div class="error-container">
+        
+        <!-- Left: Error Visual -->
+        <div class="error-visual">
+            <div class="error-icon-wrapper">
+                <div class="error-icon-bg"></div>
+                <div class="error-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="M21 21l-4.35-4.35" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M11 8v6M8 11h6" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="error-code">404</div>
+        </div>
+
+        <!-- Vertical Divider -->
+        <div class="divider-vertical"></div>
+
+        <!-- Right: Content -->
+        <div class="error-content">
+            <h1 class="error-title">Halaman Tidak Ditemukan</h1>
+            <p class="error-message">
+                Maaf, halaman yang Anda cari tidak dapat ditemukan. Mungkin halaman tersebut telah dipindahkan, dihapus, atau URL yang dimasukkan salah.
+            </p>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5m7-7l-7 7 7 7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Kembali
+                </a>
+                <a href="https://dashboard.azzahracomputertegal.com/" class="btn btn-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" 
+                              stroke-linecap="round" 
+                              stroke-linejoin="round"/>
+                    </svg>
+                    Beranda
+                </a>
+            </div>
+
+            <!-- Contact Info -->
+            <div class="contact-info">
+                <span class="contact-label">Butuh Bantuan?</span>
+                <a href="mailto:azzahracibubur@gmail.com" class="contact-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    azzahracibubur@gmail.com
+                </a>
+                <a href="tel:+6285942001720" class="contact-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    (+62) 859-4200-1720
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

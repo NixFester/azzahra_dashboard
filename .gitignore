@@ -1,0 +1,34 @@
+# CodeIgniter 3
+application/logs/
+application/cache/
+
+# Composer
+vendor/
+composer.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# User guide
+user_guide/
+
+# System files
+system/logs/
+system/cache/
+
+# Misc
+*.log
+*.sql
+.htaccess
