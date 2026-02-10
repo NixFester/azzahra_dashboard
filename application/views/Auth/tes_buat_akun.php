@@ -245,6 +245,7 @@
         }
         .login::before {
             background-image: none !important;
+            display: none !important;
         }
     </style>
 </head>
