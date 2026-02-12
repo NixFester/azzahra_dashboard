@@ -548,3 +548,4 @@ $config['voucher_image_url'] = 'https://api.azzahracomputertegal.com/api/storage
 // $config['voucher_image_url'] = 'http://192.168.1.21:8000/storage/assets/Vocer/';
 
 
+$config['enable_profiler'] = TRUE;

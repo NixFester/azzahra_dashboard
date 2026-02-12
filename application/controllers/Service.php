@@ -134,7 +134,6 @@ class Service extends CI_Controller {
 					'created_at' 	 => date('Y-m-d H:i:s'),
 					'updated_at' 	 => date('Y-m-d H:i:s')
 				);
-
 		$customer_result = $this->M_service->save_custom($customer);
 		log_message('info', 'Customer insert result: ' . ($customer_result ? 'success' : 'failed'));
 

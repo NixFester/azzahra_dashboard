@@ -57,6 +57,9 @@
 				    						<a href="<?= site_url('Admin/cus_detail/'.$row['trans_kode'])?>" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-7 text-white">
 				    							<i data-feather="align-justify" class="w-4 h-4 mr-2"></i> Detail
 				    						</a>
+											<a href="<?= site_url('Admin/konfirmasi/'.$row['trans_kode'])?>" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-1 text-white">
+												<i data-feather="user-check" class="w-4 h-4 mr-2"></i> Konfirmasi
+											</a>
 				    					</div>
 
 				    				</td>
