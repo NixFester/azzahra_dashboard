@@ -52,15 +52,6 @@ class Service extends CI_Controller {
 			);
 		$this->load->view('Costomer/cos-proses', $data);
 	}
-	function cos_konf()
-	{
-		$data = array(
-				'title' => 'Customer',
-				'no'	=> $this->uri->segment(3),
-				'trans'	=> $this->M_service->cos_konf()
-			);
-		$this->load->view('Costomer/cos-konf', $data);
-	}
 	function cos_pelunasan()
 	{
 		$data = array(
@@ -1002,7 +993,7 @@ class Service extends CI_Controller {
 		return $fileName;
 	}
 	
-	function cos_konf_tes()
+	function cos_konf()
 	{
 		$data = array(
 				'title' => 'Customer',
