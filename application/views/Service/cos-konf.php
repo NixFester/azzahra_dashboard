@@ -328,14 +328,14 @@
 	               details += `${qty} x ${item.tdkn_nama} - Rp ${harga.toLocaleString('id-ID')} = Rp ${subtotal.toLocaleString('id-ID')}\n`;
 	           });
 	           details += `\nTotal: Rp ${trans_total.toLocaleString('id-ID')}\n`;
-	           let message = `SALAM SATU HATI,\n\nHALO ${nama},\n\nTerima Kasih Telah Percaya kepada Kami untuk melakukan service, jika ada keluhan setelah service bisa hubungi 085942001720 atau datang kembali ke Azzaha Computer - Authorized Service Center.\n\n${details}\nUntuk Mengecek Transaksi Anda Silahkan Download aplikasi AzzaService di Playstore lalu Login menggunakan akun dengan username: ${kode}, password : ${kode},\n\nJangan lupa untuk memberikan rating pada aplikasi AzzaService ya! ðŸ˜Š\n\nAnda dapat melihat tanda terima di:\nðŸ‘‰ https://dashboard.azzahracomputertegal.com/Cetak/print_1/${kode}\n\nTERIMA KASIH`;
+	           let message = `SALAM SATU HATI,\n\nHALO ${nama},\n\nTerima Kasih Telah Percaya kepada Kami untuk melakukan service, jika ada keluhan setelah service bisa hubungi 085942001720 atau datang kembali ke Azzaha Computer - Authorized Service Center.\n\n${details}\nUntuk Mengecek Transaksi Anda Silahkan Download aplikasi AzzaService di Playstore lalu Login menggunakan akun dengan username: ${kode}, password : ${kode},\n\nJangan lupa untuk memberikan rating pada aplikasi AzzaService ya! 😊\n\nAnda dapat melihat tanda terima di:\n👉 https://dashboard.azzahracomputertegal.com/Cetak/print_1/${kode}\n\nTERIMA KASIH`;
 	           const waUrl = `https://wa.me/${hp}?text=${encodeURIComponent(message)}`;
 	           window.open(waUrl, '_blank');
 	       })
 	       .catch(error => {
 	           console.error('Error fetching tindakan:', error);
 	           // Fallback to original message
-	           let message = `SALAM SATU HATI,\n\nHALO ${nama},\n\nTerima Kasih Telah Percaya kepada Kami untuk melakukan service, jika ada keluhan setelah service bisa hubungi 085942001720 atau datang kembali ke Azzaha Computer - Authorized Service Center.\n\nUntuk Mengecek Transaksi Anda Silahkan Download aplikasi AzzaService di Playstore lalu Login menggunakan akun dengan username: ${kode}, password : ${kode},\n\nJangan lupa untuk memberikan rating pada aplikasi AzzaService ya! ðŸ˜Š\n\nAnda dapat melihat tanda terima di:\nðŸ‘‰ https://dashboard.azzahracomputertegal.com/Cetak/print_1/${kode}\n\nTERIMA KASIH`;
+	           let message = `SALAM SATU HATI,\n\nHALO ${nama},\n\nTerima Kasih Telah Percaya kepada Kami untuk melakukan service, jika ada keluhan setelah service bisa hubungi 085942001720 atau datang kembali ke Azzaha Computer - Authorized Service Center.\n\nUntuk Mengecek Transaksi Anda Silahkan Download aplikasi AzzaService di Playstore lalu Login menggunakan akun dengan username: ${kode}, password : ${kode},\n\nJangan lupa untuk memberikan rating pada aplikasi AzzaService ya! 😊\n\nAnda dapat melihat tanda terima di:\n👉 https://dashboard.azzahracomputertegal.com/Cetak/print_1/${kode}\n\nTERIMA KASIH`;
 	           const waUrl = `https://wa.me/${hp}?text=${encodeURIComponent(message)}`;
 	           window.open(waUrl, '_blank');
 	       });
@@ -523,7 +523,7 @@
 	    window.location.href = '<?= site_url('Service/send_follow_up_manual/') ?>' + trans_kode + '?redirect=cos_konf';
 	}
     $(function () {
-    // If template already initialized it â€” destroy it
+    // If template already initialized it — destroy it
     if ($.fn.DataTable.isDataTable('#cosTable')) {
         $('#cosTable').DataTable().destroy();
     }

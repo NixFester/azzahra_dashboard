@@ -52,6 +52,23 @@ class Service extends CI_Controller {
 			);
 		$this->load->view('Costomer/cos-proses', $data);
 	}
+	function cos_konf_old()
+	{
+		$data = array(
+				'title' => 'Customer',
+				'no'	=> $this->uri->segment(3),
+				'trans'	=> $this->M_service->cos_konf()
+			);
+		$this->load->view('Costomer/cos-konf', $data);
+	}
+	function cos_konf()
+	{
+		$data = array(
+				'title' => 'Customer',
+				'no'	=> $this->uri->segment(3)
+			);
+		$this->load->view('Service/cos-konf', $data);
+	}
 	function cos_pelunasan()
 	{
 		$data = array(
@@ -125,6 +142,7 @@ class Service extends CI_Controller {
 					'created_at' 	 => date('Y-m-d H:i:s'),
 					'updated_at' 	 => date('Y-m-d H:i:s')
 				);
+
 		$customer_result = $this->M_service->save_custom($customer);
 		log_message('info', 'Customer insert result: ' . ($customer_result ? 'success' : 'failed'));
 
@@ -993,14 +1011,7 @@ class Service extends CI_Controller {
 		return $fileName;
 	}
 	
-	function cos_konf()
-	{
-		$data = array(
-				'title' => 'Customer',
-				'no'	=> $this->uri->segment(3)
-			);
-		$this->load->view('Service/cos-konf', $data);
-	}
+	
 	
 	public function ajax_cos_konf()
     {
@@ -1040,16 +1051,6 @@ class Service extends CI_Controller {
         // Get actual data
         $data = $this->M_service->cos_konf_ajax($start, $length, $search, $columns[$order_column_index], $order_dir);
     
-		 // Calculate starting number based on sort direction
-		if ($order_dir === 'desc' && $order_column_index === 0) {
-			// Only reverse numbering when sorting by the NO column in DESC
-			$no = $total_filtered - $start;
-		} else {
-			// Normal counting for all other cases
-			$no = $start + 1;
-		}
-
-
         $result = array();
         $no = $start + 1; // THIS IS CORRECT - starts from current page offset
     
@@ -1096,11 +1097,9 @@ class Service extends CI_Controller {
                                 </a>
                             </div>
                         </div>';
-
-			$current_no = $no;
-
+    
             $result[] = array(
-                $current_no, // Row number increments correctly
+                $no++, // Row number increments correctly
                 $row->cos_kode,
                 $row->cos_nama,
                 $row->cos_alamat,
@@ -1109,13 +1108,6 @@ class Service extends CI_Controller {
                 $follow_up_button,
                 $actions
             );
-
-			// Increment or decrement AFTER adding to result
-			if ($order_dir === 'desc' && $order_column_index === 0) {
-				$no--;
-			} else {
-				$no++;
-			}
         }
     
         $output = array(
