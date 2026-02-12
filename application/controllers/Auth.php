@@ -111,55 +111,6 @@ class Auth extends CI_Controller {
 		
 	}
 
-	function tes_buat_akun()
-	{
-		if ($this->input->server('REQUEST_METHOD') == 'POST') {
-			// Set validation rules
-			$this->form_validation->set_rules('kry_kode', 'Kode Karyawan', 'trim|required', array('required' => 'Kode karyawan belum diisi'));
-			$this->form_validation->set_rules('kry_nik', 'NIK', 'trim|required', array('required' => 'NIK belum diisi'));
-			$this->form_validation->set_rules('kry_nama', 'Nama', 'trim|required', array('required' => 'Nama belum diisi'));
-			$this->form_validation->set_rules('kry_tempat', 'Tempat Lahir', 'trim|required', array('required' => 'Tempat lahir belum diisi'));
-			$this->form_validation->set_rules('kry_tgl_lahir', 'Tanggal Lahir', 'trim|required', array('required' => 'Tanggal lahir belum diisi'));
-			$this->form_validation->set_rules('kry_alamat', 'Alamat', 'trim|required', array('required' => 'Alamat belum diisi'));
-			$this->form_validation->set_rules('kry_tlp', 'Telepon', 'trim|required', array('required' => 'Telepon belum diisi'));
-			$this->form_validation->set_rules('kry_username', 'Username', 'trim|required|is_unique[karyawan.kry_username]', array('required' => 'Username belum diisi', 'is_unique' => 'Username sudah digunakan'));
-			$this->form_validation->set_rules('kry_pswd', 'Password', 'trim|required|min_length[6]', array('required' => 'Password belum diisi', 'min_length' => 'Password minimal 6 karakter'));
-			$this->form_validation->set_rules('con_pswd', 'Konfirmasi Password', 'trim|required|matches[kry_pswd]', array('required' => 'Konfirmasi password belum diisi', 'matches' => 'Password tidak sama'));
-			$this->form_validation->set_rules('kry_level', 'Level', 'trim|required', array('required' => 'Level belum dipilih'));
-			$this->form_validation->set_rules('kry_tgl_masuk', 'Tanggal Masuk', 'trim|required', array('required' => 'Tanggal masuk belum diisi'));
-
-			if ($this->form_validation->run() == FALSE) {
-				$data['error'] = 'Validasi gagal';
-				$this->load->view('Auth/tes_buat_akun', $data);
-			} else {
-				$data = array(
-					'kry_kode' => htmlspecialchars($this->input->post('kry_kode', TRUE), ENT_QUOTES),
-					'kry_nik' => htmlspecialchars($this->input->post('kry_nik', TRUE), ENT_QUOTES),
-					'kry_nama' => htmlspecialchars($this->input->post('kry_nama', TRUE), ENT_QUOTES),
-					'kry_tempat' => htmlspecialchars($this->input->post('kry_tempat', TRUE), ENT_QUOTES),
-					'kry_tgl_lahir' => htmlspecialchars($this->input->post('kry_tgl_lahir', TRUE), ENT_QUOTES),
-					'kry_alamat' => htmlspecialchars($this->input->post('kry_alamat', TRUE), ENT_QUOTES),
-					'kry_tlp' => htmlspecialchars($this->input->post('kry_tlp', TRUE), ENT_QUOTES),
-					'kry_username' => htmlspecialchars($this->input->post('kry_username', TRUE), ENT_QUOTES),
-					'kry_pswd' => password_hash($this->input->post('kry_pswd', TRUE), PASSWORD_DEFAULT),
-					'kry_level' => htmlspecialchars($this->input->post('kry_level', TRUE), ENT_QUOTES),
-					'kry_tgl_masuk' => htmlspecialchars($this->input->post('kry_tgl_masuk', TRUE), ENT_QUOTES),
-					'kry_tgl_keluar' => ($this->input->post('kry_tgl_keluar') ? htmlspecialchars($this->input->post('kry_tgl_keluar', TRUE), ENT_QUOTES) : NULL)
-				);
-
-				if ($this->db->insert('karyawan', $data)) {
-					$this->session->set_flashdata('sukses', 'Akun baru berhasil dibuat! Silahkan login.');
-					redirect('Auth', 'refresh');
-				} else {
-					$data['error'] = 'Gagal membuat akun baru';
-					$this->load->view('Auth/tes_buat_akun', $data);
-				}
-			}
-		} else {
-			$this->load->view('Auth/tes_buat_akun');
-		}
-	}
-
 }
 
 /* End of file Auth.php */
