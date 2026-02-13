@@ -84,6 +84,7 @@
 	                                            <th class="whitespace-no-wrap">Keterangan</th>
 	                                            <th class="whitespace-no-wrap">Qty</th>
 	                                            <th class="whitespace-no-wrap">Subtotal</th>
+												<th class="whitespace-no-wrap">Ketersediaan</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
@@ -111,6 +112,14 @@
 		                                    			<td class="border-b">
 		                                    				<input type="text" name="subtot[]" onkeydown="return numbersonly(this, event);" onkeyup="javascript:tandaPemisahTitik(this);" value="<?= $row['tdkn_subtot']?>">
 		                                    			</td>
+														<td class="border-b">
+															<label>
+																<input type="radio" name="ketersediaan[<?= $no-1; ?>]" value="ada" checked> <span style="color:green">Ada</span>
+															</label>
+															<label style="margin-left:10px;">
+																<input type="radio" name="ketersediaan[<?= $no-1; ?>]" value="tidak_ada"> <span style="color:red">Tidak Ada</span>
+															</label>
+														</td>
 		                                    		</tr>	
 		                                    	<?php $no++; endforeach;?>	
 	                                    </tbody>

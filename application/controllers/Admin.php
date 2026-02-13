@@ -166,7 +166,29 @@ class Admin extends CI_Controller {
 			));
 			$index++;
 		}
-		$this->M_admin->update_konf($data);
+        $ketersediaan = isset($_POST['ketersediaan']) ? $_POST['ketersediaan'] : [];
+        $sparepart_data = array();
+        $this->M_admin->update_konf($data);
+
+        foreach ($kode as $index => $cek) {
+            $is_ada = (isset($ketersediaan[$index]) && $ketersediaan[$index] == 'ada');
+            if (!$is_ada) {
+                // Insert ke tabel ketersediaan_sparepart
+                $sparepart_data[] = array(
+                    'trans_kode'    => $kd_trans,
+                    'cos_nama'      => $this->input->post('cos_nama') ?? '',
+                    'barang_nama'   => $tindakan[$index],
+                    'ketersediaan'  => 'tidak_ada',
+                    'status'        => 'menunggu',
+                    'created_at'    => date('Y-m-d H:i:s')
+                );
+            }
+        }
+
+        // Simpan ke tabel ketersediaan_sparepart jika ada barang tidak tersedia
+        if (!empty($sparepart_data)) {
+            $this->db->insert_batch('ketersediaan_sparepart', $sparepart_data);
+        }
 
 		$total = $this->M_admin->total($kd_trans);
 
