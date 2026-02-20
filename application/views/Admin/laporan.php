@@ -1,3 +1,38 @@
+<script>
+// Ensure Export PDF uses selected date range
+document.addEventListener('DOMContentLoaded', function() {
+	var exportBtn = document.getElementById('exportPdfBtn');
+	var tglAwal = document.querySelector('input[name="tgl_awal"]');
+	var tglAkhir = document.querySelector('input[name="tgl_akhir"]');
+	if (exportBtn && tglAwal && tglAkhir) {
+		exportBtn.addEventListener('click', function(e) {
+			e.preventDefault();
+			var awal = tglAwal.value;
+			var akhir = tglAkhir.value;
+			if (!awal || !akhir) {
+				alert('Pilih tanggal awal dan akhir terlebih dahulu!');
+				return false;
+			}
+			var url = '<?= site_url('Admin/export_pdf_laporan') ?>' + '?tgl_awal=' + encodeURIComponent(awal) + '&tgl_akhir=' + encodeURIComponent(akhir);
+			window.open(url, '_blank');
+		});
+	}
+
+	// Instantly reload report when date is picked
+	function reloadLaporan() {
+		var awal = tglAwal.value;
+		var akhir = tglAkhir.value;
+		if (awal && akhir) {
+			var url = '<?= site_url('Admin/laporan') ?>' + '?tgl_awal=' + encodeURIComponent(awal) + '&tgl_akhir=' + encodeURIComponent(akhir);
+			window.location.href = url;
+		}
+	}
+	if (tglAwal && tglAkhir) {
+		tglAwal.addEventListener('change', reloadLaporan);
+		tglAkhir.addEventListener('change', reloadLaporan);
+	}
+});
+</script>
 <?php $this->load->view('Template/header'); ?>
 <!-- Header -->
         <header class="page-header mb-5" >
@@ -28,7 +63,28 @@
 	                <div class="w-full sm:w-auto flex">
 	                <input type="hidden" name="tgl_1" value="<?= $tgl_awal?>">
 	                <input type="hidden" name="tgl_2" value="<?= $tgl_akhir?>">
-	                <a href="<?= site_url('Admin/export_pdf_laporan?tgl_awal=' . $tgl_awal . '&tgl_akhir=' . $tgl_akhir) ?>" class="button text-white bg-red-600 shadow-md flex"><i data-feather="file"></i> &nbsp;Export to PDF</a>
+					<a id="exportPdfBtn" href="<?= site_url('Admin/export_pdf_laporan?tgl_awal=' . $tgl_awal . '&tgl_akhir=' . $tgl_akhir) ?>" class="button text-white bg-red-600 shadow-md flex"><i data-feather="file"></i> &nbsp;Export to PDF</a>
+					<script>
+					// Ensure Export PDF uses selected date range
+					document.addEventListener('DOMContentLoaded', function() {
+						var exportBtn = document.getElementById('exportPdfBtn');
+						var tglAwal = document.querySelector('input[name="tgl_awal"]');
+						var tglAkhir = document.querySelector('input[name="tgl_akhir"]');
+						if (exportBtn && tglAwal && tglAkhir) {
+							exportBtn.addEventListener('click', function(e) {
+								e.preventDefault();
+								var awal = tglAwal.value;
+								var akhir = tglAkhir.value;
+								if (!awal || !akhir) {
+									alert('Pilih tanggal awal dan akhir terlebih dahulu!');
+									return false;
+								}
+								var url = '<?= site_url('Admin/export_pdf_laporan') ?>' + '?tgl_awal=' + encodeURIComponent(awal) + '&tgl_akhir=' + encodeURIComponent(akhir);
+								window.open(url, '_blank');
+							});
+						}
+					});
+					</script>
 	                </div>
 	            </div>
             </form>		        	

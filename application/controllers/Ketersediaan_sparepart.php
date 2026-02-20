@@ -22,9 +22,12 @@ class Ketersediaan_sparepart extends CI_Controller {
         if ($sparepart) {
             // Update status sparepart
             $this->M_ketersediaan_sparepart->update_status_sampai($id);
-            // Update status transaksi ke 'Diproses' agar muncul di /admin/konfirmasi
+            // Update status transaksi ke 'Baru' agar muncul di /Admin/konfirmasi dan /Teknisi
             $this->db->where('trans_kode', $sparepart->trans_kode);
-            $this->db->update('transaksi', ['trans_status' => 'Diproses']);
+            $this->db->update('transaksi', ['trans_status' => 'Baru']);
+            // Hapus tindakan agar order benar-benar fresh
+            $this->db->where('trans_kode', $sparepart->trans_kode);
+            $this->db->delete('tindakan');
         }
         $this->session->set_flashdata('sukses', 'Barang telah sampai! Order kembali ke konfirmasi.');
         redirect('Ketersediaan_sparepart');

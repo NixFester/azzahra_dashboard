@@ -319,8 +319,8 @@ class Admin extends CI_Controller {
 	}
 	function laporan()
 	{
-		$tgl_awal  = date('Y-m-d');
-		$tgl_akhir = date('Y-m-d');
+		$tgl_awal  = isset($_GET['tgl_awal']) && $_GET['tgl_awal'] ? $_GET['tgl_awal'] : date('Y-m-d');
+		$tgl_akhir = isset($_GET['tgl_akhir']) && $_GET['tgl_akhir'] ? $_GET['tgl_akhir'] : date('Y-m-d');
 
 		$payments = $this->M_admin->get_payments_range($tgl_awal,$tgl_akhir)->result_array();
 		$dp_payments = array_filter($payments, function($p) { return $p['dtl_status'] == 'DP'; });
@@ -341,32 +341,32 @@ class Admin extends CI_Controller {
 		$menunggu_count = $menunggu ? $menunggu->menunggu_count : 0;
 
 		$data = array(
-				'title' 		=> 'Laporan',
-				'jml_DP_bca'   	=> $this->M_admin->jml_DP_bca($tgl_awal,$tgl_akhir),
-				'tot_DP_bca'   	=> $this->M_admin->tot_DP_bca($tgl_awal,$tgl_akhir),
-				'jml_DP_bri'   	=> $this->M_admin->jml_DP_bri($tgl_awal,$tgl_akhir),
-				'tot_DP_bri'   	=> $this->M_admin->tot_DP_bri($tgl_awal,$tgl_akhir),
-				'jml_DP_tunai' 	=> $this->M_admin->jml_DP_tunai($tgl_awal,$tgl_akhir),
-				'tot_DP_tunai' 	=> $this->M_admin->tot_DP_tunai($tgl_awal,$tgl_akhir),
+				'title'         => 'Laporan',
+				'jml_DP_bca'    => $this->M_admin->jml_DP_bca($tgl_awal,$tgl_akhir),
+				'tot_DP_bca'    => $this->M_admin->tot_DP_bca($tgl_awal,$tgl_akhir),
+				'jml_DP_bri'    => $this->M_admin->jml_DP_bri($tgl_awal,$tgl_akhir),
+				'tot_DP_bri'    => $this->M_admin->tot_DP_bri($tgl_awal,$tgl_akhir),
+				'jml_DP_tunai'  => $this->M_admin->jml_DP_tunai($tgl_awal,$tgl_akhir),
+				'tot_DP_tunai'  => $this->M_admin->tot_DP_tunai($tgl_awal,$tgl_akhir),
 				'jml_lns_tunai' => $this->M_admin->jml_Lunas_tunai($tgl_awal,$tgl_akhir),
 				'tot_lns_tunai' => $this->M_admin->tot_Lunas_tunai($tgl_awal,$tgl_akhir),
 				'jml_lns_bca'   => $this->M_admin->jml_Lunas_bca($tgl_awal,$tgl_akhir),
 				'tot_lns_bca'   => $this->M_admin->tot_Lunas_bca($tgl_awal,$tgl_akhir),
 				'jml_lns_bri'   => $this->M_admin->jml_Lunas_bri($tgl_awal,$tgl_akhir),
 				'tot_lns_bri'   => $this->M_admin->tot_Lunas_bri($tgl_awal,$tgl_akhir),
-				'jml_tranfer'	=> $this->M_admin->jml_tranfer($tgl_awal,$tgl_akhir),
-				'tot_tranfer'	=> $this->M_admin->tot_tranfer($tgl_awal,$tgl_akhir),
-				'jml_setor'		=> $this->M_admin->jml_setor($tgl_awal,$tgl_akhir),
-				'blm_setor'		=> $this->M_admin->blm_setor($tgl_awal,$tgl_akhir),
-				'jml_tunai'		=> $this->M_admin->jml_tunai($tgl_awal,$tgl_akhir),
-				'tot_tunai'		=> $this->M_admin->tot_tunai($tgl_awal,$tgl_akhir),
+				'jml_tranfer'   => $this->M_admin->jml_tranfer($tgl_awal,$tgl_akhir),
+				'tot_tranfer'   => $this->M_admin->tot_tranfer($tgl_awal,$tgl_akhir),
+				'jml_setor'     => $this->M_admin->jml_setor($tgl_awal,$tgl_akhir),
+				'blm_setor'     => $this->M_admin->blm_setor($tgl_awal,$tgl_akhir),
+				'jml_tunai'     => $this->M_admin->jml_tunai($tgl_awal,$tgl_akhir),
+				'tot_tunai'     => $this->M_admin->tot_tunai($tgl_awal,$tgl_akhir),
 				'menunggu_total' => $menunggu_total,
 				'menunggu_count' => $menunggu_count,
-				'dp_payments'	=> $dp_payments,
+				'dp_payments'    => $dp_payments,
 				'lunas_payments' => $lunas_payments,
 				'menunggu_payments' => $menunggu_payments,
-				'tgl_awal'		=> $tgl_awal,
-				'tgl_akhir'		=> $tgl_akhir
+				'tgl_awal'       => $tgl_awal,
+				'tgl_akhir'      => $tgl_akhir
 			);
 		$this->load->view('Admin/laporan',$data);
 	}

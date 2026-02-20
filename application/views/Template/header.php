@@ -306,9 +306,20 @@
                         <div class="nav-icon"><i data-feather="percent"></i></div>
                         <span class="nav-text">Voucher Discount</span>
                     </a>
+                    <?php
+                    $CI =& get_instance();
+                    $CI->load->model('M_ketersediaan_sparepart');
+                    $count_sparepart = $CI->M_ketersediaan_sparepart->count_menunggu();
+                    ?>
                     <a href="<?= site_url('Ketersediaan_sparepart')?>" class="nav-link <?php if($title == 'Ketersediaan Sparepart') echo 'active'?>">
                         <div class="nav-icon"><i data-feather="package"></i></div>
-                        <span class="nav-text">Ketersediaan Sparepart</span>
+                        <span class="nav-text">Ketersediaan Sparepart
+                            <?php if($count_sparepart > 0): ?>
+                                <span style="background:red;color:white;border-radius:10px;padding:2px 8px;font-size:12px;margin-left:5px;vertical-align:middle;">
+                                    <?= $count_sparepart; ?>
+                                </span>
+                            <?php endif; ?>
+                        </span>
                     </a>
                 </div>
                 <?php endif; ?>

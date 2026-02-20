@@ -141,4 +141,47 @@ class Teknisi extends CI_Controller {
 			'completed_today' => $result->completed_today ?? 0
 		]);
 	}
+
+	// Order Sparepart dari Teknisi
+	public function order_sparepart()
+	{
+		$this->load->model('M_ketersediaan_sparepart');
+		$trans_kode = $this->input->post('trans_kode');
+		$barang_nama = $this->input->post('barang_nama');
+		$ketersediaan = $this->input->post('ketersediaan');
+		$cos_nama = '';
+		// Ambil nama customer dari transaksi
+		$trans = $this->db->get_where('transaksi', ['trans_kode' => $trans_kode])->row_array();
+		if ($trans) {
+			$cos = $this->db->get_where('costomer', ['id_costomer' => $trans['cos_kode']])->row_array();
+			if ($cos) {
+				$cos_nama = $cos['cos_nama'];
+			}
+		}
+		if ($ketersediaan == 'tidak_ada') {
+			// Masukkan ke tabel ketersediaan_sparepart
+			$data = [
+				'trans_kode'    => $trans_kode,
+				'cos_nama'      => $cos_nama,
+				'barang_nama'   => $barang_nama,
+				'ketersediaan'  => 'tidak_ada',
+				'status'        => 'menunggu',
+				'created_at'    => date('Y-m-d H:i:s')
+			];
+			$this->db->insert('ketersediaan_sparepart', $data);
+			// Update status transaksi ke 'Konfirmasi' dan hapus tindakan terkait
+			$this->db->where('trans_kode', $trans_kode);
+			$this->db->update('transaksi', ['trans_status' => 'Konfirmasi']);
+			$this->db->where('trans_kode', $trans_kode);
+			$this->db->delete('tindakan');
+			// Update order_list jika ada
+			$this->db->where('trans_kode', $trans_kode);
+			$this->db->update('order_list', ['trans_status' => 'waitingOrder']);
+			$this->session->set_flashdata('sukses', 'Order sparepart berhasil diajukan! menunggu barang sampai.');
+		} else {
+			$this->session->set_flashdata('sukses', 'Barang tersedia, tidak perlu order sparepart.');
+		}
+		
+		redirect('Teknisi','refresh');
+	}
 }

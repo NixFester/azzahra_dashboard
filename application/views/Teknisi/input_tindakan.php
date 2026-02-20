@@ -107,14 +107,56 @@
 							<label class="block text-sm font-medium text-gray-700 mb-2">Qty</label>
 							<input type="number" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1" value="1" min="1" id="qty">
 						</div>
-						<div class="flex items-end">
+						<div class="flex items-end space-x-2">
 							<button class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center" id="tbl-add">
 								<i data-feather="plus" class="w-4 h-4 mr-2"></i>
 								Tambah Tindakan
 							</button>
+							<button type="button" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center" id="order-sparepart-btn">
+								<i data-feather="package" class="w-4 h-4 mr-2"></i>
+								Order Sparepart
+							</button>
+						</div>
+					</div>
+					<!-- Modal Order Sparepart -->
+					<div id="modal-order-sparepart" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+						<div class="bg-white rounded-lg shadow-lg p-8 w-full max-w-lg relative">
+							<button class="absolute top-2 right-2 text-gray-400 hover:text-gray-600" onclick="document.getElementById('modal-order-sparepart').classList.add('hidden')">
+								<i data-feather='x'></i>
+							</button>
+							<h3 class="text-lg font-bold mb-4">Order Sparepart</h3>
+							<form method="post" action="<?= site_url('Teknisi/order_sparepart') ?>">
+								<input type="hidden" name="trans_kode" value="<?= $proses['trans_kode']?>">
+								<div class="mb-4">
+									<label class="block text-sm font-medium text-gray-700 mb-2">Nama Barang/Sparepart</label>
+									<input type="text" name="barang_nama" class="w-full px-3 py-2 border border-gray-300 rounded-lg" required>
+								</div>
+								<div class="mb-4">
+									<label class="block text-sm font-medium text-gray-700 mb-2">Ketersediaan</label>
+									<label class="inline-flex items-center mr-4">
+										<input type="radio" name="ketersediaan" value="ada" checked> <span class="ml-2 text-green-600">Ada</span>
+									</label>
+									<label class="inline-flex items-center">
+										<input type="radio" name="ketersediaan" value="tidak_ada"> <span class="ml-2 text-red-600">Tidak Ada</span>
+									</label>
+								</div>
+								<div class="flex justify-end">
+									<button type="submit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200 flex items-center">
+										<i data-feather="package" class="w-4 h-4 mr-2"></i>
+										Simpan Order Sparepart
+									</button>
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>
+<script>
+// Modal Order Sparepart
+document.getElementById('order-sparepart-btn').addEventListener('click', function() {
+	document.getElementById('modal-order-sparepart').classList.remove('hidden');
+	if (typeof feather !== 'undefined') feather.replace();
+});
+</script>
 
 				<!-- Actions List -->
 				<div class="mb-6">

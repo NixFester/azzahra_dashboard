@@ -174,7 +174,7 @@
 
     <!-- LEFT -->
     <div class="login-left">
-        <img src="<?php echo base_url(); ?>assets/template/beck/dist/images/logo.svg" width="87">
+        <img style="background-color: #f0f0f0; padding-top: 10px; padding-bottom: 10px; margin-bottom: 10px; border-radius: 500px;" src="<?php echo base_url(); ?>assets/image/logo.png" width="87">
 
         <h1>
             Tidak perlu hebat untuk memulai,<br>
