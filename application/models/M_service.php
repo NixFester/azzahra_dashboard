@@ -632,6 +632,11 @@ class M_service extends CI_Model {
 		return $this->db->insert('tindakan', $data);
 	}
 
+	function insert_cabang($data)
+	{
+		return $this->db->insert('cabang', $data);
+	}
+
 	function update_total_transaksi($trans_kode)
 	{
 		$this->db->select_sum('tdkn_subtot');

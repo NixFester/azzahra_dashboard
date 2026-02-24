@@ -151,6 +151,19 @@
 			                    <div class="mb-2">Alamat</div>
 			                    <textarea class="input w-full border mt-2 flex-1" name="alamat" required oninvalid="this.setCustomValidity('Alamat tidak boleh kosong ?')" oninput="setCustomValidity('')"></textarea>
 			                </div>
+							<div class="intro-y col-span-12 sm:col-span-6">
+								<div class="mb-2">Cabang</div>
+								<select class="input w-full border mt-2 flex-1" 
+										name="cabang" 
+										required 
+										oninvalid="this.setCustomValidity('Cabang tidak boleh kosong ?')" 
+										oninput="setCustomValidity('')">
+									
+									<option value="Tegal" selected>Tegal</option>
+									<option value="Cibubur">Cibubur</option>
+									
+								</select>
+							</div>
 			                <div class="intro-y col-span-12 sm:col-span-6">
 			                    <div class="mb-2">Tanggal Lahir</div>
 			                    <input type="date" class="input w-full border flex-1" name="cos_tgl_lahir" required oninvalid="this.setCustomValidity('Tanggal lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">

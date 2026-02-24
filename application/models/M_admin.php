@@ -638,15 +638,28 @@ class M_admin extends CI_Model {
 
 	function get_payments_range($tgl_awal, $tgl_akhir)
 	{
-		$this->db->select('transaksi_detail.*, costomer.cos_nama, costomer.id_costomer as cos_kode, karyawan.kry_nama, costomer.cos_alamat');
+		$this->db->select('transaksi_detail.*, costomer.cos_nama, costomer.id_costomer as cos_kode, karyawan.kry_nama, costomer.cos_alamat, cabang.cabang');
 		$this->db->from('transaksi_detail');
 		$this->db->join('transaksi', 'transaksi_detail.trans_kode = transaksi.trans_kode');
 		$this->db->join('costomer', 'transaksi.cos_kode = costomer.id_costomer');
 		$this->db->join('karyawan', 'transaksi_detail.kry_kode = karyawan.kry_kode', 'left');
+		$this->db->join('cabang', 'costomer.id_costomer = cabang.id', 'left');
 		$this->db->where('transaksi_detail.dtl_tanggal >=', $tgl_awal);
 		$this->db->where('transaksi_detail.dtl_tanggal <=', $tgl_akhir);
 		$this->db->order_by('transaksi_detail.dtl_tanggal', 'DESC');
 		return $this->db->get();
+	}
+
+	/**
+	 * Check if all cabang are set (not null) in a payments array
+	 */
+	public function all_payments_have_cabang($payments) {
+		foreach ($payments as $p) {
+			if (!isset($p['cabang']) || $p['cabang'] === null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

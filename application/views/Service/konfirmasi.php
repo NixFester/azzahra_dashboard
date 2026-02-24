@@ -145,7 +145,8 @@
                         			</form>
                         			
 	                                <div class="box p-5 mt-5 bg-gray-200">
-	                                	<form method="post" action="<?= site_url('Service/save_dp')?>">
+										<!-- <form method="post" action="<?= site_url('Service/save_dp')?>"> -->
+	                                	<form i-"dpForm"
 	                                		<input type="hidden" name="kode" value="<?= $proses['trans_kode']?>">
 	                                		<div class="flex">
 		                                        <div class="mr-auto">Total</div>

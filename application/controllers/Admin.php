@@ -323,6 +323,22 @@ class Admin extends CI_Controller {
 		$tgl_akhir = isset($_GET['tgl_akhir']) && $_GET['tgl_akhir'] ? $_GET['tgl_akhir'] : date('Y-m-d');
 
 		$payments = $this->M_admin->get_payments_range($tgl_awal,$tgl_akhir)->result_array();
+
+		// Check if all payments have cabang set
+		$all_have_cabang = $this->M_admin->all_payments_have_cabang($payments);
+
+		if ($all_have_cabang) {
+			// Group payments by cabang
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			foreach ($payments as $p) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+					$payments_by_cabang[$p['cabang']][] = $p;
+				}
+			}
+		} else {
+			$payments_by_cabang = null;
+		}
+
 		$dp_payments = array_filter($payments, function($p) { return $p['dtl_status'] == 'DP'; });
 		$lunas_payments = array_filter($payments, function($p) { return $p['dtl_status'] == 'PELUNASAN'; });
 		$lunas_codes = array_column($lunas_payments, 'cos_kode');
@@ -366,7 +382,9 @@ class Admin extends CI_Controller {
 				'lunas_payments' => $lunas_payments,
 				'menunggu_payments' => $menunggu_payments,
 				'tgl_awal'       => $tgl_awal,
-				'tgl_akhir'      => $tgl_akhir
+				'tgl_akhir'      => $tgl_akhir,
+				'payments_by_cabang' => $payments_by_cabang,
+				'all_have_cabang' => $all_have_cabang
 			);
 		$this->load->view('Admin/laporan',$data);
 	}
@@ -427,7 +445,22 @@ class Admin extends CI_Controller {
 	function export_pdf_lap_perhari()
 	{
 		$this->load->library('pdfgenerator');
+		$today = date('Y-m-d');
+		$payments = $this->M_admin->get_today_payments()->result_array();
+		$all_have_cabang = $this->M_admin->all_payments_have_cabang($payments);
+		if ($all_have_cabang) {
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			foreach ($payments as $p) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+					$payments_by_cabang[$p['cabang']][] = $p;
+				}
+			}
+		} else {
+			$payments_by_cabang = null;
+		}
 		$data = $this->lap_perhari_data();
+		$data['payments_by_cabang'] = $payments_by_cabang;
+		$data['all_have_cabang'] = $all_have_cabang;
 		$html = $this->load->view('Admin/laporan_pdf', $data, true);
 		$this->pdfgenerator->generate($html, 'Laporan_Harian_Admin_'.date('Y-m-d'));
 	}
@@ -483,11 +516,25 @@ class Admin extends CI_Controller {
 	function export_pdf_laporan()
 	{
 		$this->load->library('pdfgenerator');
-		$tgl_awal  = $this->input->get('tgl_awal') ?: date('Y-m-d');
-		$tgl_akhir = $this->input->get('tgl_akhir') ?: date('Y-m-d');
+		$tgl_awal  = isset($_GET['tgl_awal']) && $_GET['tgl_awal'] ? $_GET['tgl_awal'] : date('Y-m-d');
+		$tgl_akhir = isset($_GET['tgl_akhir']) && $_GET['tgl_akhir'] ? $_GET['tgl_akhir'] : date('Y-m-d');
+		$payments = $this->M_admin->get_payments_range($tgl_awal, $tgl_akhir)->result_array();
+		$all_have_cabang = $this->M_admin->all_payments_have_cabang($payments);
+		if ($all_have_cabang) {
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			foreach ($payments as $p) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+					$payments_by_cabang[$p['cabang']][] = $p;
+				}
+			}
+		} else {
+			$payments_by_cabang = null;
+		}
 		$data = $this->laporan_data($tgl_awal, $tgl_akhir);
 		$data['tgl_awal'] = $tgl_awal;
 		$data['tgl_akhir'] = $tgl_akhir;
+		$data['payments_by_cabang'] = $payments_by_cabang;
+		$data['all_have_cabang'] = $all_have_cabang;
 		$html = $this->load->view('Admin/laporan_pdf_range', $data, true);
 		$this->pdfgenerator->generate($html, 'Laporan_Admin_'.$tgl_awal.'_to_'.$tgl_akhir);
 	}

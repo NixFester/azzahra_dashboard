@@ -137,7 +137,7 @@ $config['subclass_prefix'] = 'MY_';
 | Note: This will NOT disable or override the CodeIgniter-specific
 |	autoloading (application/config/autoload.php)
 */
-$config['composer_autoload'] = FALSE;
+$config['composer_autoload'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -546,6 +546,5 @@ $config['laravel_voucher_path'] = 'C:/xampp/htdocs/api_e_service/storage/app/pub
 // Voucher image URL
 $config['voucher_image_url'] = 'https://api.azzahracomputertegal.com/api/storage/assets/Vocer/';
 // $config['voucher_image_url'] = 'http://192.168.1.21:8000/storage/assets/Vocer/';
-
 
 $config['enable_profiler'] = TRUE;

@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\EscposImage;
+
 class Service extends CI_Controller {
 	public function __construct()
 	{
@@ -536,9 +539,163 @@ class Service extends CI_Controller {
 			}
 		}
 
-		$this->session->set_flashdata('sukses', 'DI SIMPAN');
-		redirect('Service/cos_konf','refresh');
+		// Handle thermal printer for TUNAI payment
+		if ($jenis_bayar == 'TUNAI') {
+			$printer_name = $this->check_thermal_printer();
+			$print_data = $this->prepare_print_data($kode, $detail);
+			if ($printer_name) {
+				try {
+					$this->print_to_thermal_printer($kode, $detail, $printer_name);
+					echo json_encode([
+						'status' => 'success',
+						'print_data' => $print_data
+					]);
+				} catch (\Exception $e) {
+					echo json_encode([
+						'status' => 'error',
+						'print_data' => $print_data,
+						'error' => 'Gagal mencetak ke printer thermal: ' . $e->getMessage()
+					]);
+				}
+			} else {
+				echo json_encode([
+					'status' => 'manual',
+					'print_data' => $print_data,
+					'error' => 'Printer thermal tidak terdeteksi. Silakan cetak manual.'
+				]);
+			}
+		} else {
+			echo json_encode(['status' => 'success']);
+		}
 	}
+
+	// thermal function
+
+	// New function to handle thermal print or screen print
+	private function handle_thermal_print($trans_kode, $payment_detail)
+	{
+		// Check if USB thermal printer is available
+		$printer_name = $this->check_thermal_printer();
+		
+		if ($printer_name) {
+			// Print directly to thermal printer
+			$this->print_to_thermal_printer($trans_kode, $payment_detail, $printer_name);
+		} else {
+			// Store print data in session for screen printing + print button
+			$print_data = $this->prepare_print_data($trans_kode, $payment_detail);
+			$this->session->set_flashdata('print_data', json_encode($print_data));
+			$this->session->set_flashdata('show_print_dialog', true);
+		}
+	}
+
+	// Check if thermal printer is connected
+	private function check_thermal_printer()
+	{
+		// Check for common thermal printer ports (Windows)
+		$printer_ports = array('LPT1', 'COM1', 'COM2', 'COM3', 'COM4');
+		
+		foreach ($printer_ports as $port) {
+			if (@fsockopen('127.0.0.1', 9100, $errno, $errstr, 1)) {
+				return $port;
+			}
+		}
+		
+		// Alternative: Check for USB printer using Windows command (Windows only)
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			$output = shell_exec('wmic logicaldisk get name 2>&1');
+			if (strpos($output, 'USB') !== false) {
+				// List USB printers - you may need to configure this based on your setup
+				return 'USB_PRINTER';
+			}
+		}
+		
+		return false;
+	}
+
+	// Prepare print data for both thermal and screen printing
+	private function prepare_print_data($trans_kode, $payment_detail)
+	{
+		// Get transaction and customer details
+		$this->db->select('transaksi.*, costomer.*');
+		$this->db->from('transaksi');
+		$this->db->join('costomer', 'transaksi.cos_kode = costomer.id_costomer');
+		$this->db->where('transaksi.trans_kode', $trans_kode);
+		$trans_data = $this->db->get()->row_array();
+
+		return array(
+			'trans_kode' => $trans_kode,
+			'customer_name' => $trans_data['cos_nama'] ?? '',
+			'customer_phone' => $trans_data['cos_hp'] ?? '',
+			'customer_code' => $trans_data['cos_kode'] ?? '',
+			'payment_amount' => $payment_detail['dtl_jml_bayar'],
+			'payment_date' => $payment_detail['dtl_tanggal'],
+			'payment_time' => $payment_detail['dtl_jam'],
+			'device_type' => $trans_data['cos_tipe'] ?? '',
+			'device_model' => $trans_data['cos_model'] ?? '',
+			'device_serial' => $trans_data['cos_no_seri'] ?? '',
+			'cashier_code' => $this->session->userdata('kode')
+		);
+	}
+
+	// Print to thermal printer using escpos-php
+	private function print_to_thermal_printer($trans_kode, $payment_detail, $printer_name)
+	{
+		try {
+			// Define printer connector (USB or Network)
+			$connector = null;
+			
+			if (PHP_OS_FAMILY === 'Windows') {
+				// Windows USB printer
+				$connector = new \Mike42\Escpos\PrintConnectors\WindowsPrintConnector($printer_name);
+			} else {
+				// Linux/Mac USB printer (usually /dev/usb/lp0 or /dev/lp0)
+				$connector = new \Mike42\Escpos\PrintConnectors\FilePrintConnector($printer_name);
+			}
+			
+			$printer = new Printer($connector);
+			
+			// Get print data
+			$print_data = $this->prepare_print_data($trans_kode, $payment_detail);
+			
+			// Print receipt
+			$printer->setJustification(Printer::JUSTIFY_CENTER);
+			$printer->text("BUKTI PEMBAYARAN DP\n");
+			$printer->text("=================================\n");
+			
+			$printer->setJustification(Printer::JUSTIFY_LEFT);
+			$printer->text("No. Transaksi: " . $print_data['trans_kode'] . "\n");
+			$printer->text("Nama: " . $print_data['customer_name'] . "\n");
+			$printer->text("No. HP: " . $print_data['customer_phone'] . "\n");
+			$printer->text("Tipe: " . $print_data['device_type'] . "\n");
+			$printer->text("Seri: " . $print_data['device_serial'] . "\n");
+			
+			$printer->setJustification(Printer::JUSTIFY_CENTER);
+			$printer->text("=================================\n");
+			
+			$printer->setJustification(Printer::JUSTIFY_LEFT);
+			$printer->text("Jumlah Bayar: Rp " . number_format($print_data['payment_amount'], 0, ',', '.') . "\n");
+			$printer->text("Tanggal: " . $print_data['payment_date'] . "\n");
+			$printer->text("Jam: " . $print_data['payment_time'] . "\n");
+			
+			$printer->setJustification(Printer::JUSTIFY_CENTER);
+			$printer->text("=================================\n");
+			$printer->text("Terima Kasih\n\n");
+			
+			$printer->cut();
+			$printer->close();
+			
+			log_message('info', 'Thermal print sent successfully for transaction: ' . $trans_kode);
+			
+		} catch (\Exception $e) {
+			log_message('error', 'Thermal printer error: ' . $e->getMessage());
+			// Fall back to screen printing if thermal fails
+			$print_data = $this->prepare_print_data($trans_kode, $payment_detail);
+			$this->session->set_flashdata('print_data', json_encode($print_data));
+			$this->session->set_flashdata('show_print_dialog', true);
+		}
+	}
+
+	// akhir fitur thermal
 	function pelunasan()
 	{
 		$kode = $this->uri->segment(3);

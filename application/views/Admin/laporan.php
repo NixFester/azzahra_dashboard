@@ -87,282 +87,557 @@ document.addEventListener('DOMContentLoaded', function() {
 					</script>
 	                </div>
 	            </div>
-            </form>		        	
-            <div class="intro-y inbox box mt-5">
-            	<div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
-		            <div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>
-		            <div class="mt-20 lg:mt-0 lg:ml-auto lg:text-right">
-		                <div class="text-xl text-theme-1 font-medium">Azzahra Computer Tegal</div>
-		                <div class="mt-1">Tanggal, <?php echo date('d-m-Y',strtotime($tgl_awal)) ?> Sampai <?php echo date('d-m-Y',strtotime($tgl_akhir)) ?></div>
-		            </div>
-		        </div>
-	        	<div class="overflow-x-auto">
-	                <table class="table">
-	                    <thead>
-	                        <tr>
-	                            <th class="border-b-2 whitespace-no-wrap">DESCRIPTION</th>
-	                            <th class="border-b-2 text-right whitespace-no-wrap">JUMLAH</th>
-	                            <th class="border-b-2 text-right whitespace-no-wrap">SUBTOTAL</th>
-	                        </tr>
-	                    </thead>
-	                    <tbody>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BCA</div>
-	                                <div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_DP_bca->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_DP_bca, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BRI</div>
-	                                <div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_DP_bri->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_DP_bri, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">DOWN PATMENT TUNAI</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_DP_tunai->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_DP_tunai, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">PELUNASAN BANK BCA</div>
-	                                <div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_lns_bca->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_lns_bca, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">PELUNASAN BANK BRI</div>
-	                                <div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_lns_bri->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_lns_bri, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">PELUNASAN TUNAI</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $jml_lns_tunai->num_rows();?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($tot_lns_tunai, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                        <tr>
-	                            <td class="border-b">
-	                                <div class="font-medium whitespace-no-wrap">STATUS SETOR MENUNGGU</div>
-	                            </td>
-	                            <td class="text-right border-b w-32"><?= $menunggu_count;?></td>
-	                            <td class="text-right border-b w-32">
-	                                <?= "Rp. ".number_format($menunggu_total, 0).",-"; ?>
-	                            </td>
-	                        </tr>
-	                    </tbody>
-	                </table>
-	            </div>
-	            <!-- DP Payments Detail -->
-	            <div class="px-5 sm:px-16 py-10 sm:py-20">
-	                <h3 class="text-lg font-medium mb-5">Detail Pembayaran DP</h3>
-	                <div class="overflow-x-auto">
-	                    <table class="table">
-	                        <thead>
-	                            <tr>
-	                                <th class="border-b-2 whitespace-no-wrap">TTS</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Domisili</th>
-	                                <th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Jenis</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Status Setor</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Waktu</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <?php if (!empty($dp_payments)): ?>
-	                                <?php foreach ($dp_payments as $payment): ?>
-	                                    <tr>
-	                                        <td class="border-b"><?= $payment['cos_kode'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_nama'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_alamat'] ?></td>
-	                                        <td class="text-right border-b">
-	                                            <?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
-	                                        </td>
-	                                        <td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
-	                                        <td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
-	                                        <td class="border-b">
-	                                            <div class="font-medium whitespace-no-wrap">
-	                                                <?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
-	                                            </div>
-	                                            <div class="text-gray-600 text-xs whitespace-no-wrap">
-	                                                <?= $payment['dtl_jam'] ?>
-	                                            </div>
-	                                        </td>
-	                                    </tr>
-	                                <?php endforeach; ?>
-	                            <?php else: ?>
-	                                <tr>
-	                                    <td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran DP dalam periode ini</td>
-	                                </tr>
-	                            <?php endif; ?>
-	                        </tbody>
-	                    </table>
-	                </div>
-	            </div>
-	            <!-- Pelunasan Payments Detail -->
-	            <div class="px-5 sm:px-16 py-10 sm:py-20">
-	                <h3 class="text-lg font-medium mb-5">Detail Pembayaran Pelunasan</h3>
-	                <div class="overflow-x-auto">
-	                    <table class="table">
-	                        <thead>
-	                            <tr>
-	                                <th class="border-b-2 whitespace-no-wrap">TTS</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Domisili</th>
-	                                <th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Jenis</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Status Setor</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Waktu</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <?php if (!empty($lunas_payments)): ?>
-	                                <?php foreach ($lunas_payments as $payment): ?>
-	                                    <tr>
-	                                        <td class="border-b"><?= $payment['cos_kode'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_nama'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_alamat'] ?></td>
-	                                        <td class="text-right border-b">
-	                                            <?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
-	                                        </td>
-	                                        <td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
-	                                        <td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
-	                                        <td class="border-b">
-	                                            <div class="font-medium whitespace-no-wrap">
-	                                                <?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
-	                                            </div>
-	                                            <div class="text-gray-600 text-xs whitespace-no-wrap">
-	                                                <?= $payment['dtl_jam'] ?>
-	                                            </div>
-	                                        </td>
-	                                    </tr>
-	                                <?php endforeach; ?>
-	                            <?php else: ?>
-	                                <tr>
-	                                    <td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran pelunasan dalam periode ini</td>
-	                                </tr>
-	                            <?php endif; ?>
-	                        </tbody>
-	                    </table>
-	                </div>
-	            </div>
-	            <!-- Menunggu Payments Detail -->
-	            <div class="px-5 sm:px-16 py-10 sm:py-20">
-	                <h3 class="text-lg font-medium mb-5">Detail Pembayaran Status Menunggu</h3>
-	                <div class="overflow-x-auto">
-	                    <table class="table">
-	                        <thead>
-	                            <tr>
-	                                <th class="border-b-2 whitespace-no-wrap">TTS</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Domisili</th>
-	                                <th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Tipe</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Jenis</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Status Setor</th>
-	                                <th class="border-b-2 whitespace-no-wrap">Waktu</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <?php if (!empty($menunggu_payments)): ?>
-	                                <?php foreach ($menunggu_payments as $payment): ?>
-	                                    <tr>
-	                                        <td class="border-b"><?= $payment['cos_kode'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_nama'] ?></td>
-	                                        <td class="border-b"><?= $payment['cos_alamat'] ?></td>
-	                                        <td class="text-right border-b">
-	                                            <?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
-	                                        </td>
-	                                        <td class="border-b"><?= $payment['dtl_status'] ?></td>
-	                                        <td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
-	                                        <td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
-	                                        <td class="border-b">
-	                                            <div class="font-medium whitespace-no-wrap">
-	                                                <?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
-	                                            </div>
-	                                            <div class="text-gray-600 text-xs whitespace-no-wrap">
-	                                                <?= $payment['dtl_jam'] ?>
-	                                            </div>
-	                                        </td>
-	                                    </tr>
-	                                <?php endforeach; ?>
-	                            <?php else: ?>
-	                                <tr>
-	                                    <td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran dengan status menunggu dalam periode ini</td>
-	                                </tr>
-	                            <?php endif; ?>
-	                        </tbody>
-	                    </table>
-	                </div>
-	            </div>
-	            <div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
-	             <div class="text-center sm:text-left mt-10 sm:mt-0">
-	                 <div class="text-base text-gray-600">Azzahra Computer Tegal</div>
-	                 <div class="text-lg text-theme-1 font-medium mt-2">TTD</div>
-	                 <div class="mt-1">Admin</div>
-	             </div>
-	             <div class="text-center sm:text-right sm:ml-auto">
-	                 <div class="text-base text-gray-600">Total Keseluruhan</div>
-	                 <div class="text-xl text-theme-1 font-medium mt-2">
-	                     <?= "Rp. ".number_format($tot_tranfer, 0).",-"; ?>
-	                 </div>
-	                 <div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_tranfer->num_rows(); ?></div>
-	             </div>
-	         </div>
-	            <div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
-	             <div class="text-center sm:text-left mt-10 sm:mt-0">
-	                 <div class="text-base text-gray-600">Bank Transfer</div>
-	                 <div class="text-lg text-theme-1 font-medium mt-2">Yang Belum disetorkan</div>
-	                 <div class="mt-1">Azzahra Computer Tegal</div>
-	             </div>
-	             <div class="text-center sm:text-right sm:ml-auto">
-	                 <div class="text-base text-gray-600">Total</div>
-	                 <div class="text-xl text-theme-1 font-medium mt-2">
-	                     <?= "Rp. ".number_format($blm_setor, 0).",-"; ?>
-	                 </div>
-	                 <div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_setor->num_rows(); ?></div>
-	             </div>
-	         </div>
-		        <div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
-		            <div class="text-center sm:text-left mt-10 sm:mt-0">
-		                <div class="text-base text-gray-600">Pembayaran Tunai</div>
-		                <div class="text-lg text-theme-1 font-medium mt-2">DP dan Pelunasan</div>
-		                <div class="mt-1">Azzahra Computer Tegal</div>
-		            </div>
-		            <div class="text-center sm:text-right sm:ml-auto">
-		                <div class="text-base text-gray-600">Total</div>
-		                <div class="text-xl text-theme-1 font-medium mt-2">
-		                    <?= "Rp. ".number_format($tot_tunai, 0).",-"; ?>
-		                </div>
-		                <div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_tunai->num_rows(); ?></div>
-		            </div>
-		        </div>
-		      
-            </div>
+            </form>
+			<?php if (isset($all_have_cabang) && $all_have_cabang && isset($payments_by_cabang) && is_array($payments_by_cabang)): ?>
+				<?php foreach (["Tegal", "Cibubur"] as $cabang): ?>
+					<div class="intro-y inbox box mt-5">
+						<div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+							<div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>
+							<div class="mt-20 lg:mt-0 lg:ml-auto lg:text-right">
+								<div class="text-xl text-theme-1 font-medium">Azzahra Computer <?= $cabang ?></div>
+								<div class="mt-1">Tanggal, <?php echo date('d-m-Y',strtotime($tgl_awal)) ?> Sampai <?php echo date('d-m-Y',strtotime($tgl_akhir)) ?></div>
+							</div>
+						</div>
+						<div class="overflow-x-auto">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="border-b-2 whitespace-no-wrap">DESCRIPTION</th>
+										<th class="border-b-2 text-right whitespace-no-wrap">JUMLAH</th>
+										<th class="border-b-2 text-right whitespace-no-wrap">SUBTOTAL</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php 
+										$cabang_data = $payments_by_cabang[$cabang] ?? [];
+										$dp_bca = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'DP' && $p['dtl_bank'] == 'BCA'; });
+										$dp_mandiri = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'DP' && $p['dtl_bank'] == 'MANDIRI'; });
+										$dp_tunai = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'DP' && $p['dtl_jenis_bayar'] == 'TUNAI'; });
+										$lunas_bca = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'PELUNASAN' && $p['dtl_bank'] == 'BCA'; });
+										$lunas_mandiri = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'PELUNASAN' && $p['dtl_bank'] == 'MANDIRI'; });
+										$lunas_tunai = array_filter($cabang_data, function($p){ return $p['dtl_status'] == 'PELUNASAN' && $p['dtl_jenis_bayar'] == 'TUNAI'; });
+										$menunggu = array_filter($cabang_data, function($p){ return $p['dtl_stt_stor'] == 'Menunggu'; });
+										
+										$sum_dp_bca = array_sum(array_column($dp_bca, 'dtl_jml_bayar'));
+										$sum_dp_mandiri = array_sum(array_column($dp_mandiri, 'dtl_jml_bayar'));
+										$sum_dp_tunai = array_sum(array_column($dp_tunai, 'dtl_jml_bayar'));
+										$sum_lunas_bca = array_sum(array_column($lunas_bca, 'dtl_jml_bayar'));
+										$sum_lunas_mandiri = array_sum(array_column($lunas_mandiri, 'dtl_jml_bayar'));
+										$sum_lunas_tunai = array_sum(array_column($lunas_tunai, 'dtl_jml_bayar'));
+										$sum_menunggu = array_sum(array_column($menunggu, 'dtl_jml_bayar'));
+									?>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BCA</div>
+											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($dp_bca);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_dp_bca, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BRI</div>
+											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($dp_mandiri);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_dp_mandiri, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">DOWN PATMENT TUNAI</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($dp_tunai);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_dp_tunai, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BCA</div>
+											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($lunas_bca);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_lunas_bca, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BRI</div>
+											<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($lunas_mandiri);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_lunas_mandiri, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">PELUNASAN TUNAI</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($lunas_tunai);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_lunas_tunai, 0).",-"; ?>
+										</td>
+									</tr>
+									<tr>
+										<td class="border-b">
+											<div class="font-medium whitespace-no-wrap">STATUS SETOR MENUNGGU</div>
+										</td>
+										<td class="text-right border-b w-32"><?= count($menunggu);?></td>
+										<td class="text-right border-b w-32">
+											<?= "Rp. ".number_format($sum_menunggu, 0).",-"; ?>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+						<!-- DP Payments Detail -->
+						<div class="px-5 sm:px-16 py-10 sm:py-20">
+							<h3 class="text-lg font-medium mb-5">Detail Pembayaran DP</h3>
+							<div class="overflow-x-auto">
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="border-b-2 whitespace-no-wrap">TTS</th>
+											<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+											<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+											<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+											<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+											<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+											<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $dp = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p['dtl_status'] == 'DP'; }); ?>
+										<?php if (!empty($dp)): ?>
+											<?php foreach ($dp as $payment): ?>
+												<tr>
+													<td class="border-b"><?= $payment['cos_kode'] ?></td>
+													<td class="border-b"><?= $payment['cos_nama'] ?></td>
+													<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+													<td class="text-right border-b">
+														<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+													</td>
+													<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+													<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+													<td class="border-b">
+														<div class="font-medium whitespace-no-wrap">
+															<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+														</div>
+														<div class="text-gray-600 text-xs whitespace-no-wrap">
+															<?= $payment['dtl_jam'] ?>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+										<?php else: ?>
+											<tr>
+												<td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran DP dalam periode ini</td>
+											</tr>
+										<?php endif; ?>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- Pelunasan Payments Detail -->
+						<div class="px-5 sm:px-16 py-10 sm:py-20">
+							<h3 class="text-lg font-medium mb-5">Detail Pembayaran Pelunasan</h3>
+							<div class="overflow-x-auto">
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="border-b-2 whitespace-no-wrap">TTS</th>
+											<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+											<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+											<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+											<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+											<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+											<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $lunas = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p['dtl_status'] == 'PELUNASAN'; }); ?>
+										<?php if (!empty($lunas)): ?>
+											<?php foreach ($lunas as $payment): ?>
+												<tr>
+													<td class="border-b"><?= $payment['cos_kode'] ?></td>
+													<td class="border-b"><?= $payment['cos_nama'] ?></td>
+													<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+													<td class="text-right border-b">
+														<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+													</td>
+													<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+													<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+													<td class="border-b">
+														<div class="font-medium whitespace-no-wrap">
+															<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+														</div>
+														<div class="text-gray-600 text-xs whitespace-no-wrap">
+															<?= $payment['dtl_jam'] ?>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+										<?php else: ?>
+											<tr>
+												<td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran pelunasan dalam periode ini</td>
+											</tr>
+										<?php endif; ?>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<!-- Menunggu Payments Detail -->
+						<div class="px-5 sm:px-16 py-10 sm:py-20">
+							<h3 class="text-lg font-medium mb-5">Detail Pembayaran Status Menunggu</h3>
+							<div class="overflow-x-auto">
+								<table class="table">
+									<thead>
+										<tr>
+											<th class="border-b-2 whitespace-no-wrap">TTS</th>
+											<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+											<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+											<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+											<th class="border-b-2 whitespace-no-wrap">Tipe</th>
+											<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+											<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+											<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+										</tr>
+									</thead>
+									<tbody>
+										<?php $menunggu_list = array_filter($payments_by_cabang[$cabang] ?? [], function($p){ return $p['dtl_stt_stor'] == 'Menunggu'; }); ?>
+										<?php if (!empty($menunggu_list)): ?>
+											<?php foreach ($menunggu_list as $payment): ?>
+												<tr>
+													<td class="border-b"><?= $payment['cos_kode'] ?></td>
+													<td class="border-b"><?= $payment['cos_nama'] ?></td>
+													<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+													<td class="text-right border-b">
+														<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+													</td>
+													<td class="border-b"><?= $payment['dtl_status'] ?></td>
+													<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+													<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+													<td class="border-b">
+														<div class="font-medium whitespace-no-wrap">
+															<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+														</div>
+														<div class="text-gray-600 text-xs whitespace-no-wrap">
+															<?= $payment['dtl_jam'] ?>
+														</div>
+													</td>
+												</tr>
+											<?php endforeach; ?>
+										<?php else: ?>
+											<tr>
+												<td colspan="8" class="text-center border-b text-gray-500">Tidak ada pembayaran dengan status menunggu dalam periode ini</td>
+											</tr>
+										<?php endif; ?>
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+							<div class="text-center sm:text-left mt-10 sm:mt-0">
+								<div class="text-base text-gray-600">Azzahra Computer <?= $cabang ?></div>
+								<div class="text-lg text-theme-1 font-medium mt-2">TTD</div>
+								<div class="mt-1">Admin</div>
+							</div>
+							<div class="text-center sm:text-right sm:ml-auto">
+								<div class="text-base text-gray-600">Total Keseluruhan</div>
+								<div class="text-xl text-theme-1 font-medium mt-2">
+									<?php $total_cabang = array_sum(array_column($payments_by_cabang[$cabang] ?? [], 'dtl_jml_bayar')); ?>
+									<?= "Rp. ".number_format($total_cabang, 0).",-"; ?>
+								</div>
+								<div class="mt-1 text-xs">Dengan Total Customer - <?= count($payments_by_cabang[$cabang] ?? []); ?></div>
+							</div>
+						</div>
+					</div>
+				<?php endforeach; ?>
+			<?php else: ?>
+				<!-- fallback to original implementation if not all cabang set -->
+					        	
+				<div class="intro-y inbox box mt-5">
+					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+						<div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>
+						<div class="mt-20 lg:mt-0 lg:ml-auto lg:text-right">
+							<div class="text-xl text-theme-1 font-medium">Azzahra Computer Tegal</div>
+							<div class="mt-1">Tanggal, <?php echo date('d-m-Y',strtotime($tgl_awal)) ?> Sampai <?php echo date('d-m-Y',strtotime($tgl_akhir)) ?></div>
+						</div>
+					</div>
+					<div class="overflow-x-auto">
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="border-b-2 whitespace-no-wrap">DESCRIPTION</th>
+									<th class="border-b-2 text-right whitespace-no-wrap">JUMLAH</th>
+									<th class="border-b-2 text-right whitespace-no-wrap">SUBTOTAL</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BCA</div>
+										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_DP_bca->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_DP_bca, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">DOWN PATMENT BANK BRI</div>
+										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_DP_bri->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_DP_bri, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">DOWN PATMENT TUNAI</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_DP_tunai->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_DP_tunai, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BCA</div>
+										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 0470727705</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_lns_bca->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_lns_bca, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">PELUNASAN BANK BRI</div>
+										<div class="text-gray-600 text-xs whitespace-no-wrap">NO Rek. 1390023150083</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_lns_bri->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_lns_bri, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">PELUNASAN TUNAI</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $jml_lns_tunai->num_rows();?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($tot_lns_tunai, 0).",-"; ?>
+									</td>
+								</tr>
+								<tr>
+									<td class="border-b">
+										<div class="font-medium whitespace-no-wrap">STATUS SETOR MENUNGGU</div>
+									</td>
+									<td class="text-right border-b w-32"><?= $menunggu_count;?></td>
+									<td class="text-right border-b w-32">
+										<?= "Rp. ".number_format($menunggu_total, 0).",-"; ?>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!-- DP Payments Detail -->
+					<div class="px-5 sm:px-16 py-10 sm:py-20">
+						<h3 class="text-lg font-medium mb-5">Detail Pembayaran DP</h3>
+						<div class="overflow-x-auto">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="border-b-2 whitespace-no-wrap">TTS</th>
+										<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+										<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+										<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+										<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+										<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+										<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php if (!empty($dp_payments)): ?>
+										<?php foreach ($dp_payments as $payment): ?>
+											<tr>
+												<td class="border-b"><?= $payment['cos_kode'] ?></td>
+												<td class="border-b"><?= $payment['cos_nama'] ?></td>
+												<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+												<td class="text-right border-b">
+													<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+												</td>
+												<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+												<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+												<td class="border-b">
+													<div class="font-medium whitespace-no-wrap">
+														<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+													</div>
+													<div class="text-gray-600 text-xs whitespace-no-wrap">
+														<?= $payment['dtl_jam'] ?>
+													</div>
+												</td>
+											</tr>
+										<?php endforeach; ?>
+									<?php else: ?>
+										<tr>
+											<td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran DP dalam periode ini</td>
+										</tr>
+									<?php endif; ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- Pelunasan Payments Detail -->
+					<div class="px-5 sm:px-16 py-10 sm:py-20">
+						<h3 class="text-lg font-medium mb-5">Detail Pembayaran Pelunasan</h3>
+						<div class="overflow-x-auto">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="border-b-2 whitespace-no-wrap">TTS</th>
+										<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+										<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+										<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+										<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+										<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+										<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php if (!empty($lunas_payments)): ?>
+										<?php foreach ($lunas_payments as $payment): ?>
+											<tr>
+												<td class="border-b"><?= $payment['cos_kode'] ?></td>
+												<td class="border-b"><?= $payment['cos_nama'] ?></td>
+												<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+												<td class="text-right border-b">
+													<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+												</td>
+												<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+												<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+												<td class="border-b">
+													<div class="font-medium whitespace-no-wrap">
+														<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+													</div>
+													<div class="text-gray-600 text-xs whitespace-no-wrap">
+														<?= $payment['dtl_jam'] ?>
+													</div>
+												</td>
+											</tr>
+										<?php endforeach; ?>
+									<?php else: ?>
+										<tr>
+											<td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran pelunasan dalam periode ini</td>
+										</tr>
+									<?php endif; ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!-- Menunggu Payments Detail -->
+					<div class="px-5 sm:px-16 py-10 sm:py-20">
+						<h3 class="text-lg font-medium mb-5">Detail Pembayaran Status Menunggu</h3>
+						<div class="overflow-x-auto">
+							<table class="table">
+								<thead>
+									<tr>
+										<th class="border-b-2 whitespace-no-wrap">TTS</th>
+										<th class="border-b-2 whitespace-no-wrap">Nama Customer</th>
+										<th class="border-b-2 whitespace-no-wrap">Domisili</th>
+										<th class="border-b-2 text-right whitespace-no-wrap">Jumlah Bayar</th>
+										<th class="border-b-2 whitespace-no-wrap">Tipe</th>
+										<th class="border-b-2 whitespace-no-wrap">Jenis</th>
+										<th class="border-b-2 whitespace-no-wrap">Status Setor</th>
+										<th class="border-b-2 whitespace-no-wrap">Waktu</th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php if (!empty($menunggu_payments)): ?>
+										<?php foreach ($menunggu_payments as $payment): ?>
+											<tr>
+												<td class="border-b"><?= $payment['cos_kode'] ?></td>
+												<td class="border-b"><?= $payment['cos_nama'] ?></td>
+												<td class="border-b"><?= $payment['cos_alamat'] ?></td>
+												<td class="text-right border-b">
+													<?= "Rp. ".number_format($payment['dtl_jml_bayar'], 0).",-"; ?>
+												</td>
+												<td class="border-b"><?= $payment['dtl_status'] ?></td>
+												<td class="border-b"><?= $payment['dtl_jenis_bayar'] ?></td>
+												<td class="border-b"><?= $payment['dtl_stt_stor'] ?></td>
+												<td class="border-b">
+													<div class="font-medium whitespace-no-wrap">
+														<?php echo date('d-m-Y', strtotime($payment['dtl_tanggal'])) ?>
+													</div>
+													<div class="text-gray-600 text-xs whitespace-no-wrap">
+														<?= $payment['dtl_jam'] ?>
+													</div>
+												</td>
+											</tr>
+										<?php endforeach; ?>
+									<?php else: ?>
+										<tr>
+											<td colspan="7" class="text-center border-b text-gray-500">Tidak ada pembayaran dengan status menunggu dalam periode ini</td>
+										</tr>
+									<?php endif; ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+					<div class="text-center sm:text-left mt-10 sm:mt-0">
+						<div class="text-base text-gray-600">Azzahra Computer Tegal</div>
+						<div class="text-lg text-theme-1 font-medium mt-2">TTD</div>
+						<div class="mt-1">Admin</div>
+					</div>
+					<div class="text-center sm:text-right sm:ml-auto">
+						<div class="text-base text-gray-600">Total Keseluruhan</div>
+						<div class="text-xl text-theme-1 font-medium mt-2">
+							<?= "Rp. ".number_format($tot_tranfer, 0).",-"; ?>
+						</div>
+						<div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_tranfer->num_rows(); ?></div>
+					</div>
+				</div>
+					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+					<div class="text-center sm:text-left mt-10 sm:mt-0">
+						<div class="text-base text-gray-600">Bank Transfer</div>
+						<div class="text-lg text-theme-1 font-medium mt-2">Yang Belum disetorkan</div>
+						<div class="mt-1">Azzahra Computer Tegal</div>
+					</div>
+					<div class="text-center sm:text-right sm:ml-auto">
+						<div class="text-base text-gray-600">Total</div>
+						<div class="text-xl text-theme-1 font-medium mt-2">
+							<?= "Rp. ".number_format($blm_setor, 0).",-"; ?>
+						</div>
+						<div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_setor->num_rows(); ?></div>
+					</div>
+				</div>
+					<div class="flex flex-col lg:flex-row border-b px-5 sm:px-9 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
+						<div class="text-center sm:text-left mt-10 sm:mt-0">
+							<div class="text-base text-gray-600">Pembayaran Tunai</div>
+							<div class="text-lg text-theme-1 font-medium mt-2">DP dan Pelunasan</div>
+							<div class="mt-1">Azzahra Computer Tegal</div>
+						</div>
+						<div class="text-center sm:text-right sm:ml-auto">
+							<div class="text-base text-gray-600">Total</div>
+							<div class="text-xl text-theme-1 font-medium mt-2">
+								<?= "Rp. ".number_format($tot_tunai, 0).",-"; ?>
+							</div>
+							<div class="mt-1 text-xs">Dengan Total Customer - <?= $jml_tunai->num_rows(); ?></div>
+						</div>
+					</div>
+				
+				</div>
+			<?php endif; ?>
         </div>
 </div>
 <?php $this->load->view('Template/footer'); ?>
