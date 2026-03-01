@@ -292,6 +292,7 @@ class QuickService extends CI_Controller {
 				);
 
 		$customer_result = $this->M_service->save_custom($customer);
+		$cabang_result = $this->M_service->insert_cabang(array('id' => $id_costomer, 'cabang' => $this->input->post('cabang')));
 		log_message('info', 'Customer insert result: ' . ($customer_result ? 'success' : 'failed'));
 
 		// Generate trans_kode: TRDDMMYYNNN

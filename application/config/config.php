@@ -547,4 +547,7 @@ $config['laravel_voucher_path'] = 'C:/xampp/htdocs/api_e_service/storage/app/pub
 $config['voucher_image_url'] = 'https://api.azzahracomputertegal.com/api/storage/assets/Vocer/';
 // $config['voucher_image_url'] = 'http://192.168.1.21:8000/storage/assets/Vocer/';
 
+// azventory
+$config['azventory_api_key'] = '1|Ci58W5WrCPJgEmM1Mg35JIRFqCBWyZsU2n6sLnFAd4397a08';
+
 $config['enable_profiler'] = TRUE;

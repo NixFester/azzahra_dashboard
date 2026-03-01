@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    test
+    <button onclick="decreaseStock()">Kurangi Stok</button>
+    <script>
+        const BASE_URL = "https://azventory.azzahracomputertegal.com"; // or production URL
+const ITEM_ID = 1;
+        let Token = "1|Ci58W5WrCPJgEmM1Mg35JIRFqCBWyZsU2n6sLnFAd4397a08"
+
+
+function decreaseStock() {
+  fetch(`${BASE_URL}/api/v1/inventory/${ITEM_ID}/adjust-stock`, {
+    method: "POST",
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${Token}`
+    },
+    body: JSON.stringify({
+      type: "decrement",
+      quantity: 1,
+      description: "Terjual via Web"
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Success:", data);
+    alert("Stok berhasil dikurangi");
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    alert("Gagal mengurangi stok");
+  });
+}
+    </script>
+</body>
+
+</html>

@@ -32,3 +32,5 @@ system/cache/
 *.log
 *.sql
 .htaccess
+
+/backups/

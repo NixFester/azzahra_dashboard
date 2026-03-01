@@ -14,7 +14,10 @@ document.addEventListener('DOMContentLoaded', function() {
 				return false;
 			}
 			var url = '<?= site_url('Admin/export_pdf_laporan') ?>' + '?tgl_awal=' + encodeURIComponent(awal) + '&tgl_akhir=' + encodeURIComponent(akhir);
-			window.open(url, '_blank');
+			// Disable button to prevent double clicks/requests
+			try { exportBtn.setAttribute('disabled', 'disabled'); exportBtn.classList.add('opacity-50'); } catch(e) {}
+			// Navigate to the PDF URL (let browser handle download)
+			window.location.href = url;
 		});
 	}
 
@@ -60,31 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
 	                    <input type="date" class="input w-full sm:w-64 box px-10 text-gray-700 placeholder-theme-13" placeholder="Search tanggal" name="tgl_akhir" required="" value="<?= $tgl_akhir?>">
 	                    
 	                </div>
-	                <div class="w-full sm:w-auto flex">
-	                <input type="hidden" name="tgl_1" value="<?= $tgl_awal?>">
-	                <input type="hidden" name="tgl_2" value="<?= $tgl_akhir?>">
+					<div class="w-full sm:w-auto flex">
+					<input type="hidden" name="tgl_1" value="<?= $tgl_awal?>">
+					<input type="hidden" name="tgl_2" value="<?= $tgl_akhir?>">
 					<a id="exportPdfBtn" href="<?= site_url('Admin/export_pdf_laporan?tgl_awal=' . $tgl_awal . '&tgl_akhir=' . $tgl_akhir) ?>" class="button text-white bg-red-600 shadow-md flex"><i data-feather="file"></i> &nbsp;Export to PDF</a>
-					<script>
-					// Ensure Export PDF uses selected date range
-					document.addEventListener('DOMContentLoaded', function() {
-						var exportBtn = document.getElementById('exportPdfBtn');
-						var tglAwal = document.querySelector('input[name="tgl_awal"]');
-						var tglAkhir = document.querySelector('input[name="tgl_akhir"]');
-						if (exportBtn && tglAwal && tglAkhir) {
-							exportBtn.addEventListener('click', function(e) {
-								e.preventDefault();
-								var awal = tglAwal.value;
-								var akhir = tglAkhir.value;
-								if (!awal || !akhir) {
-									alert('Pilih tanggal awal dan akhir terlebih dahulu!');
-									return false;
-								}
-								var url = '<?= site_url('Admin/export_pdf_laporan') ?>' + '?tgl_awal=' + encodeURIComponent(awal) + '&tgl_akhir=' + encodeURIComponent(akhir);
-								window.open(url, '_blank');
-							});
-						}
-					});
-					</script>
+					</div>
 	                </div>
 	            </div>
             </form>

@@ -62,8 +62,7 @@
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
 					<a data-toggle="tab" data-target="#konfirmasi" href="javascript:;" class="py-4 sm:mr-8 active">Konfirmasi</a> 
 					<a data-toggle="tab" data-target="#unit" href="javascript:;" class="py-4 sm:mr-8">Unit</a>
-					<a data-toggle="tab" data-target="#kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 
-				</div>
+					<a data-toggle="tab" data-target="#kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 				<a data-toggle="tab" data-target="#sparepart" href="javascript:;" class="py-4 sm:mr-8">Detail Sparepart</a> 				</div>
 			</div>
 			<div class="intro-y tab-content mt-5">
 				<div class="tab-content__pane active" id="konfirmasi">
@@ -190,9 +189,180 @@
 				            </div>
                         </div>
 					</div>
-	        	</div>
-			</div>
+	        	</div>				<div class="tab-content__pane" id="sparepart">
+					<div class="intro-y box col-span-12">
+						<div class="flex items-center px-5 py-5 sm:py-0 border-b border-gray-200">
+                            <h2 class="font-medium text-base mr-auto"><br>
+                                Detail Sparepart
+                            </h2>
+                        </div>
+                        <div class="p-5">
+                            <div class="mt-5">
+                                <div class="overflow-x-auto">
+                                    <table class="table table-striped" id="sparepartTable">
+                                        <thead>
+                                            <tr class="bg-gray-700 text-white">
+                                                <th class="whitespace-no-wrap">Gambar</th>
+                                                <th class="whitespace-no-wrap">Nama</th>
+                                                <th class="whitespace-no-wrap">Brand</th>
+                                                <th class="whitespace-no-wrap">Kategori</th>
+                                                <th class="whitespace-no-wrap">Kondisi</th>
+                                                <th class="whitespace-no-wrap">Stock</th>
+                                                <th class="whitespace-no-wrap">Lokasi</th>
+                                                <th class="whitespace-no-wrap">Harga</th>
+                                                <th class="whitespace-no-wrap">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="sparepartTableBody">
+                                            <!-- Data akan diisi oleh JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+				</div>			</div>
     	</div>
     	
 </div>
 <?php $this->load->view('Template/footer'); ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+     // Extract sparepart IDs from visible tdkn_ket values in the table
+    function extractSparepartIds() {
+        const ids = [];
+        const konfirmasiPane = document.getElementById('konfirmasi');
+        
+        if (!konfirmasiPane) {
+            return ids;
+        }
+        
+        // Find the table within the konfirmasi pane and get all rows
+        const tableRows = konfirmasiPane.querySelectorAll('table tbody tr');
+        
+        tableRows.forEach(row => {
+            // get hidden tindakan input
+            const tindakanInput = row.querySelector('input[name="ket[]"]');
+            
+            if (tindakanInput) {
+                const text = tindakanInput.value.trim();
+
+                // retain regex
+                const idMatch = text.match(/\(ID:\s*(\d+)\)/);
+
+                if (idMatch) {
+                    ids.push(parseInt(idMatch[1], 10));
+                }
+            }
+        });
+        
+        return ids;
+    }
+    
+    // Fetch sparepart details from API
+    async function fetchSparepartDetails(id) {
+        try {
+            const response = await fetch(`https://azventory.azzahracomputertegal.com/api/v1/inventory/${id}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                    "Authorization": `Bearer <?php echo $this->config->item('azventory_api_key'); ?>`
+                }
+            });
+            
+            if (!response.ok) {
+                console.error(`Failed to fetch sparepart ${id}:`, response.statusText);
+                return null;
+            }
+            
+            const data = await response.json();
+            return data.data || data;
+        } catch (error) {
+            console.error(`Error fetching sparepart ${id}:`, error);
+            return null;
+        }
+    }
+    
+    // Format currency to IDR
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(amount);
+    }
+    
+    // Populate datatable with sparepart data
+    async function populateSparepartTable() {
+        const ids = extractSparepartIds();
+        const tableBody = document.getElementById('sparepartTableBody');
+        const sparepartPane = document.getElementById('sparepart');
+        
+        if (!tableBody || !sparepartPane) {
+            return;
+        }
+        
+        // Hide pane if no IDs found
+        if (ids.length === 0) {
+            sparepartPane.style.display = 'none';
+            // Also hide the tab link
+            const sparepartTab = document.querySelector('a[data-target="#sparepart"]');
+            if (sparepartTab) {
+                sparepartTab.style.display = 'none';
+            }
+            return;
+        }
+        
+        // Clear existing rows
+        tableBody.innerHTML = '';
+        
+        // Fetch and populate data
+        const promises = ids.map(id => fetchSparepartDetails(id));
+        const results = await Promise.all(promises);
+        
+        results.forEach((sparepart, index) => {
+            if (sparepart) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border-b"><img src="${sparepart.image_url || ''}" alt="${sparepart.name}" style="max-width: 80px; max-height: 80px; object-fit: cover;"></td>
+                    <td class="border-b">${sparepart.name || '-'}</td>
+                    <td class="border-b">${sparepart.brand || '-'}</td>
+                    <td class="border-b">${sparepart.category || '-'}</td>
+                    <td class="border-b">${sparepart.condition || '-'}</td>
+                    <td class="border-b">
+                        ${sparepart.stock ? sparepart.stock.current + ' ' + (sparepart.stock.unit || 'pcs') : '-'}
+                        ${sparepart.stock && sparepart.stock.is_low ? '<span style="color: red; margin-left: 5px;">(LOW)</span>' : ''}
+                    </td>
+                    <td class="border-b">${sparepart.location || '-'}</td>
+                    <td class="border-b">${sparepart.price ? formatCurrency(sparepart.price) : '-'}</td>
+                    <td class="border-b">
+                        <span style="padding: 3px 8px; border-radius: 3px; background-color: ${sparepart.status === 'aktif' ? '#10b981' : '#ef4444'}; color: white; font-size: 12px;">
+                            ${sparepart.status || '-'}
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            }
+        });
+        
+        // Show pane if data is populated
+        if (tableBody.children.length === 0) {
+            sparepartPane.style.display = 'none';
+            const sparepartTab = document.querySelector('a[data-target="#sparepart"]');
+            if (sparepartTab) {
+                sparepartTab.style.display = 'none';
+            }
+        } else {
+            sparepartPane.style.display = 'block';
+            const sparepartTab = document.querySelector('a[data-target="#sparepart"]');
+            if (sparepartTab) {
+                sparepartTab.style.display = 'block';
+            }
+        }
+    }
+    
+    // Initialize on page load
+    populateSparepartTable();
+});
+</script>

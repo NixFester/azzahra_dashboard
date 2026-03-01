@@ -595,7 +595,8 @@ class Service extends CI_Controller {
 			'role'		=> 'cs',
 			'filter'	=> $segment
 			 );
-		$this->load->view('Kasir/pembayaran',$data);
+		// use Service-specific view for CS users
+		$this->load->view('Service/pembayaran',$data);
 	}
 	function cari()
 	{
@@ -612,7 +613,8 @@ class Service extends CI_Controller {
 			'vocher' 	=> $this->M_service->GetVocherBy($kode)->row_array(),
 			'role'		=> 'cs'
 			 );
-		$this->load->view('Kasir/cari',$data);
+		// service users should see service view
+		$this->load->view('Service/cari',$data);
 
 	}
 	function vocer_cari()
@@ -1119,6 +1121,66 @@ class Service extends CI_Controller {
             "data" => $result
         );
     
+        echo json_encode($output);
+    }
+
+    // AJAX handler for pembayaran datatable
+    public function ajax_pembayaran()
+    {
+        // DataTables parameters
+        $draw = $this->input->post('draw');
+        $start = $this->input->post('start');
+        $length = $this->input->post('length');
+        $search = $this->input->post('search')['value'];
+
+        // Determine ordering
+        $order_column_index = 1; // default
+        $order_dir = 'asc';
+        if ($this->input->post('order') && is_array($this->input->post('order'))) {
+            $order_column_index = $this->input->post('order')[0]['column'];
+            $order_dir = $this->input->post('order')[0]['dir'];
+        }
+
+        // column mapping for pembayaran table
+        $columns = array(
+            0 => 'transaksi.cos_kode',
+            1 => 'costomer.cos_kode',
+            2 => 'costomer.cos_nama',
+            3 => 'costomer.cos_model',
+            4 => 'costomer.cos_status',
+            5 => 'costomer.cos_tanggal'
+        );
+
+        $filter = $this->input->post('filter');
+
+        // counts
+        $total_records = $this->M_service->pembayaran_count_all($filter);
+        $total_filtered = $this->M_service->pembayaran_count_filtered($filter, $search);
+
+        // fetch data
+        $data = $this->M_service->pembayaran_ajax($start, $length, $search, $columns[$order_column_index], $order_dir, $filter);
+
+        $result = array();
+        $no = $start + 1;
+        foreach ($data as $row) {
+            $invoice_link = '<a href="' . site_url('Service/cari/' . $row->trans_kode) . '">' . $row->cos_kode . '</a>';
+            $result[] = array(
+                $no++,
+                $invoice_link,
+                $row->cos_nama,
+                $row->cos_model,
+                $row->cos_status,
+                date('d-m-Y', strtotime($row->cos_tanggal))
+            );
+        }
+
+        $output = array(
+            "draw" => intval($draw),
+            "recordsTotal" => $total_records,
+            "recordsFiltered" => $total_filtered,
+            "data" => $result
+        );
+
         echo json_encode($output);
     }
 

@@ -738,9 +738,88 @@ class M_service extends CI_Model {
             $this->db->limit($length, $start);
         }
         
+        // execute the query and return the result set
         $query = $this->db->get();
         return $query->result();
     }
+
+    // payment listing helpers for server-side DataTable
+    public function pembayaran_count_all($filter)
+    {
+        $this->db->from('costomer');
+        $this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode');
+
+        if ($filter === 'dp') {
+            $this->db->where('transaksi.trans_status', 'Pelunasan');
+        } elseif ($filter === 'lunas') {
+            $this->db->where('transaksi.trans_status', 'Lunas');
+        } else {
+            // all except final lunas
+            $this->db->where('transaksi.trans_status !=', 'Lunas');
+        }
+
+        return $this->db->count_all_results();
+    }
+
+    public function pembayaran_count_filtered($filter, $search)
+    {
+        $this->db->from('costomer');
+        $this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode');
+
+        if ($filter === 'dp') {
+            $this->db->where('transaksi.trans_status', 'Pelunasan');
+        } elseif ($filter === 'lunas') {
+            $this->db->where('transaksi.trans_status', 'Lunas');
+        } else {
+            $this->db->where('transaksi.trans_status !=', 'Lunas');
+        }
+
+        if (!empty($search)) {
+            $this->db->group_start();
+            $this->db->like('transaksi.cos_kode', $search);
+            $this->db->or_like('costomer.cos_nama', $search);
+            $this->db->or_like('costomer.cos_model', $search);
+            $this->db->or_like('costomer.cos_status', $search);
+            $this->db->or_like('costomer.cos_tanggal', $search);
+            $this->db->group_end();
+        }
+
+        return $this->db->count_all_results();
+    }
+
+	public function pembayaran_ajax($start, $length, $search, $order_column, $order_dir, $filter)
+	{
+		$this->db->select('costomer.*, transaksi.*');
+		$this->db->from('costomer');
+		$this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode');
+
+		if ($filter === 'dp') {
+			$this->db->where('transaksi.trans_status', 'Pelunasan');
+		} elseif ($filter === 'lunas') {
+			$this->db->where('transaksi.trans_status', 'Lunas');
+		} else {
+			$this->db->where('transaksi.trans_status !=', 'Lunas');
+		}
+
+		if (!empty($search) && $search !== '') {
+			$this->db->group_start();
+			$this->db->like('transaksi.cos_kode', $search);
+			$this->db->or_like('costomer.cos_nama', $search);
+			$this->db->or_like('costomer.cos_model', $search);
+			$this->db->or_like('costomer.cos_status', $search);
+			$this->db->or_like('costomer.cos_tanggal', $search);
+			$this->db->group_end();
+		}
+
+		$this->db->order_by($order_column, $order_dir);
+
+		if ($length != -1) {
+			$this->db->limit($length, $start);
+		}
+
+		$query = $this->db->get();
+		return $query->result();
+	}
 }
 
 /* End of file M_service.php */
