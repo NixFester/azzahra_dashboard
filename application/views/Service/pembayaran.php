@@ -12,7 +12,7 @@
                     Data Pembayaran
                 </h2>
                 <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-                    <a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
+                    <a role="button" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
                     </a>
                     <div class="pos-dropdown dropdown relative ml-auto sm:ml-0">
                         <button class="dropdown-toggle button px-2 box text-gray-700">
@@ -92,9 +92,9 @@
                     <div class="intro-y pr-1">
                         <div class="box p-2">
                             <div class="pos__tabs nav-tabs justify-center flex">
-                                <a data-toggle="tab" data-target="#details" href="javascript:;" class="flex-1 py-2 rounded-md text-center active">Detail</a>
-                                <a data-toggle="tab" data-target="#pelunasan" href="javascript:;" class="flex-1 py-2 rounded-md text-center ">Pelunasan</a>
-                                <a data-toggle="tab" data-target="#dp" href="javascript:;" class="flex-1 py-2 rounded-md text-center">DP</a>
+                                <a data-toggle="tab" data-target="#details" role="button" class="flex-1 py-2 rounded-md text-center active">Detail</a>
+                                <a data-toggle="tab" data-target="#pelunasan" role="button" class="flex-1 py-2 rounded-md text-center ">Pelunasan</a>
+                                <a data-toggle="tab" data-target="#dp" role="button" class="flex-1 py-2 rounded-md text-center">DP</a>
                             </div>
                         </div>
                     </div>

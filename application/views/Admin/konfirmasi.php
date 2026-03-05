@@ -60,9 +60,9 @@
                     </div>                    
 				</div>
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-					<a data-toggle="tab" data-target="#konfirmasi" href="javascript:;" class="py-4 sm:mr-8 active">Konfirmasi</a> 
-					<a data-toggle="tab" data-target="#unit" href="javascript:;" class="py-4 sm:mr-8">Unit</a>
-					<a data-toggle="tab" data-target="#kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 				<a data-toggle="tab" data-target="#sparepart" href="javascript:;" class="py-4 sm:mr-8">Detail Sparepart</a> 				</div>
+					<a data-toggle="tab" data-target="#konfirmasi" role="button" class="py-4 sm:mr-8 active">Konfirmasi</a> 
+					<a data-toggle="tab" data-target="#unit" role="button" class="py-4 sm:mr-8">Unit</a>
+					<a data-toggle="tab" data-target="#kelket" role="button" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 				<a data-toggle="tab" data-target="#sparepart" role="button" class="py-4 sm:mr-8">Detail Sparepart</a> 				</div>
 			</div>
 			<div class="intro-y tab-content mt-5">
 				<div class="tab-content__pane active" id="konfirmasi">

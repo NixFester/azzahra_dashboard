@@ -59,7 +59,7 @@
 				    				<td class="text-center border-b"><?= $row['dtl_stt_stor']; ?></td>
 				    				<td class="text-center">
 				    					<div class="flex sm:justify-center items-center">
-				    						<a href="javascript:;" data-theme="light" data-tooltip-content="#custom-content-tooltip" data-event="on-click" class="tooltip button inline-block bg-theme-1 text-white" title="Customer dalam pelunasan">Info</a>
+				    						<a role="button" data-theme="light" data-tooltip-content="#custom-content-tooltip" data-event="on-click" class="tooltip button inline-block bg-theme-1 text-white" title="Customer dalam pelunasan">Info</a>
 				    					</div>
 				    					<div class="tooltip-content">
 	                                        <div id="custom-content-tooltip" class="relative flex items-center py-1">

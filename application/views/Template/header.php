@@ -239,7 +239,7 @@
                         <div class="nav-icon"><i data-feather="users"></i></div>
                         <span class="nav-text">Customer</span>
                     </a>
-                    <a href="javascript:;" class="nav-link laporan-toggle <?php if($title == 'Laporan') echo 'active'?>" onclick="toggleLaporanDropdown()">
+                    <a role="button" class="nav-link laporan-toggle <?php if($title == 'Laporan') echo 'active'?>" onclick="toggleLaporanDropdown()">
                         <div class="nav-icon"><i data-feather="activity"></i></div>
                         <span class="nav-text">Laporan</span>
                         <div class="dropdown-chevron">

@@ -426,10 +426,10 @@ return $hari . ' ' . $bulan_array[$bulan] . ' ' . $tahun;
     </div>
     <div class="page-header-right">
         <div class="header-actions">
-            <a href="javascript:;" class="btn btn-outline" data-toggle="modal" data-target="#modalImport">
+            <a role="button" class="btn btn-outline" data-toggle="modal" data-target="#modalImport">
                 <i data-feather="upload"></i> Import Excel
             </a>
-            <a href="javascript:;" class="btn btn-primary" data-toggle="modal" data-target="#modalPencatatan">
+            <a role="button" class="btn btn-primary" data-toggle="modal" data-target="#modalPencatatan">
                 <i data-feather="plus-circle"></i> Tambah Pencatatan
             </a>
         </div>
@@ -570,10 +570,10 @@ return $hari . ' ' . $bulan_array[$bulan] . ' ' . $tahun;
                                             <?php endif; ?>
                                         </td>
                                         <td class="text-right">
-                                            <a href="javascript:;" class="btn btn-sm btn-outline-primary mr-1" title="Lihat Detail" onclick="showBatchDetail('<?= $batch['batch_id']; ?>')" style="padding: 0.2rem 0.3rem; font-size: 0.75rem;">
+                                            <a role="button" class="btn btn-sm btn-outline-primary mr-1" title="Lihat Detail" onclick="showBatchDetail('<?= $batch['batch_id']; ?>')" style="padding: 0.2rem 0.3rem; font-size: 0.75rem;">
                                                 <i data-feather="eye" style="width: 14px; height: 14px;"></i>
                                             </a>
-                                            <a href="javascript:;" class="btn btn-sm btn-outline-warning mr-1" title="Edit Batch" onclick="editBatch('<?= $batch['batch_id']; ?>')" style="padding: 0.2rem 0.3rem; font-size: 0.75rem;">
+                                            <a role="button" class="btn btn-sm btn-outline-warning mr-1" title="Edit Batch" onclick="editBatch('<?= $batch['batch_id']; ?>')" style="padding: 0.2rem 0.3rem; font-size: 0.75rem;">
                                                 <i data-feather="edit" style="width: 14px; height: 14px;"></i>
                                             </a>
                                             <a href="<?= site_url('HR/delete_batch_pencatatan/' . $batch['batch_id']); ?>"

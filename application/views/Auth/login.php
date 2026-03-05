@@ -203,7 +203,7 @@
             <input type="password" name="pswd" class="login__input mb-4" placeholder="Password">
 
             <div class="forgot">
-                <a href="javascript:;">Forgot Password?</a>
+                <a role="button">Forgot Password?</a>
             </div>
 
             <button type="submit" class="login-btn mt-6">
@@ -213,7 +213,7 @@
 
         <div class="footer-text">
             Jika anda belum mempunyai akun <br>
-            <a href="javascript:;">Silahkan hubungi administrator</a>
+            <a role="button">Silahkan hubungi administrator</a>
 
             <div id="greetingText"></div>
             <div id="clockText">🕒 <span id="clock"></span></div>

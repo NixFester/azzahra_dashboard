@@ -48,10 +48,10 @@
     </div>
     <div class="page-header-right">
         <div class="header-actions">
-            <a href="javascript:;" class="btn btn-primary" id="btnAddDreame" data-toggle="modal" data-target="#modalAddDreame">
+            <a role="button" class="btn btn-primary" id="btnAddDreame" data-toggle="modal" data-target="#modalAddDreame">
                 <i data-feather="plus-circle"></i> Tambah Dreame
             </a>
-            <a href="javascript:;" class="btn btn-primary" id="btnAddLaptop" data-toggle="modal" data-target="#modalAddLaptop" style="display: none;">
+            <a role="button" class="btn btn-primary" id="btnAddLaptop" data-toggle="modal" data-target="#modalAddLaptop" style="display: none;">
                 <i data-feather="plus-circle"></i> Tambah Laptop
             </a>
         </div>
@@ -122,7 +122,7 @@
                                                     <?= htmlspecialchars($row['alamat']); ?>
                                                 </td>
                                                 <td class="text-right">
-                                                    <a href="javascript:;" class="btn btn-sm btn-outline-primary btn-edit"
+                                                    <a role="button" class="btn btn-sm btn-outline-primary btn-edit"
                                                         data-id="<?= $row['arsip_id']; ?>"
                                                         data-nama="<?= htmlspecialchars($row['nama']); ?>"
                                                         data-hp="<?= htmlspecialchars($row['no_hp']); ?>"
@@ -189,7 +189,7 @@
                                                     <?= htmlspecialchars($row['alamat']); ?>
                                                 </td>
                                                 <td class="text-right">
-                                                    <a href="javascript:;" class="btn btn-sm btn-outline-primary btn-edit"
+                                                    <a role="button" class="btn btn-sm btn-outline-primary btn-edit"
                                                         data-id="<?= $row['arsip_id']; ?>"
                                                         data-nama="<?= htmlspecialchars($row['nama']); ?>"
                                                         data-hp="<?= htmlspecialchars($row['no_hp']); ?>"
@@ -230,7 +230,7 @@
     <div class="modal__content modal__content--md p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium">Tambah Arsip Dreame</h2>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -262,7 +262,7 @@
                 <textarea name="alamat" class="form-control w-full mt-1" rows="2"></textarea>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <a href="javascript:;" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
+                <a role="button" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
                 <button type="submit" class="btn btn-primary py-2 px-4" style="background-color: #3b82f6; color: white; border: none;">
                     Simpan
                 </button>
@@ -276,7 +276,7 @@
     <div class="modal__content modal__content--md p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium">Tambah Arsip Laptop</h2>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -308,7 +308,7 @@
                 <textarea name="alamat" class="form-control w-full mt-1" rows="2"></textarea>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <a href="javascript:;" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
+                <a role="button" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
                 <button type="submit" class="btn btn-primary py-2 px-4" style="background-color: #3b82f6; color: white; border: none;">
                     Simpan
                 </button>
@@ -322,7 +322,7 @@
     <div class="modal__content modal__content--md p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium">Edit Arsip</h2>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -354,7 +354,7 @@
                 <textarea name="alamat" id="edit_alamat" class="form-control w-full mt-1" rows="2"></textarea>
             </div>
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <a href="javascript:;" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
+                <a role="button" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
                 <button type="submit" class="btn btn-primary py-2 px-4" style="background-color: #3b82f6; color: white; border: none;">
                     Update
                 </button>

@@ -6,7 +6,7 @@
             Data Costomer
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        	<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
+        	<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
         		Buat Transaksi
         	</a>
         </div>
@@ -68,9 +68,9 @@
                     </div>                    
 				</div>
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-					<a data-toggle="tab" data-target="#detail-bayar" href="javascript:;" class="py-4 sm:mr-8 active">Tindakan</a> 
-					<a data-toggle="tab" data-target="#konf-unit" href="javascript:;" class="py-4 sm:mr-8">Unit</a>
-					<a data-toggle="tab" data-target="#konf-kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 
+					<a data-toggle="tab" data-target="#detail-bayar" role="button" class="py-4 sm:mr-8 active">Tindakan</a> 
+					<a data-toggle="tab" data-target="#konf-unit" role="button" class="py-4 sm:mr-8">Unit</a>
+					<a data-toggle="tab" data-target="#konf-kelket" role="button" class="py-4 sm:mr-8">Keluhan & Keterangan</a> 
 				</div>
 			</div>
 			<div class="intro-y tab-content mt-5">
@@ -87,7 +87,7 @@
                         			<div class="intro-y datatable-wrapper box p-5 mt-5">
                         				<div class="flex items-center justify-between mb-5">
                         					<h3 class="text-lg font-medium">Daftar Tindakan</h3>
-                        					<a href="javascript:;" class="button px-4 py-2 text-white bg-theme-9 border border-theme-9 rounded-lg font-medium transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg" data-toggle="modal" data-target="#tambah-tindakan">
+                        					<a role="button" class="button px-4 py-2 text-white bg-theme-9 border border-theme-9 rounded-lg font-medium transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg" data-toggle="modal" data-target="#tambah-tindakan">
                         						 Tambah Tindakan
                         					</a>
                         				</div>
@@ -114,7 +114,7 @@
                                       				<?= "Rp. ".number_format($row['tdkn_subtot'], 0).",-"; ?>
                                       			</td>
                                       			<td class="text-center border-b">
-                                      				<a href="javascript:;" class="delete-tindakan" data-kode="<?= $row['tdkn_kode']?>" data-trans="<?= $row['trans_kode']?>" data-nama="<?= $row['tdkn_nama']?>">
+                                      				<a role="button" class="delete-tindakan" data-kode="<?= $row['tdkn_kode']?>" data-trans="<?= $row['trans_kode']?>" data-nama="<?= $row['tdkn_nama']?>">
                                       					<button class="button px-2 mr-1 mb-2 bg-theme-6 text-white">
                                       			       <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="trash-2" class="w-4 h-4"></i> </span>
                                       			   </button>

@@ -10,7 +10,7 @@
                 <p>Welcome back, here's your business overview</p>
             </div>
             <div class="header-actions">
-               <a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-karyawan">
+               <a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-karyawan">
         		Tambah Karyawan Baru
         	</a>
         	<a href="" class="button box flex items-center text-gray-700">
@@ -56,7 +56,7 @@
 			                    <td class="text-center border-b"><?= $row['kry_level']?></td>
 			                    <td class="border-b w-5">
 			                        <div class="flex sm:justify-center items-center">
-			                            <a class="flex items-center mr-3" href="javascript:;" data-toggle="modal" data-target="#edit-karyawan-<?= $row['kry_kode']?>"> 
+			                            <a class="flex items-center mr-3" role="button" data-toggle="modal" data-target="#edit-karyawan-<?= $row['kry_kode']?>"> 
 			                            	<i data-feather="check-square" class="w-4 h-4 mr-1"></i> Edit 
 			                            </a>
 			                            <a class="flex items-center text-theme-6 tombol-hapus" href="<?= site_url('Karyawan/delete/'.$row['kry_kode'])?>" data-nama="<?= $row['kry_nama']?>"> 
@@ -95,8 +95,8 @@
 		</div>
 		<div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
 			<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-            	<a data-toggle="tab" data-target="#profile" href="javascript:;" class="py-4 sm:mr-8 active">Profile</a> 
-            	<a data-toggle="tab" data-target="#account" href="javascript:;" class="py-4 sm:mr-8">Account</a>
+            	<a data-toggle="tab" data-target="#profile" role="button" class="py-4 sm:mr-8 active">Profile</a> 
+            	<a data-toggle="tab" data-target="#account" role="button" class="py-4 sm:mr-8">Account</a>
             </div>
 		</div>
 		<form method="post" action="<?= site_url('Karyawan/save')?>">
@@ -191,7 +191,7 @@ foreach ($karyawan->result_array() as $row) :?>
 			</div>
 			<div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-	            	<a data-toggle="tab" data-target="#edit-profile" href="javascript:;" class="py-4 sm:mr-8 active">Profile</a>
+	            	<a data-toggle="tab" data-target="#edit-profile" role="button" class="py-4 sm:mr-8 active">Profile</a>
 	            </div>
 			</div>
 			<form method="post" action="<?= site_url('Karyawan/update')?>">

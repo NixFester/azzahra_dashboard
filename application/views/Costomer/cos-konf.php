@@ -6,7 +6,7 @@
 	           Data Costomer
 	       </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        	<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
+        	<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
         		Buat Transaksi
         	</a>
         </div>
@@ -97,7 +97,7 @@
                                 <a href="<?= site_url('Service/konfirmasi/'.$row['trans_kode'])?>" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i data-feather="align-justify" class="w-4 h-4 mr-2"></i> Detail
                                 </a>
-                                <a href="javascript:;" onclick="sendToWA('<?= site_url('Cetak/print_1/'.$row['trans_kode']) ?>', '<?= $row['cos_hp'] ?>', '<?= $row['cos_nama'] ?>', '<?= $row['cos_kode'] ?>', '<?= $row['trans_kode'] ?>', <?= $row['trans_total'] ?>)" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a role="button" onclick="sendToWA('<?= site_url('Cetak/print_1/'.$row['trans_kode']) ?>', '<?= $row['cos_hp'] ?>', '<?= $row['cos_nama'] ?>', '<?= $row['cos_kode'] ?>', '<?= $row['trans_kode'] ?>', <?= $row['trans_total'] ?>)" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i data-feather="message-circle" class="w-4 h-4 mr-2"></i> Kirim WA
                                 </a>
                             </div>

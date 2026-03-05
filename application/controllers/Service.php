@@ -1096,7 +1096,7 @@ class Service extends CI_Controller {
                                 <a href="' . site_url('Service/konfirmasi/' . $row->trans_kode) . '" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i data-feather="align-justify" class="w-4 h-4 mr-2"></i> Detail
                                 </a>
-                                <a href="javascript:;" onclick="sendToWA(\'' . site_url('Cetak/print_1/' . $row->trans_kode) . '\', \'' . addslashes($row->cos_hp) . '\', \'' . addslashes($row->cos_nama) . '\', \'' . $row->cos_kode . '\', \'' . $row->trans_kode . '\', ' . (isset($row->trans_total) ? $row->trans_total : 0) . ')" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                <a role="button" onclick="sendToWA(\'' . site_url('Cetak/print_1/' . $row->trans_kode) . '\', \'' . addslashes($row->cos_hp) . '\', \'' . addslashes($row->cos_nama) . '\', \'' . $row->cos_kode . '\', \'' . $row->trans_kode . '\', ' . (isset($row->trans_total) ? $row->trans_total : 0) . ')" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <i data-feather="message-circle" class="w-4 h-4 mr-2"></i> Kirim WA
                                 </a>
                             </div>

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             Data Quick Service
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        	<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
+        	<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
         		Buat Transaksi
         	</a>
         </div>
@@ -57,10 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
 				</div>
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start">
-					<a data-toggle="tab" data-target="#detail-bayar" href="javascript:;" class="py-4 sm:mr-8 active">Tindakan</a>
-					<a data-toggle="tab" data-target="#pembayaran" href="javascript:;" class="py-4 sm:mr-8">Pembayaran</a>
-					<a data-toggle="tab" data-target="#konf-unit" href="javascript:;" class="py-4 sm:mr-8">Unit</a>
-					<a data-toggle="tab" data-target="#konf-kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a>
+					<a data-toggle="tab" data-target="#detail-bayar" role="button" class="py-4 sm:mr-8 active">Tindakan</a>
+					<a data-toggle="tab" data-target="#pembayaran" role="button" class="py-4 sm:mr-8">Pembayaran</a>
+					<a data-toggle="tab" data-target="#konf-unit" role="button" class="py-4 sm:mr-8">Unit</a>
+					<a data-toggle="tab" data-target="#konf-kelket" role="button" class="py-4 sm:mr-8">Keluhan & Keterangan</a>
 				</div>
 			</div>
 			<div class="intro-y tab-content mt-5">

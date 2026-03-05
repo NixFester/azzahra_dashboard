@@ -7,7 +7,7 @@
             Data Pembayaran
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-            <a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
+            <a role="button" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
             </a> 
             <div class="pos-dropdown dropdown relative ml-auto sm:ml-0">
                 <button class="dropdown-toggle button px-2 box text-gray-700">
@@ -123,8 +123,8 @@
             <div class="intro-y pr-1">
                 <div class="box p-2">
                     <div class="pos__tabs nav-tabs justify-center flex"> 
-                    	<a data-toggle="tab" data-target="#details" href="javascript:;" class="flex-1 py-2 rounded-md text-center active">Detail</a>
-                    	<a data-toggle="tab" data-target="#return" href="javascript:;" class="flex-1 py-2 rounded-md text-center ">Return Pembayaran</a>                   	
+                    	<a data-toggle="tab" data-target="#details" role="button" class="flex-1 py-2 rounded-md text-center active">Detail</a>
+                    	<a data-toggle="tab" data-target="#return" role="button" class="flex-1 py-2 rounded-md text-center ">Return Pembayaran</a>                   	
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@
                     <div class="pos__ticket box p-2 mt-5">
                         <?php
                         foreach ($tindakan->result_array() as $key ) {?>
-                            <a href="javascript:;" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
+                            <a role="button" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
                                 <div class="pos__ticket__item-name truncate mr-1"><?= $key['tdkn_nama']?></div>
                                 <div class="text-gray-600">x <?= $key['tdkn_qty']?></div>
                                 <div class="ml-auto">

@@ -87,7 +87,7 @@
     </div>
     <div class="page-header-right">
         <div class="header-actions">
-            <a href="javascript:;" class="btn btn-primary" data-toggle="modal" data-target="#modalAbsen">
+            <a role="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAbsen">
                 <i data-feather="plus-circle"></i> Input Absensi
             </a>
         </div>
@@ -316,7 +316,7 @@
     <div class="modal__content modal__content--md p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium">Input Absensi Harian</h2>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -364,7 +364,7 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <a href="javascript:;" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
+                <a role="button" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
                 <button type="submit" class="btn btn-primary py-2 px-4" style="background-color: #3b82f6; color: white; border: none;">
                     Simpan Data
                 </button>

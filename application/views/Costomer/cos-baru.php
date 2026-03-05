@@ -11,7 +11,7 @@
 				</div>
 				<div class="header-actions">
 						<div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        				<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
+        				<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
         					Buat Transaksi
         				</a>
 			</div>
@@ -87,7 +87,7 @@
 												<a href="<?= site_url('Service/print_tts/'.$row['cos_kode'])?>" target="_blanck" class="button px-2 mr-1 mb-2 bg-theme-6 text-white">
 													<span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
 												</a>
-												<a href="javascript:;" onclick="sendToWA('<?= site_url('Cetak/print_tts/'.$row['cos_kode']) ?>', '<?= $row['cos_hp'] ?>', '<?= $row['cos_nama'] ?>', '<?= $row['cos_kode'] ?>', '<?= $row['cos_kode'] ?>')" class="button px-2 mr-1 mb-2 bg-green-500 text-white">
+												<a role="button" onclick="sendToWA('<?= site_url('Cetak/print_tts/'.$row['cos_kode']) ?>', '<?= $row['cos_hp'] ?>', '<?= $row['cos_nama'] ?>', '<?= $row['cos_kode'] ?>', '<?= $row['cos_kode'] ?>')" class="button px-2 mr-1 mb-2 bg-green-500 text-white">
 													<span class="w-5 h-5 flex items-center justify-center"> <i data-feather="message-circle" class="w-4 h-4"></i> </span>
 												</a>
 											</div>

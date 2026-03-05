@@ -229,10 +229,10 @@
     </div>
     <div class="page-header-right">
         <div class="header-actions">
-            <a href="javascript:;" class="btn btn-outline" data-toggle="modal" data-target="#modalImport">
+            <a role="button" class="btn btn-outline" data-toggle="modal" data-target="#modalImport">
                 <i data-feather="upload"></i> Import Excel
             </a>
-            <a href="javascript:;" class="btn btn-primary" data-toggle="modal" data-target="#modalInterview">
+            <a role="button" class="btn btn-primary" data-toggle="modal" data-target="#modalInterview">
                 <i data-feather="plus-circle"></i> Tambah Kandidat
             </a>
         </div>
@@ -371,7 +371,7 @@
                 <h2 class="text-lg font-medium" style="font-size: 1.25rem; font-weight: 600; color: #1e293b;">Tambah Kandidat Interview</h2>
                 <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.25rem;">Lengkapi informasi kandidat yang akan diinterview</p>
             </div>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700" style="cursor: pointer;">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700" style="cursor: pointer;">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -501,7 +501,7 @@
     <div class="modal__content modal__content--md p-5 intro-y box" style="max-height: 85vh; overflow-y: auto;">
         <div class="flex items-center justify-between mb-4">
             <h2 class="text-lg font-medium">Import Data Interview dari Excel</h2>
-            <a href="javascript:;" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
+            <a role="button" data-dismiss="modal" class="text-gray-500 hover:text-gray-700">
                 <i data-feather="x" class="w-5 h-5"></i>
             </a>
         </div>
@@ -534,7 +534,7 @@
             </div>
 
             <div class="flex justify-end gap-2 pt-3 border-t">
-                <a href="javascript:;" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
+                <a role="button" data-dismiss="modal" class="btn btn-secondary py-2 px-4">Batal</a>
                 <button type="submit" class="btn btn-primary py-2 px-4" style="background-color: #3b82f6; color: white; border: none;">
                     <i data-feather="upload"></i> Import Data
                 </button>

@@ -62,10 +62,10 @@
                     </div>                    
 				</div>
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start">
-					<a data-toggle="tab" data-target="#unit" href="javascript:;" class="py-4 sm:mr-8 active">Unit</a>
-					<a data-toggle="tab" data-target="#kelket" href="javascript:;" class="py-4 sm:mr-8">Keluhan & Keterangan</a>
-					<!-- <a data-toggle="tab" data-target="#tindakan" href="javascript:;" class="py-4 sm:mr-8">Tindakan</a>
-					<a data-toggle="tab" data-target="#histori" href="javascript:;" class="py-4 sm:mr-8">Histori Pembayaran</a> -->
+					<a data-toggle="tab" data-target="#unit" role="button" class="py-4 sm:mr-8 active">Unit</a>
+					<a data-toggle="tab" data-target="#kelket" role="button" class="py-4 sm:mr-8">Keluhan & Keterangan</a>
+					<!-- <a data-toggle="tab" data-target="#tindakan" role="button" class="py-4 sm:mr-8">Tindakan</a>
+					<a data-toggle="tab" data-target="#histori" role="button" class="py-4 sm:mr-8">Histori Pembayaran</a> -->
 				</div>
 			</div>
 			<div class="intro-y tab-content mt-5">

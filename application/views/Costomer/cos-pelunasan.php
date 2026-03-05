@@ -6,7 +6,7 @@
 	           Data Costomer
 	       </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        	<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
+        	<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#add-new-costom">
         		Buat Transaksi
         	</a>
         </div>

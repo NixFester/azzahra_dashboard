@@ -11,7 +11,7 @@
             Data Pembayaran
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-            <a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
+            <a role="button" class="button text-white bg-theme-1 shadow-md mr-2">Pembayaran hari ini
             </a> 
             <div class="pos-dropdown dropdown relative ml-auto sm:ml-0">
                 <button class="dropdown-toggle button px-2 box text-gray-700">
@@ -86,7 +86,7 @@
                                         <a href="<?= site_url('Cetak/print_1/'.$row['dtl_kode'].'?preview=1')?>" target="_blank" class="button px-2 mr-1 mb-2 bg-theme-6 text-white">
                                         <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
                                     </a>
-                                    <a href="javascript:;" onclick="sendToWA(
+                                    <a role="button" onclick="sendToWA(
                                         '<?= $row['dtl_status'] ?>',
                                         '<?= $trans['cos_kode'] ?>',
                                         '<?= number_format($row['dtl_jml_bayar'], 0, ',', '.') ?>',
@@ -114,9 +114,9 @@
             <div class="intro-y pr-1">
                 <div class="box p-2">
                     <div class="pos__tabs nav-tabs justify-center flex"> 
-                    	<a data-toggle="tab" data-target="#details" href="javascript:;" class="flex-1 py-2 rounded-md text-center active">Detail</a>
-                    	<a data-toggle="tab" data-target="#pelunasan" href="javascript:;" class="flex-1 py-2 rounded-md text-center ">Pelunasan</a> 
-                    	<a data-toggle="tab" data-target="#dp" href="javascript:;" class="flex-1 py-2 rounded-md text-center">DP</a>                    	
+                    	<a data-toggle="tab" data-target="#details" role="button" class="flex-1 py-2 rounded-md text-center active">Detail</a>
+                    	<a data-toggle="tab" data-target="#pelunasan" role="button" class="flex-1 py-2 rounded-md text-center ">Pelunasan</a> 
+                    	<a data-toggle="tab" data-target="#dp" role="button" class="flex-1 py-2 rounded-md text-center">DP</a>                    	
                     </div>
                 </div>
             </div>
@@ -177,7 +177,7 @@
                     <div class="pos__ticket box p-2 mt-5">
                         <?php
                         foreach ($tindakan->result_array() as $key ) {?>
-                            <a href="javascript:;" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
+                            <a role="button" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
                                 <div class="pos__ticket__item-name truncate mr-1"><?= $key['tdkn_nama']?></div>
                                 <div class="text-gray-600">x <?= $key['tdkn_qty']?></div>
                                 <div class="ml-auto">
@@ -268,7 +268,7 @@
                     <div class="pos__ticket box p-2 mt-5">
                         <?php
                         foreach ($tindakan->result_array() as $key ) {?>
-                            <a href="javascript:;" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
+                            <a role="button" class="flex items-center p-3 cursor-pointer transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md">
                                 <div class="pos__ticket__item-name truncate mr-1"><?= $key['tdkn_nama']?></div>
                                 <div class="text-gray-600">x <?= $key['tdkn_qty']?></div>
                                 <div class="ml-auto">

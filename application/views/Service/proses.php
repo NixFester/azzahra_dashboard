@@ -14,7 +14,7 @@
             Data Costomer
         </h2>
         <div class="w-full sm:w-auto flex mt-4 sm:mt-0">
-        	<a href="javascript:;" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#edit-costom-<?= $proses['cos_kode'];?>">
+        	<a role="button" class="button text-white bg-theme-1 shadow-md mr-2" data-toggle="modal" data-target="#edit-costom-<?= $proses['cos_kode'];?>">
         		Edit Data
         	</a>
         </div>
@@ -77,7 +77,7 @@
                     </div>                    
 				</div>
 				<div class="nav-tabs flex flex-col sm:flex-row justify-center lg:justify-start"> 
-					<a data-toggle="tab" data-target="#input-data" href="javascript:;" class="py-4 sm:mr-8 active">Input Proses</a>  
+					<a data-toggle="tab" data-target="#input-data" role="button" class="py-4 sm:mr-8 active">Input Proses</a>  
 				</div>
 			</div>
 
