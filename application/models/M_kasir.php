@@ -3,16 +3,111 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_kasir extends CI_Model {
 
-	function GetCustom()
+	function GetCustom($limit = null, $offset = null, $search = '')
 	{
 		$this->db->select('*');
 	    $this->db->from('costomer');
 	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
 	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
 	    $this->db->where('transaksi.trans_status !=', 'Lunas');
+	    if (!empty($search)) {
+	        $this->db->group_start();
+	        $this->db->like('cos_nama', $search);
+	        $this->db->or_like('cos_alamat', $search);
+	        $this->db->or_like('cos_hp', $search);
+	        $this->db->or_like('trans_status', $search);
+	        $this->db->group_end();
+	    }
+	    if ($limit !== null && $offset !== null) {
+	        $this->db->limit($limit, $offset);
+	    } elseif ($limit !== null) {
+	        $this->db->limit($limit);
+	    }
 	    $query = $this->db->get();
 	    return $query;
 	}
+
+	function GetCustomCount($search = '')
+	{
+		$this->db->select('*');
+	    $this->db->from('costomer');
+	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
+	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
+	    $this->db->where('transaksi.trans_status !=', 'Lunas');
+	    if (!empty($search)) {
+	        $this->db->group_start();
+	        $this->db->like('cos_nama', $search);
+	        $this->db->or_like('cos_alamat', $search);
+	        $this->db->or_like('cos_hp', $search);
+	        $this->db->or_like('trans_status', $search);
+	        $this->db->group_end();
+	    }
+	    return $this->db->count_all_results();
+	}
+
+	function GetPembayaran($filter = '', $limit = null, $offset = null, $search = '')
+	{
+		$this->db->select('*');
+	    $this->db->from('costomer');
+	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
+	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
+	    
+	    if ($filter == 'dp') {
+	        $this->db->where('transaksi.trans_status', 'Pelunasan');
+	    } elseif ($filter == 'lunas') {
+	        $this->db->where('transaksi.trans_status', 'Lunas');
+	    } elseif ($filter == 'return') {
+	        $this->db->join('transaksi_detail','transaksi.trans_kode=transaksi_detail.trans_kode');
+	        $this->db->where('transaksi_detail.dtl_jenis_bayar', 'RETURN');
+	    }
+
+	    if (!empty($search)) {
+	        $this->db->group_start();
+	        $this->db->like('cos_nama', $search);
+	        $this->db->or_like('cos_kode', $search);
+	        $this->db->or_like('cos_alamat', $search);
+	        $this->db->or_like('cos_hp', $search);
+	        $this->db->group_end();
+	    }
+
+	    if ($limit !== null && $offset !== null) {
+	        $this->db->limit($limit, $offset);
+	    } elseif ($limit !== null) {
+	        $this->db->limit($limit);
+	    }
+	    
+	    $query = $this->db->get();
+	    return $query;
+	}
+
+	function GetPembayaranCount($filter = '', $search = '')
+	{
+		$this->db->select('*');
+	    $this->db->from('costomer');
+	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
+	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
+	    
+	    if ($filter == 'dp') {
+	        $this->db->where('transaksi.trans_status', 'Pelunasan');
+	    } elseif ($filter == 'lunas') {
+	        $this->db->where('transaksi.trans_status', 'Lunas');
+	    } elseif ($filter == 'return') {
+	        $this->db->join('transaksi_detail','transaksi.trans_kode=transaksi_detail.trans_kode');
+	        $this->db->where('transaksi_detail.dtl_jenis_bayar', 'RETURN');
+	    }
+
+	    if (!empty($search)) {
+	        $this->db->group_start();
+	        $this->db->like('cos_nama', $search);
+	        $this->db->or_like('cos_kode', $search);
+	        $this->db->or_like('cos_alamat', $search);
+	        $this->db->or_like('cos_hp', $search);
+	        $this->db->group_end();
+	    }
+
+	    return $this->db->count_all_results();
+	}
+
 	function trans($kode)
 	{
 		$this->db->select('*');

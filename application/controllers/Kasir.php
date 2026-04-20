@@ -21,51 +21,353 @@ class Kasir extends CI_Controller {
 
 	public function index()
 	{
+		$this->load->library('pagination');
+		$search = $this->input->get('search');
+		$per_page = 25;
+		$total_rows = $this->M_kasir->GetCustomCount($search);
+		$total_pages = ceil($total_rows / $per_page);
+		$current_page = ($this->uri->segment(3)) ? (int)$this->uri->segment(3) : 1;
+		$offset = ($current_page - 1) * $per_page;
+
+		$custom = $this->M_kasir->GetCustom($per_page, $offset, $search);
+		if ($custom === false) {
+			$custom = array();
+		}
+
+		// Generate pagination HTML with AJAX handlers
+		$pagination = $this->generate_pagination($current_page, $total_pages, $search, true);
+
 		$data = array(
 			'title' 	=> 'Customer',
-			'custom'	=> $this->M_kasir->GetCustom(),
-			'no'		=> $this->uri->segment(3)
-			 );
+			'custom'	=> $custom,
+			'pagination' => $pagination,
+			'no'		=> $offset
+		);
 		$this->load->view('Kasir/customer',$data);
 	}
+
+	public function ajax_search()
+	{
+		$search = $this->input->post('search');
+		$page = $this->input->post('page') ? (int)$this->input->post('page') : 1;
+		$per_page = 25;
+		$offset = ($page - 1) * $per_page;
+
+		$total_rows = $this->M_kasir->GetCustomCount($search);
+		$total_pages = ceil($total_rows / $per_page);
+
+		$custom = $this->M_kasir->GetCustom($per_page, $offset, $search);
+
+		// Generate table rows HTML
+		$table_html = '';
+		$no_urut = $offset + 1;
+		foreach ($custom->result_array() as $row) {
+			$table_html .= '<tr>';
+			$table_html .= '<td class="text-center border-b">' . $no_urut++ . '</td>';
+			$table_html .= '<td class="text-center border-b">' . $row['cos_kode'] . '</td>';
+			$table_html .= '<td class="border-b">';
+			$table_html .= '<div class="font-medium whitespace-no-wrap">' . $row['cos_nama'] . '</div>';
+			$table_html .= '<div class="text-gray-600 text-xs whitespace-no-wrap">STATUS : ' . $row['trans_status'] . '</div>';
+			$table_html .= '</td>';
+			$table_html .= '<td class="border-b">' . $row['cos_alamat'] . '</td>';
+			$table_html .= '<td class="text-center border-b">' . $row['cos_hp'] . '</td>';
+			$table_html .= '<td class="border-b">';
+			$table_html .= '<div class="font-medium whitespace-no-wrap">' . date('d-m-Y', strtotime($row['cos_tanggal'])) . '</div>';
+			$table_html .= '<div class="text-gray-600 text-xs whitespace-no-wrap">JAM : ' . $row['cos_jam'] . '</div>';
+			$table_html .= '</td>';
+			$table_html .= '<td class="border-b w-5">';
+			$table_html .= '<div class="flex sm:justify-center items-center">';
+			
+			// Check trans_status to show appropriate button
+			if ($row['trans_status'] == 'Return') {
+				$table_html .= '<a href="' . site_url('Kasir/trans_return/' . $row['trans_kode']) . '" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-1 text-white">';
+				$table_html .= '<i data-feather="credit-card" class="w-4 h-4 mr-2"></i> Return';
+				$table_html .= '</a>';
+			} else {
+				$table_html .= '<a href="' . site_url('Kasir/cari/' . $row['trans_kode']) . '" class="button w-32 mr-2 mb-2 flex items-center justify-center bg-theme-6 text-white">';
+				$table_html .= '<i data-feather="credit-card" class="w-4 h-4 mr-2"></i> Bayar';
+				$table_html .= '</a>';
+			}
+			
+			$table_html .= '</div>';
+			$table_html .= '</td>';
+			$table_html .= '</tr>';
+		}
+
+		// Generate pagination HTML
+		$pagination_html = $this->generate_pagination($page, $total_pages, $search, true);
+
+		echo json_encode(array(
+			'table' => $table_html,
+			'pagination' => $pagination_html
+		));
+	}
+
+	private function generate_pagination($current_page, $total_pages, $search = '', $ajax = false)
+	{
+		if ($total_pages <= 1) return '';
+
+		$query = !empty($search) ? '?search=' . urlencode($search) : '';
+		$pagination_html = '<div class="pagination">';
+
+		// First button
+		if ($current_page > 1) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn pagination-first" onclick="loadPage(1)">First</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir') . $query . '" class="pagination-btn pagination-first">First</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn pagination-first" style="opacity: 0.5; cursor: not-allowed;">First</span>';
+		}
+
+		// Previous button
+		if ($current_page > 1) {
+			$prev_page = $current_page - 1;
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn" onclick="loadPage(' . $prev_page . ')">Previous</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/' . $prev_page . $query) . '" class="pagination-btn">Previous</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn" style="opacity: 0.5; cursor: not-allowed;">Previous</span>';
+		}
+
+		// Page numbers
+		$start = max(1, $current_page - 2);
+		$end = min($total_pages, $current_page + 2);
+
+		if ($start > 1) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-link" onclick="loadPage(1)">1</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir' . $query) . '" class="pagination-link">1</a>';
+			}
+			if ($start > 2) {
+				$pagination_html .= '<span class="pagination-link" style="cursor: default; background: transparent; border: none; color: #999;">...</span>';
+			}
+		}
+
+		for ($i = $start; $i <= $end; $i++) {
+			if ($i == $current_page) {
+				$pagination_html .= '<span class="pagination-link active">' . $i . '</span>';
+			} else {
+				if ($ajax) {
+					$pagination_html .= '<a class="pagination-link" onclick="loadPage(' . $i . ')">' . $i . '</a>';
+				} else {
+					$pagination_html .= '<a href="' . site_url('Kasir/' . ($i == 1 ? '' : $i) . $query) . '" class="pagination-link">' . $i . '</a>';
+				}
+			}
+		}
+
+		if ($end < $total_pages) {
+			if ($end < $total_pages - 1) {
+				$pagination_html .= '<span class="pagination-link" style="cursor: default; background: transparent; border: none; color: #999;">...</span>';
+			}
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-link" onclick="loadPage(' . $total_pages . ')">' . $total_pages . '</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/' . $total_pages . $query) . '" class="pagination-link">' . $total_pages . '</a>';
+			}
+		}
+
+		// Next button
+		if ($current_page < $total_pages) {
+			$next_page = $current_page + 1;
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn" onclick="loadPage(' . $next_page . ')">Next</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/' . $next_page . $query) . '" class="pagination-btn">Next</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn" style="opacity: 0.5; cursor: not-allowed;">Next</span>';
+		}
+
+		// Last button
+		if ($current_page < $total_pages) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn pagination-last" onclick="loadPage(' . $total_pages . ')">Last</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/' . $total_pages . $query) . '" class="pagination-btn pagination-last">Last</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn pagination-last" style="opacity: 0.5; cursor: not-allowed;">Last</span>';
+		}
+
+		$pagination_html .= '</div>';
+		return $pagination_html;
+	}
+
 	//Pembayaran
 	function pembayaran()
 	{
+		$this->load->library('pagination');
 		$segment = $this->uri->segment(3);
-		if ($segment == 'dp') {
-			$this->db->select('*');
-			$this->db->from('costomer');
-			$this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
-			$this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
-			$this->db->where('transaksi.trans_status', 'Pelunasan');
-			$custom = $this->db->get();
-		} elseif ($segment == 'lunas') {
-			$this->db->select('*');
-			$this->db->from('costomer');
-			$this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
-			$this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
-			$this->db->where('transaksi.trans_status', 'Lunas');
-			$custom = $this->db->get();
-		} elseif ($segment == 'return') {
-			$this->db->select('*');
-			$this->db->from('costomer');
-			$this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
-			$this->db->join('transaksi_detail','transaksi.trans_kode=transaksi_detail.trans_kode');
-			$this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
-			$this->db->where('transaksi_detail.dtl_jenis_bayar', 'RETURN');
-			$custom = $this->db->get();
-		} else {
-			$custom = $this->M_kasir->GetCustom();
+		$search = $this->input->get('search');
+		$per_page = 25;
+		$total_rows = $this->M_kasir->GetPembayaranCount($segment, $search);
+		$total_pages = ceil($total_rows / $per_page);
+		$current_page = ($this->uri->segment(4)) ? (int)$this->uri->segment(4) : 1;
+		$offset = ($current_page - 1) * $per_page;
+
+		$custom = $this->M_kasir->GetPembayaran($segment, $per_page, $offset, $search);
+		if ($custom === false) {
+			$custom = array();
 		}
+
+		// Generate pagination HTML with AJAX handlers
+		$pagination = $this->generate_pagination_pembayaran($current_page, $total_pages, $segment, $search, true);
+
 		$data = array(
 			'title' 	=> 'Pembayaran',
 			'custom'	=> $custom,
-			'no'		=> $segment,
+			'pagination' => $pagination,
+			'no'		=> $offset,
 			'lap_bayar' => $this->M_kasir->lap_bayar(),
 			'role'		=> 'kasir',
 			'filter'	=> $segment
-			 );
+		);
 		$this->load->view('Kasir/pembayaran',$data);
+	}
+
+	public function pembayaran_ajax()
+	{
+		$filter = $this->input->post('filter');
+		$search = $this->input->post('search');
+		$page = $this->input->post('page') ? (int)$this->input->post('page') : 1;
+		$per_page = 25;
+		$offset = ($page - 1) * $per_page;
+
+		$total_rows = $this->M_kasir->GetPembayaranCount($filter, $search);
+		$total_pages = ceil($total_rows / $per_page);
+
+		$custom = $this->M_kasir->GetPembayaran($filter, $per_page, $offset, $search);
+
+		// Generate table rows HTML
+		$table_html = '';
+		$no_urut = $offset + 1;
+		foreach ($custom->result_array() as $row) {
+			$table_html .= '<tr class="cursor-pointer zoom-in" onclick="window.location=\'' . site_url('Kasir/cari/'.$row['trans_kode']) . '\'">';
+			$table_html .= '<td class="text-center border-b">' . $no_urut++ . '</td>';
+			$table_html .= '<td class="text-center border-b">' . $row['cos_kode'] . '</td>';
+			$table_html .= '<td class="border-b">';
+			$table_html .= '<div class="font-medium whitespace-no-wrap">' . $row['cos_nama'] . '</div>';
+			$table_html .= '<div class="text-gray-600 text-xs whitespace-no-wrap">STATUS : ' . $row['trans_status'] . '</div>';
+			$table_html .= '</td>';
+			$table_html .= '<td class="text-center border-b">' . (isset($row['cos_model']) ? $row['cos_model'] : '-') . '</td>';
+			$table_html .= '<td class="text-center border-b">' . (isset($row['cos_status']) ? $row['cos_status'] : '-') . '</td>';
+			$table_html .= '<td class="border-b">';
+			$table_html .= '<div class="font-medium whitespace-no-wrap">' . date('d-m-Y', strtotime($row['cos_tanggal'])) . '</div>';
+			$table_html .= '<div class="text-gray-600 text-xs whitespace-no-wrap">JAM : ' . $row['cos_jam'] . '</div>';
+			$table_html .= '</td>';
+			$table_html .= '</tr>';
+		}
+
+		// Generate pagination HTML
+		$pagination_html = $this->generate_pagination_pembayaran($page, $total_pages, $filter, $search, true, true);
+
+		echo json_encode(array(
+			'table' => $table_html,
+			'pagination' => $pagination_html
+		));
+	}
+
+	private function generate_pagination_pembayaran($current_page, $total_pages, $filter = '', $search = '', $ajax = false, $ajax_call = false)
+	{
+		if ($total_pages <= 1) return '';
+
+		$query_params = '';
+		if (!empty($filter)) $query_params .= '/' . $filter;
+		if (!empty($search)) $query_params .= '?search=' . urlencode($search);
+
+		$pagination_html = '<div class="pagination">';
+
+		// First button
+		if ($current_page > 1) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn pagination-first" onclick="loadPagePembayaran(1)">First</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . $query_params) . '" class="pagination-btn pagination-first">First</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn pagination-first" style="opacity: 0.5; cursor: not-allowed;">First</span>';
+		}
+
+		// Previous button
+		if ($current_page > 1) {
+			$prev_page = $current_page - 1;
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn" onclick="loadPagePembayaran(' . $prev_page . ')">Previous</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . '/' . $prev_page . $query_params) . '" class="pagination-btn">Previous</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn" style="opacity: 0.5; cursor: not-allowed;">Previous</span>';
+		}
+
+		// Page numbers
+		$start = max(1, $current_page - 2);
+		$end = min($total_pages, $current_page + 2);
+
+		if ($start > 1) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-link" onclick="loadPagePembayaran(1)">1</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . $query_params) . '" class="pagination-link">1</a>';
+			}
+			if ($start > 2) {
+				$pagination_html .= '<span class="pagination-link" style="cursor: default; background: transparent; border: none; color: #999;">...</span>';
+			}
+		}
+
+		for ($i = $start; $i <= $end; $i++) {
+			if ($i == $current_page) {
+				$pagination_html .= '<span class="pagination-link active">' . $i . '</span>';
+			} else {
+				if ($ajax) {
+					$pagination_html .= '<a class="pagination-link" onclick="loadPagePembayaran(' . $i . ')">' . $i . '</a>';
+				} else {
+					$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . '/' . ($i == 1 ? '' : $i) . $query_params) . '" class="pagination-link">' . $i . '</a>';
+				}
+			}
+		}
+
+		if ($end < $total_pages) {
+			if ($end < $total_pages - 1) {
+				$pagination_html .= '<span class="pagination-link" style="cursor: default; background: transparent; border: none; color: #999;">...</span>';
+			}
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-link" onclick="loadPagePembayaran(' . $total_pages . ')">' . $total_pages . '</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . '/' . $total_pages . $query_params) . '" class="pagination-link">' . $total_pages . '</a>';
+			}
+		}
+
+		// Next button
+		if ($current_page < $total_pages) {
+			$next_page = $current_page + 1;
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn" onclick="loadPagePembayaran(' . $next_page . ')">Next</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . '/' . $next_page . $query_params) . '" class="pagination-btn">Next</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn" style="opacity: 0.5; cursor: not-allowed;">Next</span>';
+		}
+
+		// Last button
+		if ($current_page < $total_pages) {
+			if ($ajax) {
+				$pagination_html .= '<a class="pagination-btn pagination-last" onclick="loadPagePembayaran(' . $total_pages . ')">Last</a>';
+			} else {
+				$pagination_html .= '<a href="' . site_url('Kasir/pembayaran' . ($filter ? '/'.$filter : '') . '/' . $total_pages . $query_params) . '" class="pagination-btn pagination-last">Last</a>';
+			}
+		} else {
+			$pagination_html .= '<span class="pagination-btn pagination-last" style="opacity: 0.5; cursor: not-allowed;">Last</span>';
+		}
+
+		$pagination_html .= '</div>';
+		return $pagination_html;
 	}
 	function cari()
 	{
@@ -522,6 +824,130 @@ class Kasir extends CI_Controller {
 		);
 	}
 
+	/**
+	 * AJAX endpoint for DataTables server-side processing
+	 * Handles pagination, sorting, and searching for customer list
+	 */
+	public function get_customers_ajax()
+	{
+		header('Content-Type: application/json');
+		
+		// Get DataTables parameters
+		$draw = intval($this->input->post('draw'));
+		$start = intval($this->input->post('start'));
+		$length = intval($this->input->post('length'));
+		$search = $this->input->post('search');
+		$search_value = isset($search['value']) ? $search['value'] : '';
+
+		// Get sorting parameters
+		$order = $this->input->post('order');
+		$order_column = 0;
+		$order_dir = 'asc';
+		if (!empty($order) && is_array($order)) {
+			$order_column = intval($order[0]['column']);
+			$order_dir = strtoupper($order[0]['dir']) === 'DESC' ? 'DESC' : 'ASC';
+		}
+
+		// Map column index to database field
+		$columns = array(
+			0 => 'costomer.id_costomer',  // NO
+			1 => 'transaksi.trans_kode',   // INVOICE
+			2 => 'costomer.cos_nama',      // CUSTOMER NAME
+			3 => 'costomer.cos_alamat',    // ADDRESS
+			4 => 'costomer.cos_hp',        // PHONE
+			5 => 'costomer.cos_tanggal',   // DATE
+			6 => 'transaksi.trans_kode'    // ACTIONS
+		);
+		$order_by = isset($columns[$order_column]) ? $columns[$order_column] : 'costomer.id_costomer';
+
+		// Get total records count (without search)
+		$total_records = $this->M_kasir->GetCustomCount();
+
+		// Get filtered records count and data
+		$this->db->select('costomer.id_costomer, costomer.cos_kode, costomer.cos_nama, costomer.cos_alamat, costomer.cos_hp, costomer.cos_tanggal, costomer.cos_jam, transaksi.trans_kode, transaksi.trans_status');
+		$this->db->from('costomer');
+		$this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode', 'inner');
+		$this->db->join('karyawan', 'transaksi.kry_kode=karyawan.kry_kode', 'inner');
+		$this->db->where('transaksi.trans_status !=', 'Lunas');
+
+		// Apply search filter if provided
+		if (!empty($search_value)) {
+			$this->db->group_start();
+			$this->db->like('costomer.cos_nama', $search_value);
+			$this->db->or_like('transaksi.trans_kode', $search_value);
+			$this->db->or_like('costomer.cos_alamat', $search_value);
+			$this->db->or_like('costomer.cos_hp', $search_value);
+			$this->db->group_end();
+		}
+
+		// Count filtered records before pagination
+		$count_query = $this->db->get_compiled_select();
+		$this->db->reset_query();
+		
+		$this->db->select('COUNT(*) as total', false);
+		$this->db->from('costomer');
+		$this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode', 'inner');
+		$this->db->join('karyawan', 'transaksi.kry_kode=karyawan.kry_kode', 'inner');
+		$this->db->where('transaksi.trans_status !=', 'Lunas');
+		
+		if (!empty($search_value)) {
+			$this->db->group_start();
+			$this->db->like('costomer.cos_nama', $search_value);
+			$this->db->or_like('transaksi.trans_kode', $search_value);
+			$this->db->or_like('costomer.cos_alamat', $search_value);
+			$this->db->or_like('costomer.cos_hp', $search_value);
+			$this->db->group_end();
+		}
+		
+		$count_result = $this->db->get()->row();
+		$filtered_records = $count_result->total ?? 0;
+
+		// Get paginated data
+		$this->db->select('costomer.id_costomer, costomer.cos_kode, costomer.cos_nama, costomer.cos_alamat, costomer.cos_hp, costomer.cos_tanggal, costomer.cos_jam, transaksi.trans_kode, transaksi.trans_status');
+		$this->db->from('costomer');
+		$this->db->join('transaksi', 'costomer.id_costomer=transaksi.cos_kode', 'inner');
+		$this->db->join('karyawan', 'transaksi.kry_kode=karyawan.kry_kode', 'inner');
+		$this->db->where('transaksi.trans_status !=', 'Lunas');
+		
+		if (!empty($search_value)) {
+			$this->db->group_start();
+			$this->db->like('costomer.cos_nama', $search_value);
+			$this->db->or_like('transaksi.trans_kode', $search_value);
+			$this->db->or_like('costomer.cos_alamat', $search_value);
+			$this->db->or_like('costomer.cos_hp', $search_value);
+			$this->db->group_end();
+		}
+		
+		$this->db->order_by($order_by, $order_dir);
+		$this->db->limit($length, $start);
+		$query = $this->db->get();
+		$data = $query->result_array();
+
+		// Format response data
+		$formatted_data = array();
+		foreach ($data as $row) {
+			$formatted_data[] = array(
+				'cos_kode' => $row['cos_kode'],
+				'cos_nama' => $row['cos_nama'],
+				'cos_alamat' => $row['cos_alamat'],
+				'cos_hp' => $row['cos_hp'],
+				'cos_tanggal' => $row['cos_tanggal'],
+				'cos_jam' => $row['cos_jam'],
+				'trans_status' => $row['trans_status'],
+				'trans_kode' => $row['trans_kode']
+			);
+		}
+
+		// Return DataTables-formatted response
+		$response = array(
+			'draw' => $draw,
+			'recordsTotal' => $total_records,
+			'recordsFiltered' => $filtered_records,
+			'data' => $formatted_data
+		);
+
+		echo json_encode($response);
+	}
 
 }
 

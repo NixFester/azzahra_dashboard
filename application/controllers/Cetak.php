@@ -349,6 +349,108 @@ class Cetak extends CI_Controller {
         $pdf->Output('KWT_RETURN'.date('Y-m-d H:i:s').'.pdf','I');
 
 }
+	function print_3()
+	{
+		$this->load->library('pdf');
+        $kode = $this->uri->segment(3);
+
+        $pdf = new FPDF('P','mm',array(80,200)); // Thermal receipt width 80mm
+        $pdf->setMargins(2,2,2);
+        $pdf->SetAutoPageBreak(true,2);
+
+        $pdf->AddPage();
+
+        $pdf->setTitle('Thermal Receipt');
+
+        // Header
+        $pdf->SetFont('Courier','',8);
+        $pdf->Cell(76,4,'AUTHORIZED MULTIBRAND SERVICE CENTER',0,1,'C');
+        $pdf->Cell(76,4,'AZZAHRA COMPUTER',0,1,'C');
+        $pdf->Cell(76,3,'Telp: 0823-340909',0,1,'C');
+        $pdf->Cell(76,3,'WA: 0859-4200-1720',0,1,'C');
+
+        // Separator
+        $pdf->Cell(76,2,'=======================================',0,1,'C');
+
+        // Title
+        $pdf->SetFont('Courier','B',10);
+        $pdf->Cell(76,5,'KWITANSI PEMBAYARAN',0,1,'C');
+        $pdf->SetFont('Courier','',8);
+
+        // Separator
+        $pdf->Cell(76,2,'=======================================',0,1,'C');
+
+        $customer = $this->M_cetak->trans_reurn($kode)->row_array();
+        $bayar 	  = $this->M_cetak->bayar($kode)->row_array();
+
+        // Customer Info
+        $pdf->Cell(76,4,'Invoice: '.$customer['cos_kode'],0,1,'L');
+        $pdf->Cell(76,4,'Customer: '.$customer['cos_nama'],0,1,'L');
+        $pdf->Cell(76,4,'HP: '.$customer['cos_hp'],0,1,'L');
+        $pdf->Cell(76,4,'Tanggal: '.date('d-m-Y H:i:s'),0,1,'L');
+
+        // Separator
+        $pdf->Cell(76,2,'----------------------------------------',0,1,'C');
+
+        // Payment Details
+        $pdf->Cell(76,4,'PEMBAYARAN',0,1,'C');
+        $pdf->Cell(76,2,'----------------------------------------',0,1,'C');
+
+        $pdf->Cell(76,4,'Tanggal: '.date('d-m-Y',strtotime($bayar['dtl_tanggal'])),0,1,'L');
+        $pdf->Cell(76,4,'Status: '.$bayar['dtl_status'],0,1,'L');
+        $pdf->Cell(76,4,'Jenis: '.$bayar['dtl_jenis_bayar'],0,1,'L');
+        if($bayar['dtl_bank']) {
+            $pdf->Cell(76,4,'Bank: '.$bayar['dtl_bank'],0,1,'L');
+        }
+        $pdf->Cell(76,4,'Total: Rp.'.number_format($bayar['dtl_jml_bayar'], 0),0,1,'L');
+
+        // Separator
+        $pdf->Cell(76,2,'----------------------------------------',0,1,'C');
+
+        // Service Details
+        $pdf->Cell(76,4,'RINCIAN LAYANAN',0,1,'C');
+        $pdf->Cell(76,2,'----------------------------------------',0,1,'C');
+
+        $barang = $this->M_cetak->barang($kode)->result_array();
+        $no = 1;
+        foreach ($barang as $row ) {
+            $pdf->Cell(76,4,$no.'. '.$row['tdkn_nama'],0,1,'L');
+            $pdf->Cell(76,4,'   Rp.'.number_format($row['tdkn_subtot'], 0),0,1,'L');
+            $no++;
+        }
+
+        // Separator
+        $pdf->Cell(76,2,'----------------------------------------',0,1,'C');
+
+        // Total
+        $pdf->SetFont('Courier','B',9);
+        $pdf->Cell(76,5,'TOTAL: Rp.'.number_format($customer['trans_total'], 0),0,1,'L');
+
+        // Separator
+        $pdf->Cell(76,2,'=======================================',0,1,'C');
+
+        // Footer
+        $pdf->SetFont('Courier','',7);
+        $pdf->Cell(76,3,'Terima Kasih Atas Kunjungan Anda',0,1,'C');
+        $pdf->Cell(76,3,'Barang yang sudah dibeli tidak dapat',0,1,'C');
+        $pdf->Cell(76,3,'ditukar/dikembalikan',0,1,'C');
+        $pdf->Cell(76,3,'Authorized Service Center',0,1,'C');
+		$pdf->Cell(76,3,'Scan qr untuk kontak whatsapp Azzahra Computer',0,1,'C');
+
+		// QR Code Image
+		$qr_image = './assets/image/qrwaaz.jpg';
+		if (file_exists($qr_image)) {
+			$y_before = $pdf->GetY(); // current Y
+			$pdf->Image($qr_image, 18, $y_before, 40, 40);
+
+			// move cursor BELOW the image
+			$pdf->SetY($y_before + 40);
+		}
+
+		
+
+        $pdf->Output('THERMAL_RECEIPT_'.date('Y-m-d_H-i-s').'.pdf','I');
+	}
 
 function print_tts()
 {

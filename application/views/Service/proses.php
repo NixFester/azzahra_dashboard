@@ -531,9 +531,23 @@ function prepareFormData(eventOrForm) {
 			tindakan.push(cells[1].textContent.trim() || 'Tindakan');
 			qty.push(cells[2].textContent.trim() || '1');
 			ket.push(cells[3].textContent.trim());
-			// Parse biaya: remove "Rp" and commas, keep numbers
-			const biayaText = cells[4].textContent.trim();
-			const biayaValue = parseInt(biayaText.replace(/[^0-9]/g, '')) || 0;
+			
+			// Get biaya from the editable cell
+			const biayaCell = cells[4];
+			const isManuallyEdited = biayaCell.getAttribute('data-manual-biaya') === '1';
+			let biayaValue;
+			
+			if (isManuallyEdited) {
+				// If manually edited, use the current value as-is (remove formatting and parse)
+				const biayaText = biayaCell.textContent.trim();
+				biayaValue = parseInt(biayaText.replace(/[^0-9]/g, '')) || 0;
+			} else {
+				// If not manually edited, reconstruct from original calculation
+				// Parse biaya: remove "Rp" and commas, keep numbers
+				const biayaText = biayaCell.textContent.trim();
+				biayaValue = parseInt(biayaText.replace(/[^0-9]/g, '')) || 0;
+			}
+			
 			subtot.push(biayaValue);
 			const invId = row.getAttribute('data-inventory-id') || '';
 			inventory_ids.push(invId);
@@ -673,7 +687,7 @@ document.getElementById('tbl-add').addEventListener('click', function() {
         <td class="px-3 py-2 text-sm text-gray-900">${escapeHtml(tindakan)}</td>
         <td class="px-3 py-2 text-sm text-gray-900">${qty}</td>
         <td class="px-3 py-2 text-sm text-gray-600">${escapeHtml(area)}</td>
-        <td class="px-3 py-2 text-sm text-gray-900">Rp${biaya.toLocaleString()}</td>
+        <td class="px-3 py-2 text-sm text-gray-900 biaya-cell" contenteditable="true" data-original-biaya="${biaya}" data-manual-biaya="0">Rp${biaya.toLocaleString()}</td>
         <td class="px-3 py-2 text-center">
             <button type="button" class="delete-row-btn inline-flex items-center px-2 py-1 bg-red-500 hover:bg-red-600 text-white text-xs font-medium rounded transition-colors duration-200" title="Hapus tindakan">
                 <i data-feather="trash-2" class="w-3 h-3"></i>
@@ -724,6 +738,50 @@ document.getElementById('tbl-add').addEventListener('click', function() {
 
     deleteBtn.addEventListener('click', deleteHandler);
     deleteCardBtn.addEventListener('click', deleteHandler);
+
+    // Add event listeners for biaya cell editing
+    const biayaCell = row.querySelector('.biaya-cell');
+    if (biayaCell) {
+        // Add styling for editable cell
+        biayaCell.style.cursor = 'pointer';
+        biayaCell.style.borderRadius = '4px';
+        
+        // Prevent default contenteditable behavior and custom input handling
+        biayaCell.addEventListener('beforeinput', function(e) {
+            // Only allow numbers and backspace
+            if (!/^[0-9]$/.test(e.data) && e.inputType !== 'deleteContentBackward' && e.inputType !== 'deleteContentForward') {
+                e.preventDefault();
+            }
+        });
+
+        biayaCell.addEventListener('blur', function() {
+            // When user finishes editing, format and store value
+            const text = this.textContent.trim();
+            const numericVal = text.replace(/[^0-9]/g, '');
+            const biayaNum = parseInt(numericVal) || 0;
+            
+            this.textContent = biayaNum > 0 ? 'Rp' + biayaNum.toLocaleString() : 'Rp0';
+            this.setAttribute('data-manual-biaya', biayaNum > 0 ? '1' : '0');
+            this.style.backgroundColor = '';
+        });
+
+        biayaCell.addEventListener('focus', function() {
+            // Remove formatting when user clicks to edit
+            const text = this.textContent.trim();
+            const numericVal = text.replace(/[^0-9]/g, '');
+            this.textContent = numericVal;
+            this.style.textAlign = 'left';
+            this.style.backgroundColor = '#FEF3C7';
+        });
+
+        biayaCell.addEventListener('keydown', function(e) {
+            // Handle Enter key to confirm edit
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.blur();
+            }
+        });
+    }
 
     // Hide empty states
     const emptyState = document.getElementById('empty-state');

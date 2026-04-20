@@ -32,6 +32,27 @@
             </div>
         </div>
     </div>
+   <p class="mt-2 mb-5 flex flex-wrap items-center gap-2">
+    <span>Klik icon</span>
+
+    <span class="w-5 h-5 flex items-center justify-center bg-theme-6 text-white">
+        <i data-feather="printer" class="w-4 h-4"></i>
+    </span>
+
+    <span>untuk cetak nota pembayaran dan icon</span>
+
+    <span class="w-5 h-5 flex items-center justify-center bg-blue-500 text-white">
+        <i data-feather="printer" class="w-4 h-4"></i>
+    </span>
+
+    <span>untuk cetak thermal print nota pembayaran, dan icon</span>
+
+    <span class="w-5 h-5 flex items-center justify-center bg-green-500 text-white">
+        <i data-feather="message-circle" class="w-4 h-4"></i>
+    </span>
+
+    <span>untuk mengirim pesan WhatsApp kepada customer terkait pembayaran ini.</span>
+</p>
     <div class="pos intro-y grid grid-cols-12 gap-5 mt-5">
         <!-- BEGIN: Item List -->
         <div class="intro-y col-span-12 lg:col-span-8">
@@ -84,6 +105,9 @@
                                 <td class="text-center border-b">
                                     <div class="flex sm:justify-center items-center">
                                         <a href="<?= site_url('Cetak/print_1/'.$row['dtl_kode'].'?preview=1')?>" target="_blank" class="button px-2 mr-1 mb-2 bg-theme-6 text-white">
+                                        <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
+                                    </a>
+                                        <a href="<?= site_url('Cetak/print_3/'.$trans['trans_kode'])?>" target="_blank" class="button px-2 mr-1 mb-2 bg-blue-500 text-white">
                                         <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
                                     </a>
                                     <a role="button" onclick="sendToWA(

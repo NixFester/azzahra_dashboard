@@ -70,7 +70,7 @@ class PHPExcel_Shared_Drawing
      * @param     PHPExcel_Style_Font $pDefaultFont    Default font of the workbook
      * @return     int            Value in cell dimension
      */
-    public static function pixelsToCellDimension($pValue = 0, PHPExcel_Style_Font $pDefaultFont)
+    public static function pixelsToCellDimension(int $pValue, PHPExcel_Style_Font $pDefaultFont): int
     {
         // Font name and size
         $name = $pDefaultFont->getName();
@@ -85,7 +85,7 @@ class PHPExcel_Shared_Drawing
             $colWidth = $pValue * 11 * PHPExcel_Shared_Font::$defaultColumnWidths['Calibri'][11]['width'] / PHPExcel_Shared_Font::$defaultColumnWidths['Calibri'][11]['px'] / $size;
         }
 
-        return $colWidth;
+        return (int) $colWidth;
     }
 
     /**
@@ -95,7 +95,7 @@ class PHPExcel_Shared_Drawing
      * @param     PHPExcel_Style_Font $pDefaultFont    Default font of the workbook
      * @return     int        Value in pixels
      */
-    public static function cellDimensionToPixels($pValue = 0, PHPExcel_Style_Font $pDefaultFont)
+    public static function cellDimensionToPixels(float $pValue, PHPExcel_Style_Font $pDefaultFont): int
     {
         // Font name and size
         $name = $pDefaultFont->getName();
