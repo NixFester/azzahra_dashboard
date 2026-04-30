@@ -124,6 +124,17 @@ class M_customer extends CI_Model {
 		$this->db->where('id_costomer', $kode);
 		return $this->db->delete('costomer');
 	}
+	function konfirmasi2($kode)
+	{
+
+		$this->db->select('*');
+	    $this->db->from('costomer');
+	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
+	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode', 'left');
+	    $this->db->where('transaksi.cos_kode', $kode);
+	    $query = $this->db->get();
+	    return $query;
+	}
 	function konfirmasi($kode)
 	{
 		$this->db->select('*');
@@ -139,10 +150,23 @@ class M_customer extends CI_Model {
 		$this->db->where('trans_kode', $kode);
 		return $this->db->get('tindakan');
 	}
+	function GetTransCode($kode)
+	{
+		
+		$this->db->select('*');
+	    $this->db->from('transaksi');
+	    $this->db->where('cos_kode', $kode);
+		return $this->db->get();
+	}
 	function histori($kode)
 	{
 		$this->db->where('trans_kode', $kode);
 		return $this->db->get('transaksi_detail');
+	}
+	function histori_transaksi2($kode)
+	{
+		$this->db->where('cos_kode', $kode);
+		return $this->db->get('transaksi');
 	}
 	function histori_transaksi($kode)
 	{

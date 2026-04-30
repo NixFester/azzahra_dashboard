@@ -395,7 +395,7 @@
             ?>
             <tr>
                 <td style="text-align:center"><?php echo $row['tdkn_qty'] ?? 1; ?></td>
-                <td><?php echo $row['tdkn_nama']; ?></td>
+                <td><?php echo $row['tdkn_nama']; ?> : <?php echo $row['tdkn_ket']; ?></td>
                 <td style="text-align:right"><?php echo number_format($row['tdkn_subtot'], 0, ',', '.'); ?></td>
                 <td style="text-align:right"><?php echo number_format($subtotal, 0, ',', '.'); ?></td>
             </tr>

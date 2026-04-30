@@ -55,3 +55,4 @@ $route['translate_uri_dashes'] = FALSE;
 $route['api_transaksi/tambah'] = 'api_transaksi/tambah';
 $route['Order/approve_order'] = 'Order/approve_order';
 $route['Order/inform_unavailable'] = 'Order/inform_unavailable';
+$route['user/(:any)'] = 'User/detail/$1';

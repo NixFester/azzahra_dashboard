@@ -435,19 +435,59 @@ class Cetak extends CI_Controller {
         $pdf->Cell(76,3,'Barang yang sudah dibeli tidak dapat',0,1,'C');
         $pdf->Cell(76,3,'ditukar/dikembalikan',0,1,'C');
         $pdf->Cell(76,3,'Authorized Service Center',0,1,'C');
-		$pdf->Cell(76,3,'Scan qr untuk kontak whatsapp Azzahra Computer',0,1,'C');
+		$pdf->Cell(76,3,'Invoice QR Code:',0,1,'C');
 
-		// QR Code Image
-		$qr_image = './assets/image/qrwaaz.jpg';
-		if (file_exists($qr_image)) {
-			$y_before = $pdf->GetY(); // current Y
-			$pdf->Image($qr_image, 18, $y_before, 40, 40);
-
-			// move cursor BELOW the image
-			$pdf->SetY($y_before + 40);
-		}
-
+		// Generate dynamic QR Code from API using cURL
+		$customer_id = isset($customer['id_costomer']) ? $customer['id_costomer'] : $customer['cos_kode'];
+		$qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data='. "https://dashboard.azzahracomputertegal.com/user/" . urlencode($customer_id);
 		
+		$temp_qr_file = sys_get_temp_dir() . '/qr_' . time() . '.png';
+		$qr_data = null;
+		$qr_generated = false;
+		
+		// Use cURL to fetch QR code
+		if (function_exists('curl_init')) {
+			$ch = curl_init($qr_url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+			$qr_data = curl_exec($ch);
+			$curl_error = curl_error($ch);
+			$curl_info = curl_getinfo($ch);
+			curl_close($ch);
+			
+			// Log the attempt
+			log_message('info', 'QR Code cURL attempt - HTTP Status: ' . $curl_info['http_code'] . ', Error: ' . $curl_error);
+			
+			if ($qr_data !== false && !empty($qr_data)) {
+				@file_put_contents($temp_qr_file, $qr_data);
+				if (file_exists($temp_qr_file) && filesize($temp_qr_file) > 0) {
+					$y_before = $pdf->GetY();
+					$pdf->Image($temp_qr_file, 18, $y_before, 35, 35);
+					$pdf->SetY($y_before + 35);
+					@unlink($temp_qr_file);
+					$qr_generated = true;
+					log_message('info', 'QR Code generated successfully from API');
+				}
+			}
+		} else {
+			log_message('error', 'cURL is not available on this server');
+		}
+		
+		// Fallback to static QR code if API fails
+		if (!$qr_generated) {
+			$qr_image = FCPATH . 'assets/image/qrwaaz.jpg';
+			log_message('info', 'Using fallback QR code from: ' . $qr_image . ', exists: ' . (file_exists($qr_image) ? 'yes' : 'no'));
+			if (file_exists($qr_image)) {
+				$y_before = $pdf->GetY();
+				$pdf->Image($qr_image, 18, $y_before, 35, 35);
+				$pdf->SetY($y_before + 35);
+			} else {
+				log_message('error', 'Fallback QR image not found at: ' . $qr_image);
+			}
+		}
 
         $pdf->Output('THERMAL_RECEIPT_'.date('Y-m-d_H-i-s').'.pdf','I');
 	}
