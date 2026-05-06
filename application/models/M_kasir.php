@@ -10,6 +10,7 @@ class M_kasir extends CI_Model {
 	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
 	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
 	    $this->db->where('transaksi.trans_status !=', 'Lunas');
+		$this->db->order_by('costomer.cos_tanggal', 'DESC');
 	    if (!empty($search)) {
 	        $this->db->group_start();
 	        $this->db->like('cos_nama', $search);
@@ -51,7 +52,7 @@ class M_kasir extends CI_Model {
 	    $this->db->from('costomer');
 	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
 	    $this->db->join('karyawan','transaksi.kry_kode=karyawan.kry_kode');
-	    
+	    $this->db->order_by('costomer.cos_tanggal', 'DESC');
 	    if ($filter == 'dp') {
 	        $this->db->where('transaksi.trans_status', 'Pelunasan');
 	    } elseif ($filter == 'lunas') {

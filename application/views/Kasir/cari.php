@@ -2,7 +2,9 @@
 <?php if (!isset($trans)) $trans = []; ?>
 <?php if (!isset($bayar)) $bayar = []; ?>
 <?php if (!isset($vocher)) $vocher = []; ?>
-<?php if (!isset($role)) $role = 'kasir'; ?>
+<?php if (!isset($role)) $role = 'cs'; ?>
+<?php // ensure role variable tells links to use Service routes ?>
+
 <div class="content">
     <div class="sukses" data-sukses="<?php echo $this->session->flashdata('sukses');?>"></div>
     <div class="gagal" data-gagal="<?php echo $this->session->flashdata('gagal');?>"></div>
@@ -21,7 +23,7 @@
                     <div class="dropdown-box__content box p-2">
                         <?php
                         foreach ($lap_bayar->result_array() as $lap) :?>
-                            <a href="<?= site_url('Kasir/cari/'.$lap['trans_kode'])?>" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> 
+                            <a href="<?= site_url('Service/cari/'.$lap['trans_kode'])?>" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> 
                                 <i data-feather="activity" class="w-4 h-4 mr-2"></i> 
                                 <span class="truncate"><?= $lap['cos_kode'];?> - <?= $lap['cos_nama'];?></span> 
                             </a>
@@ -32,7 +34,7 @@
             </div>
         </div>
     </div>
-   <p class="mt-2 mb-5 flex flex-wrap items-center gap-2">
+    <p class="mt-2 mb-5 flex flex-wrap items-center gap-2">
     <span>Klik icon</span>
 
     <span class="w-5 h-5 flex items-center justify-center bg-theme-6 text-white">
@@ -42,7 +44,7 @@
     <span>untuk cetak nota pembayaran dan icon</span>
 
     <span class="w-5 h-5 flex items-center justify-center bg-blue-500 text-white">
-        <i data-feather="printer" class="w-4 h-4"></i>
+        <i data-feather="file-text" class="w-4 h-4"></i>
     </span>
 
     <span>untuk cetak thermal print nota pembayaran, dan icon</span>
@@ -108,7 +110,7 @@
                                         <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
                                     </a>
                                         <a href="<?= site_url('Cetak/print_3/'.$trans['trans_kode'])?>" target="_blank" class="button px-2 mr-1 mb-2 bg-blue-500 text-white">
-                                        <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="printer" class="w-4 h-4"></i> </span>
+                                        <span class="w-5 h-5 flex items-center justify-center"> <i data-feather="file-text" class="w-4 h-4"></i> </span>
                                     </a>
                                     <a role="button" onclick="sendToWA(
                                         '<?= $row['dtl_status'] ?>',
@@ -286,6 +288,11 @@
                             <button class="button w-32 text-white bg-theme-1 shadow-md ml-auto block" style="width: 500px;">Bayar Pelunasan</button>
                         </div>
                     </form>
+                    <div class="flex mt-3">
+                        <a href="<?= site_url('Cetak/print_4/'.$trans['trans_kode'])?>" target="_blank" class="button text-white bg-gray-600 shadow-md ml-auto block" style="width: 500px;">
+                            Print Thermal
+                        </a>
+                    </div>
                     
                 </div>
                 <div class="tab-content__pane" id="dp">
@@ -408,6 +415,11 @@
                                 <button type="submit" class="button w-32 text-white bg-theme-1 shadow-md ml-auto block" style="width: 500px;">Bayar DP</button>
                             </div>
                         </form>
+                        <div class="flex mt-3">
+                            <a href="<?= site_url('Cetak/print_5/'.$trans['trans_kode'])?>" target="_blank" class="button text-white bg-gray-600 shadow-md ml-auto block" style="width: 500px;">
+                                Print Thermal
+                            </a>
+                        </div>
                         
                     <?php } ?>
                     

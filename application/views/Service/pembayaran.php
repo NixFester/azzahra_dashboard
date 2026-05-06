@@ -259,7 +259,7 @@
                 { data: 4, orderable: true },
                 { data: 5, orderable: true }
             ],
-            order: [[0, 'asc']],
+            order: [[0, 'desc']],
             createdRow: function(row, data, dataIndex) {
                 // make entire row clickable using link in invoice column
                 $(row).addClass('cursor-pointer');

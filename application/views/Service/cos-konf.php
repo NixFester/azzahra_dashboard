@@ -556,7 +556,7 @@
                 searchable: false
             }
         ],
-        order: [[0, 'asc']], // Default order by NO
+        order: [[0, 'desc']], // Default order by NO
         drawCallback: function () {
             if (window.feather) feather.replace();
         }
