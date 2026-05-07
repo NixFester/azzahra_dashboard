@@ -349,103 +349,154 @@ class Cetak extends CI_Controller {
         $pdf->Output('KWT_RETURN'.date('Y-m-d H:i:s').'.pdf','I');
 
 }
-	function print_3()
+function print_3()
 {
     $this->load->library('pdf');
     $kode = $this->uri->segment(3);
 
-    $pdf = new FPDF('P','mm',array(80,200));
-    $pdf->setMargins(2,2,2);
-    $pdf->SetAutoPageBreak(true,2);
-
+    $pdf = new FPDF('P', 'mm', array(80, 200));
+    $pdf->setMargins(2, 2, 2);
+    $pdf->SetAutoPageBreak(true, 2);
     $pdf->AddPage();
     $pdf->setTitle('Thermal Receipt');
 
-    // Usable width = 80 - 2 - 2 = 76mm
-    $w = 76;
-    $lm = 2; // left margin
+    $w  = 76; // usable width = 80 - 2 - 2
+    $lm = 2;  // left margin
+    $wL = 30; // lebar kolom label (kiri)
+    $wR = 46; // lebar kolom value (kanan)
 
-    // Add Logo - centered using precise positioning like QR code
+    // ── Logo ──────────────────────────────────────────
     $logo_path = FCPATH . 'assets/image/logo-thermal.png';
     if (file_exists($logo_path)) {
-        $logo_width = 10; // Logo width in mm (smaller for thermal printer)
-        $logo_x = $lm + ($w - $logo_width) / 2; // Center horizontally
-        $y_logo = $pdf->GetY();
+        $logo_width = 14;
+        $logo_x     = $lm + ($w - $logo_width) / 2;
+        $y_logo     = $pdf->GetY() + 1;
         $pdf->Image($logo_path, $logo_x, $y_logo, $logo_width);
-        $pdf->SetY($y_logo + $logo_width - 2); // Space after logo
+        $pdf->SetY($y_logo + $logo_width + 1);
     }
 
-    // Header
-    $pdf->SetFont('Courier','',8);
+    // ── Header ────────────────────────────────────────
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 9);
+    $pdf->Cell($w, 4, 'AZZAHRA COMPUTER', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'Telp: 0823-340909  |  WA: 0859-4200-1720', 0, 1, 'C');
 
-    $pdf->Cell($w,4,'AUTHORIZED MULTIBRAND SERVICE CENTER',0,1,'C');
-    $pdf->Cell($w,4,'AZZAHRA COMPUTER',0,1,'C');
-    $pdf->Cell($w,3,'Telp: 0823-340909',0,1,'C');
-    $pdf->Cell($w,3,'WA: 0859-4200-1720',0,1,'C');
+    // ── Judul ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 10);
+    $pdf->Cell($w, 6, 'KWITANSI PEMBAYARAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
+    $pdf->Ln(1);
 
-    $pdf->Cell($w,2,'=======================================',0,1,'C');
-
-    $pdf->SetFont('Courier','B',10);
-    $pdf->Cell($w,5,'KWITANSI PEMBAYARAN',0,1,'C');
-    $pdf->SetFont('Courier','',8);
-
-    $pdf->Cell($w,2,'=======================================',0,1,'C');
-
+    // ── Data Customer ─────────────────────────────────
     $customer = $this->M_cetak->trans_reurn($kode)->row_array();
     $bayar    = $this->M_cetak->bayar($kode)->row_array();
 
-    $pdf->Cell($w,4,'Invoice: '.$customer['cos_kode'],0,1,'L');
-    $pdf->Cell($w,4,'Customer: '.$customer['cos_nama'],0,1,'L');
-    $pdf->Cell($w,4,'Tanggal: '.date('d-m-Y H:i:s'),0,1,'L');
+    $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Invoice',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['cos_kode'], 0, 1, 'L');
 
-    $pdf->Cell($w,2,'----------------------------------------',0,1,'C');
-    $pdf->Cell($w,4,'PEMBAYARAN',0,1,'C');
-    $pdf->Cell($w,2,'----------------------------------------',0,1,'C');
+    $pdf->Cell($wL, 4, 'Customer',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['cos_nama'], 0, 1, 'L');
 
-    $pdf->Cell($w,4,'Tanggal: '.date('d-m-Y',strtotime($bayar['dtl_tanggal'])),0,1,'L');
-    $pdf->Cell($w,4,'Status: '.$bayar['dtl_status'],0,1,'L');
-    $pdf->Cell($w,4,'Jenis: '.$bayar['dtl_jenis_bayar'],0,1,'L');
-    if($bayar['dtl_bank']) {
-        $pdf->Cell($w,4,'Bank: '.$bayar['dtl_bank'],0,1,'L');
+    $pdf->Cell($wL, 4, 'Tanggal',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y H:i:s'), 0, 1, 'L');
+
+    // ── Section Pembayaran ────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($w, 4, 'PEMBAYARAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
+
+    $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Tanggal',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y', strtotime($bayar['dtl_tanggal'])), 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Status',    0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_status'], 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Jenis',     0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_jenis_bayar'], 0, 1, 'L');
+
+    if (!empty($bayar['dtl_bank'])) {
+        $pdf->Cell($wL, 4, 'Bank',  0, 0, 'L');
+        $pdf->Cell(4,   4, ':',     0, 0, 'L');
+        $pdf->Cell($wR, 4, $bayar['dtl_bank'], 0, 1, 'L');
     }
-    $pdf->Cell($w,4,'Total: Rp.'.number_format($bayar['dtl_jml_bayar'], 0),0,1,'L');
 
-    $pdf->Cell($w,2,'----------------------------------------',0,1,'C');
-    $pdf->Cell($w,4,'RINCIAN LAYANAN',0,1,'C');
-    $pdf->Cell($w,2,'----------------------------------------',0,1,'C');
+    $pdf->Cell($wL, 4, 'Dibayar',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',         0, 0, 'L');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($wR, 4, 'Rp. ' . number_format($bayar['dtl_jml_bayar'], 0, ',', '.'), 0, 1, 'L');
+
+    // ── Section Rincian Layanan ───────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($w, 4, 'RINCIAN LAYANAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
 
     $barang = $this->M_cetak->barang($kode)->result_array();
     $no = 1;
+    $pdf->SetFont('Courier', '', 8);
     foreach ($barang as $row) {
-        $pdf->Cell($w,4,$no.'. '.$row['tdkn_nama'],0,1,'L');
-        $pdf->Cell($w,4,'   Rp.'.number_format($row['tdkn_subtot'], 0),0,1,'L');
+        $nama  = $no . '. ' . $row['tdkn_nama'];
+        $harga = 'Rp. ' . number_format($row['tdkn_subtot'], 0, ',', '.');
+        $pdf->Cell($wL + 10, 4, $nama,  0, 0, 'L');
+        $pdf->Cell($wR - 10, 4, $harga, 0, 1, 'R');
         $no++;
     }
 
-    $pdf->Cell($w,2,'----------------------------------------',0,1,'C');
+    // ── Total ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 9);
+    $pdf->Cell($wL + 10, 5, 'TOTAL', 0, 0, 'L');
+    $pdf->Cell($wR - 10, 5, 'Rp. ' . number_format($customer['trans_total'], 0, ',', '.'), 0, 1, 'R');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
 
-    $pdf->SetFont('Courier','B',9);
-    $pdf->Cell($w,5,'TOTAL: Rp.'.number_format($customer['trans_total'], 0),0,1,'L');
+    // ── Footer ────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'Terima Kasih Atas Kunjungan Anda', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'Barang yang sudah dibeli tidak dapat', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'ditukar/dikembalikan', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'Authorized Service Center', 0, 1, 'C');
 
-    $pdf->Cell($w,2,'=======================================',0,1,'C');
+    // ── QR Code ───────────────────────────────────────
+    $pdf->Ln(2);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, '- Invoice QR Code -', 0, 1, 'C');
 
-    $pdf->SetFont('Courier','',7);
-    $pdf->Cell($w,3,'Terima Kasih Atas Kunjungan Anda',0,1,'C');
-    $pdf->Cell($w,3,'Barang yang sudah dibeli tidak dapat',0,1,'C');
-    $pdf->Cell($w,3,'ditukar/dikembalikan',0,1,'C');
-    $pdf->Cell($w,3,'Authorized Service Center',0,1,'C');
-    $pdf->Cell($w,3,'Invoice QR Code:',0,1,'C');
-
-    // QR Code — use full usable width (60mm), centered within margins
-    $qr_size = 60; // wider QR for full use of 76mm area
-    $qr_x = $lm + ($w - $qr_size) / 2; // centers QR within usable width
+    $qr_size = 40;
+    $qr_x    = $lm + ($w - $qr_size) / 2;
 
     $customer_id = isset($customer['id_costomer']) ? $customer['id_costomer'] : $customer['cos_kode'];
     $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='
-            . urlencode("https://dashboard.azzahracomputertegal.com/user/" . $customer_id);
+            . urlencode('https://dashboard.azzahracomputertegal.com/user/' . $customer_id);
 
-    $temp_qr_file = sys_get_temp_dir() . '/qr_' . time() . '.png';
-    $qr_generated = false;
+    $temp_qr_file  = sys_get_temp_dir() . '/qr_' . time() . '.png';
+    $qr_generated  = false;
 
     if (function_exists('curl_init')) {
         $ch = curl_init($qr_url);
@@ -454,175 +505,217 @@ class Cetak extends CI_Controller {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $qr_data = curl_exec($ch);
-        $curl_error = curl_error($ch);
+        $qr_data   = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
         curl_close($ch);
-
-        log_message('info', 'QR Code cURL attempt - HTTP Status: ' . $curl_info['http_code'] . ', Error: ' . $curl_error);
 
         if ($qr_data !== false && !empty($qr_data)) {
             @file_put_contents($temp_qr_file, $qr_data);
             if (file_exists($temp_qr_file) && filesize($temp_qr_file) > 0) {
-                $y_before = $pdf->GetY() + 4;
+                $y_before = $pdf->GetY() + 2;
                 $pdf->Image($temp_qr_file, $qr_x, $y_before, $qr_size, $qr_size);
-                $pdf->SetY($y_before + $qr_size + 2);
+                $pdf->SetY($y_before + $qr_size + 3);
                 @unlink($temp_qr_file);
                 $qr_generated = true;
-                log_message('info', 'QR Code generated successfully from API');
             }
         }
-    } else {
-        log_message('error', 'cURL is not available on this server');
     }
 
     if (!$qr_generated) {
         $qr_image = FCPATH . 'assets/image/qrwaaz.jpg';
-        log_message('info', 'Using fallback QR code from: ' . $qr_image . ', exists: ' . (file_exists($qr_image) ? 'yes' : 'no'));
         if (file_exists($qr_image)) {
-            $y_before = $pdf->GetY();
+            $y_before = $pdf->GetY() + 2;
             $pdf->Image($qr_image, $qr_x, $y_before, $qr_size, $qr_size);
-            $pdf->SetY($y_before + $qr_size + 2);
-        } else {
-            log_message('error', 'Fallback QR image not found at: ' . $qr_image);
+            $pdf->SetY($y_before + $qr_size + 3);
         }
     }
 
-    $pdf->Output('THERMAL_RECEIPT_'.date('Y-m-d_H-i-s').'.pdf','I');
+    $pdf->SetFont('Courier', '', 6);
+    $pdf->Cell($w, 3, 'dashboard.azzahracomputertegal.com', 0, 1, 'C');
+
+    $pdf->Output('THERMAL_RECEIPT_' . date('Y-m-d_H-i-s') . '.pdf', 'I');
 }
 function print_4()
 {
-    // Thermal receipt for PELUNASAN - Safe version with null checks
     $this->load->library('pdf');
     $trans_kode = $this->uri->segment(3);
-    
+
     if (!$trans_kode) {
         show_error('Kode transaksi tidak ditemukan');
         return;
     }
 
-    // Get transaction data
     $trans = $this->db->get_where('transaksi', ['trans_kode' => $trans_kode])->row_array();
     if (!$trans) {
         show_error('Data transaksi tidak ditemukan');
         return;
     }
 
-    // Get customer data
     $customer = $this->db->get_where('costomer', ['id_costomer' => $trans['cos_kode']])->row_array();
     if (!$customer) {
         show_error('Data customer tidak ditemukan');
         return;
     }
 
-    // Get latest PELUNASAN payment, or any payment if PELUNASAN doesn't exist
     $this->db->where('trans_kode', $trans_kode);
     $this->db->where('dtl_status', 'PELUNASAN');
     $this->db->order_by('dtl_kode', 'DESC');
     $this->db->limit(1);
     $bayar = $this->db->get('transaksi_detail')->row_array();
-    
-    // If no PELUNASAN found, get the latest payment record
+
     if (!$bayar) {
         $bayar = $this->M_cetak->bayar($trans_kode)->result_array();
         if (!empty($bayar)) {
-            $bayar = end($bayar); // Get last element
+            $bayar = end($bayar);
         } else {
-            // Create dummy payment data for printing purposes
-            $bayar = array(
-                'dtl_tanggal' => date('Y-m-d H:i:s'),
-                'dtl_status' => 'PELUNASAN',
-                'dtl_jenis_bayar' => '-',
-                'dtl_bank' => '',
-                'dtl_jml_bayar' => $trans['trans_total']
-            );
+            $bayar = [
+                'dtl_tanggal'    => date('Y-m-d H:i:s'),
+                'dtl_status'     => 'PELUNASAN',
+                'dtl_jenis_bayar'=> '-',
+                'dtl_bank'       => '',
+                'dtl_jml_bayar'  => $trans['trans_total']
+            ];
         }
     }
 
-    // Get service items
     $barang = $this->M_service->GetTindakanBy($trans_kode)->result_array();
 
-    // Create PDF
+    // ── Setup PDF ─────────────────────────────────────
     $pdf = new FPDF('P', 'mm', array(80, 200));
     $pdf->setMargins(2, 2, 2);
     $pdf->SetAutoPageBreak(true, 2);
     $pdf->AddPage();
     $pdf->setTitle('Thermal Receipt - Pelunasan');
 
-    $w = 76;
+    $w  = 76;
     $lm = 2;
+    $wL = 30;
+    $wR = 46;
 
-    // Add Logo - centered using precise positioning
+    // ── Logo ──────────────────────────────────────────
     $logo_path = FCPATH . 'assets/image/logo-thermal.png';
     if (file_exists($logo_path)) {
-        $logo_width = 10; // Logo width in mm (smaller for thermal printer)
-        $logo_x = $lm + ($w - $logo_width) / 2; // Center horizontally
-        $y_logo = $pdf->GetY();
+        $logo_width = 14;
+        $logo_x     = $lm + ($w - $logo_width) / 2;
+        $y_logo     = $pdf->GetY() + 1;
         $pdf->Image($logo_path, $logo_x, $y_logo, $logo_width);
-        $pdf->SetY($y_logo + $logo_width - 2); // Space after logo
+        $pdf->SetY($y_logo + $logo_width + 1);
     }
 
-    // Header
-    $pdf->SetFont('Courier', '', 8);
-    $pdf->Cell($w, 4, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    // ── Header ────────────────────────────────────────
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 9);
     $pdf->Cell($w, 4, 'AZZAHRA COMPUTER', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'Telp: 0823-340909', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'WA: 0859-4200-1720', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'Telp: 0823-340909  |  WA: 0859-4200-1720', 0, 1, 'C');
 
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
-
+    // ── Judul ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
     $pdf->SetFont('Courier', 'B', 10);
-    $pdf->Cell($w, 5, 'PELUNASAN', 0, 1, 'C');
+    $pdf->Cell($w, 6, 'PELUNASAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
+    $pdf->Ln(1);
+
+    // ── Data Customer ─────────────────────────────────
     $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Invoice',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['id_costomer'] ?? '', 0, 1, 'L');
 
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
+    $pdf->Cell($wL, 4, 'Customer', 0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['cos_nama'] ?? '', 0, 1, 'L');
 
-    // Customer Info
-    $pdf->Cell($w, 4, 'Invoice: ' . ($customer['id_costomer'] ?? ''), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Customer: ' . ($customer['cos_nama'] ?? ''), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Tanggal: ' . date('d-m-Y H:i:s'), 0, 1, 'L');
+    $pdf->Cell($wL, 4, 'Tanggal',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y H:i:s'), 0, 1, 'L');
 
+    // ── Section Pembayaran ────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
-    $pdf->Cell($w, 4, 'PEMBAYARAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($w, 4, 'PEMBAYARAN PELUNASAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
 
-    $pdf->Cell($w, 4, 'Tanggal: ' . date('d-m-Y', strtotime($bayar['dtl_tanggal'] ?? date('Y-m-d'))), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Status: ' . ($bayar['dtl_status'] ?? 'PELUNASAN'), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Jenis: ' . ($bayar['dtl_jenis_bayar'] ?? '-'), 0, 1, 'L');
+    $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Tanggal',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y', strtotime($bayar['dtl_tanggal'] ?? date('Y-m-d'))), 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Status',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_status'] ?? 'PELUNASAN', 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Jenis',    0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_jenis_bayar'] ?? '-', 0, 1, 'L');
+
     if (!empty($bayar['dtl_bank'])) {
-        $pdf->Cell($w, 4, 'Bank: ' . $bayar['dtl_bank'], 0, 1, 'L');
+        $pdf->Cell($wL, 4, 'Bank', 0, 0, 'L');
+        $pdf->Cell(4,   4, ':',    0, 0, 'L');
+        $pdf->Cell($wR, 4, $bayar['dtl_bank'], 0, 1, 'L');
     }
-    $pdf->Cell($w, 4, 'Total: Rp.' . number_format($bayar['dtl_jml_bayar'] ?? 0, 0), 0, 1, 'L');
 
+    $pdf->Cell($wL, 4, 'Dibayar',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($wR, 4, 'Rp. ' . number_format($bayar['dtl_jml_bayar'] ?? 0, 0, ',', '.'), 0, 1, 'L');
+
+    // ── Section Rincian Layanan ───────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
     $pdf->Cell($w, 4, 'RINCIAN LAYANAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
 
     $no = 1;
+    $pdf->SetFont('Courier', '', 8);
     foreach ($barang as $row) {
-        $pdf->Cell($w, 4, $no . '. ' . $row['tdkn_nama'], 0, 1, 'L');
-        $pdf->Cell($w, 4, '   Rp.' . number_format($row['tdkn_subtot'], 0), 0, 1, 'L');
+        $nama  = $no . '. ' . $row['tdkn_nama'];
+        $harga = 'Rp. ' . number_format($row['tdkn_subtot'], 0, ',', '.');
+        $pdf->Cell($wL + 10, 4, $nama,  0, 0, 'L');
+        $pdf->Cell($wR - 10, 4, $harga, 0, 1, 'R');
         $no++;
     }
 
+    // ── Total ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
     $pdf->SetFont('Courier', 'B', 9);
-    $pdf->Cell($w, 5, 'TOTAL: Rp.' . number_format($trans['trans_total'], 0), 0, 1, 'L');
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
+    $pdf->Cell($wL + 10, 5, 'TOTAL', 0, 0, 'L');
+    $pdf->Cell($wR - 10, 5, 'Rp. ' . number_format($trans['trans_total'], 0, ',', '.'), 0, 1, 'R');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
 
+    // ── Footer ────────────────────────────────────────
+    $pdf->Ln(1);
     $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 3, 'Terima Kasih Atas Kunjungan Anda', 0, 1, 'C');
     $pdf->Cell($w, 3, 'Barang yang sudah dibeli tidak dapat', 0, 1, 'C');
     $pdf->Cell($w, 3, 'ditukar/dikembalikan', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'Invoice QR Code:', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'Authorized Service Center', 0, 1, 'C');
 
-    // QR Code — use full usable width (30mm), centered within margins
-    $qr_size = 30; // QR code size for thermal printer
-    $qr_x = $lm + ($w - $qr_size) / 2; // centers QR within usable width
+    // ── QR Code ───────────────────────────────────────
+    $pdf->Ln(2);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, '- Invoice QR Code -', 0, 1, 'C');
+
+    $qr_size = 40;
+    $qr_x    = $lm + ($w - $qr_size) / 2;
 
     $customer_id = isset($customer['id_costomer']) ? $customer['id_costomer'] : $trans_kode;
     $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='
-            . urlencode("https://dashboard.azzahracomputertegal.com/user/" . $customer_id);
+            . urlencode('https://dashboard.azzahracomputertegal.com/user/' . $customer_id);
 
     $temp_qr_file = sys_get_temp_dir() . '/qr_' . time() . '.png';
     $qr_generated = false;
@@ -634,176 +727,218 @@ function print_4()
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $qr_data = curl_exec($ch);
-        $curl_error = curl_error($ch);
+        $qr_data   = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
         curl_close($ch);
-
-        log_message('info', 'QR Code cURL attempt - HTTP Status: ' . $curl_info['http_code'] . ', Error: ' . $curl_error);
 
         if ($qr_data !== false && !empty($qr_data)) {
             @file_put_contents($temp_qr_file, $qr_data);
             if (file_exists($temp_qr_file) && filesize($temp_qr_file) > 0) {
                 $y_before = $pdf->GetY() + 2;
                 $pdf->Image($temp_qr_file, $qr_x, $y_before, $qr_size, $qr_size);
-                $pdf->SetY($y_before + $qr_size + 2);
+                $pdf->SetY($y_before + $qr_size + 3);
                 @unlink($temp_qr_file);
                 $qr_generated = true;
-                log_message('info', 'QR Code generated successfully from API');
             }
         }
-    } else {
-        log_message('error', 'cURL is not available on this server');
     }
 
     if (!$qr_generated) {
         $qr_image = FCPATH . 'assets/image/qrwaaz.jpg';
-        log_message('info', 'Using fallback QR code from: ' . $qr_image . ', exists: ' . (file_exists($qr_image) ? 'yes' : 'no'));
         if (file_exists($qr_image)) {
-            $y_before = $pdf->GetY();
+            $y_before = $pdf->GetY() + 2;
             $pdf->Image($qr_image, $qr_x, $y_before, $qr_size, $qr_size);
-            $pdf->SetY($y_before + $qr_size + 2);
-        } else {
-            log_message('error', 'Fallback QR image not found at: ' . $qr_image);
+            $pdf->SetY($y_before + $qr_size + 3);
         }
     }
+
+    $pdf->SetFont('Courier', '', 6);
+    $pdf->Cell($w, 3, 'dashboard.azzahracomputertegal.com', 0, 1, 'C');
 
     $pdf->Output('THERMAL_PELUNASAN_' . date('Y-m-d_H-i-s') . '.pdf', 'I');
 }
 
 function print_5()
 {
-    // Thermal receipt for DP - Safe version with null checks
     $this->load->library('pdf');
     $trans_kode = $this->uri->segment(3);
-    
+
     if (!$trans_kode) {
         show_error('Kode transaksi tidak ditemukan');
         return;
     }
 
-    // Get transaction data
     $trans = $this->db->get_where('transaksi', ['trans_kode' => $trans_kode])->row_array();
     if (!$trans) {
         show_error('Data transaksi tidak ditemukan');
         return;
     }
 
-    // Get customer data
     $customer = $this->db->get_where('costomer', ['id_costomer' => $trans['cos_kode']])->row_array();
     if (!$customer) {
         show_error('Data customer tidak ditemukan');
         return;
     }
 
-    // Get latest DP payment, or any payment if DP doesn't exist
     $this->db->where('trans_kode', $trans_kode);
     $this->db->where('dtl_status', 'DP');
     $this->db->order_by('dtl_kode', 'DESC');
     $this->db->limit(1);
     $bayar = $this->db->get('transaksi_detail')->row_array();
-    
-    // If no DP found, get the latest payment record
+
     if (!$bayar) {
         $bayar = $this->M_cetak->bayar($trans_kode)->result_array();
         if (!empty($bayar)) {
-            $bayar = end($bayar); // Get last element
+            $bayar = end($bayar);
         } else {
-            // Create dummy payment data for printing purposes
-            $bayar = array(
-                'dtl_tanggal' => date('Y-m-d H:i:s'),
-                'dtl_status' => 'DP',
+            $bayar = [
+                'dtl_tanggal'     => date('Y-m-d H:i:s'),
+                'dtl_status'      => 'DP',
                 'dtl_jenis_bayar' => '-',
-                'dtl_bank' => '',
-                'dtl_jml_bayar' => $trans['trans_total']
-            );
+                'dtl_bank'        => '',
+                'dtl_jml_bayar'   => $trans['trans_total']
+            ];
         }
     }
 
-    // Get service items
     $barang = $this->M_service->GetTindakanBy($trans_kode)->result_array();
 
-    // Create PDF
+    // ── Setup PDF ─────────────────────────────────────
     $pdf = new FPDF('P', 'mm', array(80, 200));
     $pdf->setMargins(2, 2, 2);
     $pdf->SetAutoPageBreak(true, 2);
     $pdf->AddPage();
     $pdf->setTitle('Thermal Receipt - DP');
 
-    $w = 76;
+    $w  = 76;
     $lm = 2;
+    $wL = 30;
+    $wR = 46;
 
-    // Add Logo - centered using precise positioning
+    // ── Logo ──────────────────────────────────────────
     $logo_path = FCPATH . 'assets/image/logo-thermal.png';
     if (file_exists($logo_path)) {
-        $logo_width = 10; // Logo width in mm (smaller for thermal printer)
-        $logo_x = $lm + ($w - $logo_width) / 2; // Center horizontally
-        $y_logo = $pdf->GetY();
+        $logo_width = 14;
+        $logo_x     = $lm + ($w - $logo_width) / 2;
+        $y_logo     = $pdf->GetY() + 1;
         $pdf->Image($logo_path, $logo_x, $y_logo, $logo_width);
-        $pdf->SetY($y_logo + $logo_width - 2); // Space after logo
+        $pdf->SetY($y_logo + $logo_width + 1);
     }
 
-    // Header
-    $pdf->SetFont('Courier', '', 8);
-    $pdf->Cell($w, 4, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    // ── Header ────────────────────────────────────────
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 9);
     $pdf->Cell($w, 4, 'AZZAHRA COMPUTER', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'Telp: 0823-340909', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'WA: 0859-4200-1720', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, 'Telp: 0823-340909  |  WA: 0859-4200-1720', 0, 1, 'C');
 
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
-
+    // ── Judul ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
     $pdf->SetFont('Courier', 'B', 10);
-    $pdf->Cell($w, 5, 'DOWN PAYMENT (DP)', 0, 1, 'C');
+    $pdf->Cell($w, 6, 'DOWN PAYMENT (DP)', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
+    $pdf->Ln(1);
+
+    // ── Data Customer ─────────────────────────────────
     $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Invoice',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['id_costomer'] ?? '', 0, 1, 'L');
 
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
+    $pdf->Cell($wL, 4, 'Customer', 0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $customer['cos_nama'] ?? '', 0, 1, 'L');
 
-    // Customer Info
-    $pdf->Cell($w, 4, 'Invoice: ' . ($customer['id_costomer'] ?? ''), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Customer: ' . ($customer['cos_nama'] ?? ''), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Tanggal: ' . date('d-m-Y H:i:s'), 0, 1, 'L');
+    $pdf->Cell($wL, 4, 'Tanggal',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y H:i:s'), 0, 1, 'L');
 
+    // ── Section Pembayaran DP ─────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
     $pdf->Cell($w, 4, 'PEMBAYARAN DP', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
 
-    $pdf->Cell($w, 4, 'Tanggal: ' . date('d-m-Y', strtotime($bayar['dtl_tanggal'] ?? date('Y-m-d'))), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Status: ' . ($bayar['dtl_status'] ?? 'DP'), 0, 1, 'L');
-    $pdf->Cell($w, 4, 'Jenis: ' . ($bayar['dtl_jenis_bayar'] ?? '-'), 0, 1, 'L');
+    $pdf->SetFont('Courier', '', 8);
+    $pdf->Cell($wL, 4, 'Tanggal',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, date('d-m-Y', strtotime($bayar['dtl_tanggal'] ?? date('Y-m-d'))), 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Status',   0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_status'] ?? 'DP', 0, 1, 'L');
+
+    $pdf->Cell($wL, 4, 'Jenis',    0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->Cell($wR, 4, $bayar['dtl_jenis_bayar'] ?? '-', 0, 1, 'L');
+
     if (!empty($bayar['dtl_bank'])) {
-        $pdf->Cell($w, 4, 'Bank: ' . $bayar['dtl_bank'], 0, 1, 'L');
+        $pdf->Cell($wL, 4, 'Bank', 0, 0, 'L');
+        $pdf->Cell(4,   4, ':',    0, 0, 'L');
+        $pdf->Cell($wR, 4, $bayar['dtl_bank'], 0, 1, 'L');
     }
-    $pdf->Cell($w, 4, 'Total: Rp.' . number_format($bayar['dtl_jml_bayar'] ?? 0, 0), 0, 1, 'L');
 
+    $pdf->Cell($wL, 4, 'Dibayar',  0, 0, 'L');
+    $pdf->Cell(4,   4, ':',        0, 0, 'L');
+    $pdf->SetFont('Courier', 'B', 8);
+    $pdf->Cell($wR, 4, 'Rp. ' . number_format($bayar['dtl_jml_bayar'] ?? 0, 0, ',', '.'), 0, 1, 'L');
+
+    // ── Section Rincian Layanan ───────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->SetFont('Courier', 'B', 8);
     $pdf->Cell($w, 4, 'RINCIAN LAYANAN', 0, 1, 'C');
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
+    $pdf->Ln(1);
 
     $no = 1;
+    $pdf->SetFont('Courier', '', 8);
     foreach ($barang as $row) {
-        $pdf->Cell($w, 4, $no . '. ' . $row['tdkn_nama'], 0, 1, 'L');
-        $pdf->Cell($w, 4, '   Rp.' . number_format($row['tdkn_subtot'], 0), 0, 1, 'L');
+        $nama  = $no . '. ' . $row['tdkn_nama'];
+        $harga = 'Rp. ' . number_format($row['tdkn_subtot'], 0, ',', '.');
+        $pdf->Cell($wL + 10, 4, $nama,  0, 0, 'L');
+        $pdf->Cell($wR - 10, 4, $harga, 0, 1, 'R');
         $no++;
     }
 
+    // ── Total ─────────────────────────────────────────
+    $pdf->Ln(1);
+    $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 2, '----------------------------------------', 0, 1, 'C');
     $pdf->SetFont('Courier', 'B', 9);
-    $pdf->Cell($w, 5, 'TOTAL: Rp.' . number_format($trans['trans_total'], 0), 0, 1, 'L');
-    $pdf->Cell($w, 2, '=======================================', 0, 1, 'C');
+    $pdf->Cell($wL + 10, 5, 'TOTAL', 0, 0, 'L');
+    $pdf->Cell($wR - 10, 5, 'Rp. ' . number_format($trans['trans_total'], 0, ',', '.'), 0, 1, 'R');
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 2, '========================================', 0, 1, 'C');
 
+    // ── Footer ────────────────────────────────────────
+    $pdf->Ln(1);
     $pdf->SetFont('Courier', '', 7);
     $pdf->Cell($w, 3, 'Terima Kasih Atas Kunjungan Anda', 0, 1, 'C');
     $pdf->Cell($w, 3, 'Barang yang sudah dibeli tidak dapat', 0, 1, 'C');
     $pdf->Cell($w, 3, 'ditukar/dikembalikan', 0, 1, 'C');
-    $pdf->Cell($w, 3, 'Invoice QR Code:', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'Authorized Service Center', 0, 1, 'C');
 
-    // QR Code — use full usable width (30mm), centered within margins
-    $qr_size = 30; // QR code size for thermal printer
-    $qr_x = $lm + ($w - $qr_size) / 2; // centers QR within usable width
+    // ── QR Code ───────────────────────────────────────
+    $pdf->Ln(2);
+    $pdf->SetFont('Courier', '', 7);
+    $pdf->Cell($w, 3, '- Invoice QR Code -', 0, 1, 'C');
+
+    $qr_size = 40;
+    $qr_x    = $lm + ($w - $qr_size) / 2;
 
     $customer_id = isset($customer['id_costomer']) ? $customer['id_costomer'] : $trans_kode;
     $qr_url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data='
-            . urlencode("https://dashboard.azzahracomputertegal.com/user/" . $customer_id);
+            . urlencode('https://dashboard.azzahracomputertegal.com/user/' . $customer_id);
 
     $temp_qr_file = sys_get_temp_dir() . '/qr_' . time() . '.png';
     $qr_generated = false;
@@ -815,39 +950,33 @@ function print_5()
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        $qr_data = curl_exec($ch);
-        $curl_error = curl_error($ch);
+        $qr_data   = curl_exec($ch);
         $curl_info = curl_getinfo($ch);
         curl_close($ch);
-
-        log_message('info', 'QR Code cURL attempt - HTTP Status: ' . $curl_info['http_code'] . ', Error: ' . $curl_error);
 
         if ($qr_data !== false && !empty($qr_data)) {
             @file_put_contents($temp_qr_file, $qr_data);
             if (file_exists($temp_qr_file) && filesize($temp_qr_file) > 0) {
                 $y_before = $pdf->GetY() + 2;
                 $pdf->Image($temp_qr_file, $qr_x, $y_before, $qr_size, $qr_size);
-                $pdf->SetY($y_before + $qr_size + 2);
+                $pdf->SetY($y_before + $qr_size + 3);
                 @unlink($temp_qr_file);
                 $qr_generated = true;
-                log_message('info', 'QR Code generated successfully from API');
             }
         }
-    } else {
-        log_message('error', 'cURL is not available on this server');
     }
 
     if (!$qr_generated) {
         $qr_image = FCPATH . 'assets/image/qrwaaz.jpg';
-        log_message('info', 'Using fallback QR code from: ' . $qr_image . ', exists: ' . (file_exists($qr_image) ? 'yes' : 'no'));
         if (file_exists($qr_image)) {
-            $y_before = $pdf->GetY();
+            $y_before = $pdf->GetY() + 2;
             $pdf->Image($qr_image, $qr_x, $y_before, $qr_size, $qr_size);
-            $pdf->SetY($y_before + $qr_size + 2);
-        } else {
-            log_message('error', 'Fallback QR image not found at: ' . $qr_image);
+            $pdf->SetY($y_before + $qr_size + 3);
         }
     }
+
+    $pdf->SetFont('Courier', '', 6);
+    $pdf->Cell($w, 3, 'dashboard.azzahracomputertegal.com', 0, 1, 'C');
 
     $pdf->Output('THERMAL_DP_' . date('Y-m-d_H-i-s') . '.pdf', 'I');
 }
