@@ -235,7 +235,8 @@ function SetCompression($compress)
 function SetTitle($title, $isUTF8=false)
 {
 	// Title of document
-	$this->metadata['Title'] = $isUTF8 ? $title : utf8_encode($title);
+	$title = $isUTF8 ? $title : mb_convert_encoding($title, 'UTF-8', 'ISO-8859-1');
+    $this->metadata['Title'] = $title;
 }
 
 function SetAuthor($author, $isUTF8=false)
