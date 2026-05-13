@@ -118,7 +118,7 @@
                                         '<?= number_format($row['dtl_jml_bayar'], 0, ',', '.') ?>',
                                         '<?= date('d M Y', strtotime($row['dtl_tanggal'])) ?>',
                                         '<?= $trans['cos_nama'] ?>',
-                                        'https://dashboard.azzahracomputertegal.com/Cetak/print_1/<?= $row['dtl_kode'] ?>',
+                                        '<?= site_url('Cetak/print_1/'.$row['dtl_kode']) ?>',
                                         '<?= $trans['cos_hp'] ?>'
                                     )" class="button px-2 mr-1 mb-2 bg-green-500 text-white">
                                             <span class="w-5 h-5 flex items-center justify-center">
@@ -187,16 +187,16 @@
                             </div>
                             <i data-feather="clock" class="w-4 h-4 text-gray-600 ml-auto"></i>
                         </div>
-                        <?php if ($trans['trans_status'] == 'Lunas'): ?>
-                        <div class="flex items-center pt-5">
+                        <div class="flex  pt-5">
+                            <?php if ($trans['trans_status'] == 'Lunas'): ?>
                             <button onclick="sendToWA('', '<?= $trans['cos_kode'] ?>', '', '', '<?= $trans['cos_nama'] ?>', 'https://dashboard.azzahracomputertegal.com/Cetak/print_1/<?= $trans['trans_kode'] ?>', '<?= $trans['cos_hp'] ?>', 'service')" class="button text-white bg-green-500 shadow-md">
-                                <span class="w-5 h-5 flex items-center justify-center mr-2">
-                                    <i data-feather="message-circle" class="w-4 h-4"></i>
-                                </span>
                                 Kirim Pesan Selesai Service
                             </button>
+                            <?php endif; ?>
+                            <a href="<?= site_url('Cetak/print_6/'.$trans['trans_kode'])?>" target="_blank" class="button text-white bg-gray-600 shadow-md ml-2">
+                                Print Surat Pernyataan
+                            </a>
                         </div>
-                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="tab-content__pane" id="pelunasan">

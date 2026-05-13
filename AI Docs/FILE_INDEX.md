@@ -6,7 +6,7 @@
 
 ---
 
-## 📚 DOCUMENTATION FILES (8 files)
+## 📚 DOCUMENTATION FILES (10 files)
 
 ### 1. **README_REWRITE_SUMMARY.md** ← START HERE
 - **Purpose:** Executive summary & quick reference
@@ -55,7 +55,20 @@
 - **Read Time:** 15 minutes (skim), then follow steps
 - **Action:** Execute immediately after approval
 
-### 8. **This File - FILE_INDEX.md**
+### 8. **METODE_PEMBELIAN_SUMMARY.md**
+- **Purpose:** Ringkasan alur pembelian dan pembayaran
+- **Audience:** Tim dokumentasi AI, analis bisnis, tim kasir
+- **Key Info:** Order, harga, WhatsApp konfirmasi, DP, pelunasan
+- **Read Time:** 10 minutes
+- **Action:** Gunakan untuk dokumentasi AI dan alur kerja bisnis
+
+### 9. **DATABASE_DESIGN_PEMBELIAN.md**
+- **Purpose:** Desain database untuk alur pembelian dan pembayaran
+- **Audience:** DBA, analis data, developer
+- **Key Info:** Tabel `transaksi`, `transaksi_detail`, relasi, field, indeks
+- **Read Time:** 10 minutes
+
+### 10. **This File - FILE_INDEX.md**
 - **Purpose:** Navigation guide for all deliverables
 - **Audience:** Everyone
 - **Key Info:** What file to read, in what order
@@ -317,7 +330,7 @@ Columns Extended:
 
 ## ✅ DELIVERY CHECKLIST
 
-### Documentation (8 files, ~2,500 lines)
+### Documentation (10 files, ~2,700 lines)
 - [x] README_REWRITE_SUMMARY.md
 - [x] FEATURES_REWRITE_2026.md
 - [x] REQUIREMENT_ANALYSIS.md (existing)
@@ -325,6 +338,8 @@ Columns Extended:
 - [x] MASTER_IMPLEMENTATION_CHECKLIST.md
 - [x] PHASE_1_IMPLEMENTATION_SUMMARY.md
 - [x] QUICK_START_DAY_1.md
+- [x] METODE_PEMBELIAN_SUMMARY.md
+- [x] DATABASE_DESIGN_PEMBELIAN.md
 - [x] FILE_INDEX.md (this file)
 
 ### Production Code (11 files, ~1,155 lines)
@@ -356,7 +371,7 @@ Columns Extended:
 | Database Tables (New) | 5 | ✅ Ready |
 | Database Tables (Extended) | 2 | ✅ Ready |
 | Production Code Files | 11 | ✅ Ready |
-| Documentation Files | 8 | ✅ Ready |
+| Documentation Files | 10 | ✅ Ready |
 | API Endpoints | 24 | ✅ Ready |
 | Controller Methods | 25 | ✅ Ready |
 | Model Methods | 45 | ✅ Ready |
@@ -430,7 +445,7 @@ Columns Extended:
 ## 📦 DELIVERABLE SUMMARY
 
 **Total Package Includes:**
-- ✅ 8 comprehensive documentation files
+- ✅ 10 comprehensive documentation files
 - ✅ 11 production-ready code files
 - ✅ 1 database migration script
 - ✅ 24 API endpoints (ready)
