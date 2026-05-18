@@ -600,19 +600,21 @@ class Service extends CI_Controller {
 	}
 	function cari()
 	{
+		
 		$kode = $this->uri->segment(3);
 
 		$data = array(
-			'title' 	=> 'Pembayaran',
-			'custom'	=> $this->M_service->Histori($kode),
-			'no'		=> $this->uri->segment(3),
-			'trans'		=> $this->M_service->trans($kode)->row_array(),
-			'bayar'		=> $this->M_service->Histori($kode)->row_array(),
-			'tindakan'	=> $this->M_service->tindakan($kode),
+			'title'     => 'Pembayaran',
+			'custom'    => $this->M_service->Histori($kode),
+			'no'        => $this->uri->segment(3),
+			'trans'     => $this->M_service->trans($kode)->row_array(),
+			'bayar'     => $this->M_service->Histori($kode)->row_array(),
+			'tindakan'  => $this->M_service->tindakan($kode),
 			'lap_bayar' => $this->M_service->lap_bayar(),
-			'vocher' 	=> $this->M_service->GetVocherBy($kode)->row_array(),
-			'role'		=> 'cs'
-			 );
+			'vocher'    => $this->M_service->GetVocherBy($kode)->row_array(),
+			'role'      => 'cs',
+			'signature' => $this->M_service->getSignature($kode)->row_array()
+		);
 		// service users should see service view
 		$this->load->view('Service/cari',$data);
 
@@ -1183,7 +1185,43 @@ class Service extends CI_Controller {
 
         echo json_encode($output);
     }
+    public function upload_signature()
+{
+    $kode = $this->input->post('kode');
 
+    // Ambil data base64 dari canvas
+    $image_data = $this->input->post('signature');
+    $image_data = str_replace('data:image/png;base64,', '', $image_data);
+    $image_data = str_replace(' ', '+', $image_data);
+
+    // Upload ke Cloudinary
+    $cloud_name    = 'dbwvddsvb';
+    $upload_preset = 'ttd_customer';
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, "https://api.cloudinary.com/v1_1/{$cloud_name}/image/upload");
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, array(
+		'file'           => 'data:image/png;base64,' . $image_data,
+		'upload_preset'  => $upload_preset,
+		'folder'         => 'tanda_tangan',
+		'public_id' => $kode . '-' . preg_replace('/\s+/', '_', strtoupper($this->M_service->trans($kode)->row()->cos_nama)),
+	));
+    
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $result = json_decode($response, true);
+
+    if (isset($result['secure_url'])) {
+        $this->M_service->saveSignature($kode, $result['secure_url']);
+        echo json_encode(['success' => true, 'url' => $result['secure_url']]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Upload gagal']);
+    }
+}
 }
 
 /* End of file Service.php */
