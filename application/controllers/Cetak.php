@@ -335,9 +335,14 @@ class Cetak extends CI_Controller {
         $no = 0;
         foreach ($barang as $row ) {
         $no++;
+            $desc = $row['tdkn_nama'];
+
+            if ($row['tdkn_nama'] == 'Custom') {
+                $desc .= ' : ' . $row['tdkn_ket'];
+            }
         	$pdf->Cell(5,6,'',0,0,'L');
 	        $pdf->Cell(10,6,$no,1,0,'C');
-	        $pdf->Cell(145,6,$row['tdkn_nama'],1,0,'L');
+            $pdf->Cell(145,6,$desc,1,0,'L');
 	        $pdf->Cell(40,6,' Rp.'.number_format($row['tdkn_subtot'], 0),1,1,'L');
         }
 
@@ -349,6 +354,9 @@ class Cetak extends CI_Controller {
         $pdf->Output('KWT_RETURN'.date('Y-m-d H:i:s').'.pdf','I');
 
 }
+	// SAYA NARUH NAMA
+// KODE DIBAWAH DIBUAT PAKE AI KEMUNGKINAN
+// GATAU
 
 // ============================================================
 // HELPER FUNCTION - Brand Logo Section (reusable)
@@ -488,7 +496,7 @@ private function _render_thermal_receipt(array $opts)
     $pdf->SetFont('Courier', '', 7);
     foreach ($barang as $item) {
         $nomor = $no . '.';
-        $nama  = $item['tdkn_nama'];
+        $nama  = $item['tdkn_nama'] . ":" . $item['tdkn_ket'];
         $harga = 'Rp. ' . number_format($item['tdkn_subtot'], 0, ',', '.');
 
         $y_start = $pdf->GetY();
@@ -621,7 +629,6 @@ private function _render_thermal_receipt(array $opts)
     }
 
     $pdf->SetFont('Courier', '', 6);
-    $pdf->Cell($w, 3, 'dashboard.azzahracomputertegal.com', 0, 1, 'C');
 
     $pdf->Output($opts['output_prefix'] . '_' . date('Y-m-d_H-i-s') . '.pdf', 'I');
 }
@@ -746,6 +753,66 @@ function print_5()
         'output_prefix' => 'THERMAL_DP',
     ]);
 }
+
+function print_6()
+{
+    $this->load->library('pdf');
+    $trans_kode = $this->uri->segment(3);
+
+    if (!$trans_kode) {
+        show_error('Kode transaksi tidak ditemukan');
+        return;
+    }
+
+    $trans = $this->db->get_where('transaksi', ['trans_kode' => $trans_kode])->row_array();
+    if (!$trans) {
+        show_error('Data transaksi tidak ditemukan');
+        return;
+    }
+
+    $customer = $this->db->get_where('costomer', ['id_costomer' => $trans['cos_kode']])->row_array();
+    if (!$customer) {
+        show_error('Data customer tidak ditemukan');
+        return;
+    }
+
+    $pdf = new FPDF('P', 'mm', 'A4');
+    $pdf->setMargins(15, 15, 15);
+    $pdf->SetAutoPageBreak(true, 15);
+    $pdf->AddPage();
+    $pdf->setTitle('Surat Pernyataan Garansi');
+
+    $logo_path = FCPATH . 'assets/image/logo.png';
+    if (file_exists($logo_path)) {
+        $pdf->Image($logo_path, 15, 15, 30);
+    }
+
+    $pdf->SetFont('Arial', 'B', 14);
+    $pdf->Cell(0, 8, 'AUTHORIZED MULTIBRAND SERVICE CENTER', 0, 1, 'C');
+    $pdf->Cell(0, 8, 'AZZAHRA COMPUTER', 0, 1, 'C');
+    $pdf->SetFont('Arial', '', 10);
+    $pdf->Cell(0, 5, 'RUKO CITRALAND B/11 JL. SIPELEM - TEGAL', 0, 1, 'C');
+    $pdf->Cell(0, 5, 'Telp. 0823-340909   WA: 0859-4200-1720', 0, 1, 'C');
+    $pdf->Ln(4);
+
+    $pdf->SetFont('Arial', 'BU', 12);
+    $pdf->Cell(0, 8, 'SURAT PERNYATAAN', 0, 1, 'C');
+    $pdf->Ln(2);
+
+    $tanggal = date('d F Y');
+
+    $pdf->Ln(4);
+    $pdf->SetFont('Arial', '', 11);
+    $pdf->MultiCell(0, 7, 'Dengan ini saya yang bertanda tangan di bawah ini menyatakan bahwa perangkat yang telah diperbaiki oleh AZZAHRA COMPUTER dalam kondisi baik dan sesuai, serta tidak akan mengajukan tuntutan garansi apabila terdapat kerusakan akibat kelalaian pengguna.', 0, 'J');
+    $pdf->Ln(6);
+    $pdf->Cell(0, 7, 'Tegal, ' . $tanggal, 0, 1, 'R');
+    $pdf->Ln(30); // ruang tanda tangan
+    $pdf->Cell(0, 7, '( ' . $customer['cos_nama'] . ' )', 0, 1, 'R');
+
+
+    $pdf->Output('SURAT_PERNYATAAN_' . $customer['id_costomer'] . '_' . $trans_kode . '.pdf', 'I');
+}
+
 function print_tts()
 {
    $this->load->library('Pdfgenerator');
