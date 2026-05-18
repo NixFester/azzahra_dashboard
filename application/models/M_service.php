@@ -820,6 +820,28 @@ class M_service extends CI_Model {
 		$query = $this->db->get();
 		return $query->result();
 	}
+	
+	public function saveSignature($kode, $url)
+{
+    $exists = $this->db->get_where('tb_signature', ['no_service' => $kode])->row();
+    if ($exists) {
+        $this->db->where('no_service', $kode)->update('tb_signature', [
+            'signature_url' => $url,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+    } else {
+        $this->db->insert('tb_signature', [
+            'no_service'    => $kode,
+            'signature_url' => $url,
+            'created_at'    => date('Y-m-d H:i:s')
+        ]);
+    }
+}
+
+public function getSignature($kode)
+{
+    return $this->db->get_where('tb_signature', ['no_service' => $kode]);
+}
 }
 
 /* End of file M_service.php */

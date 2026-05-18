@@ -199,6 +199,58 @@
                         </div>
                     </div>
                 </div>
+                <!-- TANDA TANGAN DIGITAL -->
+                <div class="box mt-5" style="border-radius:12px; overflow:hidden;">
+                    <div class="p-3" style="background:#1a3c6e;">
+                        <h5 style="color:#fff; margin:0; font-size:14px;">
+                            <i data-feather="edit-3" class="w-4 h-4" style="display:inline; margin-right:6px;"></i>
+                            Tanda Tangan Pelanggan
+                        </h5>
+                    </div>
+                    <div class="p-4" style="background:#f9fafb;">
+
+                        <?php if(!empty($signature['signature_url'])): ?>
+                        <div class="text-center mb-3">
+                            <img src="<?= $signature['signature_url'] ?>" 
+                                style="border:1px solid #ddd; border-radius:8px; width:100%; background:#fff; padding:6px;">
+                        </div>
+                        <div class="text-center mb-3">
+                            <button onclick="gantiTTD()" 
+                                class="button px-3 py-2 bg-yellow-500 text-white" 
+                                style="border-radius:8px; font-size:13px;">
+                                <i data-feather="refresh-cw" class="w-3 h-3" style="display:inline;"></i>
+                                Ganti Tanda Tangan
+                            </button>
+                        </div>
+                        <div id="area-ttd" style="display:none;">
+                        <?php else: ?>
+                        <div id="area-ttd">
+                        <?php endif; ?>
+
+                            <p style="color:#9ca3af; font-size:12px; margin-bottom:8px; text-align:center;">
+                                Gambar tanda tangan di dalam kotak berikut
+                            </p>
+                            <canvas id="canvas-ttd" width="400" height="160"
+                             style="border:2px dashed #1a3c6e; border-radius:8px; background:#fff; cursor:crosshair; display:block; width:100%;">
+                            </canvas>
+                            <div style="display:flex; gap:8px; margin-top:10px; justify-content:center;">
+                                <button onclick="clearTTD()" 
+                                    class="button px-3 py-2 border text-gray-600"
+                                    style="border-radius:8px; font-size:13px; flex:1;">
+                                    Hapus
+                                </button>
+                                <button onclick="simpanTTD()" 
+                                    class="button px-3 py-2 text-white"
+                                    style="border-radius:8px; font-size:13px; flex:1; background:#1a3c6e;">
+                                    Simpan
+                                </button>
+                            </div>
+                            <div id="ttd-pesan" style="text-align:center; margin-top:8px; font-size:13px;"></div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END TANDA TANGAN -->
                 <div class="tab-content__pane" id="pelunasan">
                     <div class="pos__ticket box p-2 mt-5">
                         <?php
@@ -498,6 +550,118 @@ function sendToWA(status, nota, jumlah, tanggal, nama, link, hp, type = 'payment
     }
     const waUrl = `https://wa.me/${hp}?text=${encodeURIComponent(message)}`;
     window.open(waUrl, '_blank');
+}
+</script>
+<script>
+var canvas  = document.getElementById('canvas-ttd');
+var ctx     = canvas.getContext('2d');
+var isDrawing = false;
+
+// Ambil inisial dari nama pelanggan
+var namaPelanggan = '<?= $trans['cos_nama'] ?>';
+var inisial = namaPelanggan.split(' ').map(function(n) { 
+    return n[0]; 
+}).join('').toUpperCase().substring(0, 3);
+
+function getPos(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = canvas.width / rect.width;
+    var scaleY = canvas.height / rect.height;
+    if (e.touches) {
+        return {
+            x: (e.touches[0].clientX - rect.left) * scaleX,
+            y: (e.touches[0].clientY - rect.top) * scaleY
+        };
+    }
+    return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+    };
+}
+
+canvas.addEventListener('mousedown', function(e) {
+    isDrawing = true;
+    var pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+});
+
+canvas.addEventListener('mousemove', function(e) {
+    if (!isDrawing) return;
+    var pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth   = 2;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+});
+
+canvas.addEventListener('mouseup',    function() { isDrawing = false; });
+canvas.addEventListener('mouseleave', function() { isDrawing = false; });
+
+canvas.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    isDrawing = true;
+    var pos = getPos(e);
+    ctx.beginPath();
+    ctx.moveTo(pos.x, pos.y);
+});
+
+canvas.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    if (!isDrawing) return;
+    var pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y);
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth   = 2;
+    ctx.lineCap     = 'round';
+    ctx.stroke();
+});
+
+canvas.addEventListener('touchend', function() { isDrawing = false; });
+
+function clearTTD() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function gantiTTD() {
+    document.getElementById('area-ttd').style.display = 'block';
+}
+
+function tambahInisial() {
+    ctx.font         = 'italic 13px Arial';
+    ctx.fillStyle    = '#aaaaaa';
+    ctx.textAlign    = 'right';
+    ctx.fillText('<?= $trans['trans_kode'] ?>' + ' - ' + namaPelanggan, canvas.width - 10, canvas.height - 10);
+}
+
+function simpanTTD() {
+    // Tambahkan inisial sebelum disimpan
+    tambahInisial();
+
+    var dataURL = canvas.toDataURL('image/png');
+    var kode    = '<?= $trans['trans_kode'] ?>';
+    var pesan   = document.getElementById('ttd-pesan');
+
+    pesan.innerHTML   = 'Menyimpan...';
+    pesan.style.color = '#888';
+
+    fetch('<?= base_url() ?>Service/upload_signature', {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body   : 'kode=' + encodeURIComponent(kode) + '&signature=' + encodeURIComponent(dataURL)
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+        if (data.success) {
+            pesan.innerHTML   = 'Tanda tangan berhasil disimpan!';
+            pesan.style.color = 'green';
+            setTimeout(function() { location.reload(); }, 1500);
+        } else {
+            pesan.innerHTML   = 'Gagal menyimpan, coba lagi.';
+            pesan.style.color = 'red';
+        }
+    });
 }
 </script>
 <?php $this->load->view('Template/footer'); ?>
