@@ -150,6 +150,8 @@
 									
 									<option value="Tegal" selected>Tegal</option>
 									<option value="Cibubur">Cibubur</option>
+									<option value="Kampus Saintek">Kampus Saintek</option>
+									<option value="Kampus PKTJ">Kampus PKTJ</option>
 									
 								</select>
 							</div>

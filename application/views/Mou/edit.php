@@ -48,6 +48,8 @@
                                 <option value="">Pilih Lokasi</option>
                                 <option value="Tegal" <?= $mou['lokasi'] == 'Tegal' ? 'selected' : '' ?>>Tegal</option>
                                 <option value="Cibubur" <?= $mou['lokasi'] == 'Cibubur' ? 'selected' : '' ?>>Cibubur</option>
+                                <option value="Kampus Saintek" <?= $mou['lokasi'] == 'Kampus Saintek' ? 'selected' : '' ?>>Kampus Saintek</option>
+                                <option value="Kampus PKTJ" <?= $mou['lokasi'] == 'Kampus PKTJ' ? 'selected' : '' ?>>Kampus PKTJ</option>
                             </select>
                         </div>
                         <div>

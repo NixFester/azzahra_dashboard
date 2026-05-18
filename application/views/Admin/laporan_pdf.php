@@ -98,7 +98,7 @@ header('Content-Type: text/html; charset=utf-8');
 </head>
 <body>
     <?php if (isset($all_have_cabang) && $all_have_cabang && isset($payments_by_cabang) && is_array($payments_by_cabang)): ?>
-        <?php foreach (["Tegal", "Cibubur"] as $cabang): ?>
+        <?php foreach (["Tegal", "Cibubur", "Kampus Saintek", "Kampus PKTJ"] as $cabang): ?>
             <div class="header">
                 <h1>LAPORAN HARIAN</h1>
                 <p>Tanggal: <?= date('d F Y') ?></p>
