@@ -173,6 +173,17 @@ class M_customer extends CI_Model {
 		$this->db->where('trans_kode', $kode);
 		return $this->db->get('transaksi');
 	}
+
+	public function get_hp_by_trans($trans_kode)
+	{
+		$this->db->select('costomer.cos_hp');
+		$this->db->from('transaksi');
+		$this->db->join('costomer', 'transaksi.cos_kode = costomer.id_costomer');
+		$this->db->where('transaksi.trans_kode', $trans_kode);
+		$q = $this->db->get();
+		if ($q->num_rows() > 0) return $q->row()->cos_hp;
+		return null;
+	}
 }
 
 /* End of file M_customer.php */

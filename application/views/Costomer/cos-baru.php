@@ -1,5 +1,6 @@
-	<?php $this->load->view('Template/header'); ?>
-			<!-- Header -->
+<?php $this->load->view('Template/header'); ?>
+<?php if (!isset($signature)) $signature = []; ?>
+				<!-- Header -->
 			<header class="page-header">
 				<div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
 					<i data-feather="menu"></i>
@@ -99,8 +100,8 @@
 					</table>
 				</div>
 			</div>
-			
-		</div>    
+
+			</div>    
 	</div>
 
 <!-- modal tambah cotomer-->
@@ -132,7 +133,7 @@
 			                    <input type="text" class="input w-full border flex-1" name="nama"  required oninvalid="this.setCustomValidity('Nama customer tidak boleh kosong ?')" oninput="setCustomValidity('')"placeholder="Masukan nama customer">
 			                </div>
 			                <div class="intro-y col-span-12 sm:col-span-6">
-			                    <div class="mb-2">No Tlep</div>
+			                    <div class="mb-2">No Telepon</div>
 			                    <input type="number" class="input w-full border flex-1" name="tlp" required oninvalid="this.setCustomValidity('No tlep customer tidak boleh kosong ?')" oninput="setCustomValidity('')" placeholder="Masukan no tlep customer">
 			                </div>
 			                <div class="intro-y col-span-12 sm:col-span-6">
@@ -156,6 +157,7 @@
 			                    <div class="mb-2">Tanggal Lahir</div>
 			                    <input type="date" class="input w-full border flex-1" name="cos_tgl_lahir" required oninvalid="this.setCustomValidity('Tanggal lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
 			                </div>
+
 			            </div>
 			        </div>
 	        	</div>
@@ -249,8 +251,64 @@
 			        </div>
 	        	</div>
 	        </div>
-	       </form>
-	 </div>
+	       </form>            <div class="intro-y box mt-5" style="border-radius:12px; overflow:hidden;">
+                <div class="p-3" style="background:#1a3c6e;">
+                    <h5 style="color:#fff; margin:0; font-size:14px;">
+                        <i data-feather="edit-3" class="w-4 h-4" style="display:inline; margin-right:6px;"></i>
+                        Tanda Tangan Pelanggan
+                    </h5>
+                </div>
+                <div class="p-4" style="background:#f9fafb;">
+                    <?php if (!empty($signature['signature_url'])): ?>
+                        <div class="text-center mb-3">
+                            <img id="signature-image" src="<?= $signature['signature_url'] ?>"
+                                style="border:1px solid #ddd; border-radius:8px; width:100%; background:#fff; padding:6px;">
+                        </div>
+                        <div class="text-center mb-3">
+                            <button onclick="gantiTTD()"
+                                class="button px-3 py-2 bg-yellow-500 text-white"
+                                style="border-radius:8px; font-size:13px; margin-right:8px;">
+                                <i data-feather="refresh-cw" class="w-3 h-3" style="display:inline;"></i>
+                                Ganti TTD
+                            </button>
+                            <button onclick="kirimTTD()"
+                                class="button px-3 py-2 bg-green-500 text-white"
+                                style="border-radius:8px; font-size:13px;">
+                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
+                                Kirim link TTD Via WA
+                            </button>
+                        </div>
+                        <div id="area-ttd" style="display:none;">
+                    <?php else: ?>
+                        <div id="area-ttd">
+                    <?php endif; ?>
+                            <button onclick="kirimTTD()"
+                                class="button px-3 py-2 bg-green-500 text-white"
+                                style="border-radius:8px; font-size:13px;">
+                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
+                                Kirim link TTD via WA
+                            </button>
+                            <p style="color:#9ca3af; font-size:12px; margin-bottom:8px; margin-top:8px; text-align:center;">
+                                Gambar tanda tangan di dalam kotak berikut
+                            </p>
+                            <canvas id="canvas-ttd" width="400" height="160"
+                             style="border:2px dashed #1a3c6e; border-radius:8px; background:#fff; cursor:crosshair; display:block; width:100%;"></canvas>
+                            <div style="display:flex; gap:8px; margin-top:10px; justify-content:center;">
+                                <button type="button" onclick="clearTTD()"
+                                    class="button px-3 py-2 border text-gray-600"
+                                    style="border-radius:8px; font-size:13px; flex:1;">
+                                    Hapus
+                                </button>
+                                <button type="button" onclick="simpanTTD()"
+                                    class="button px-3 py-2 text-white"
+                                    style="border-radius:8px; font-size:13px; flex:1; background:#1a3c6e;">
+                                    Simpan
+                                </button>
+                            </div>
+                            <div id="ttd-pesan" style="text-align:center; margin-top:8px; font-size:13px;"></div>
+                        </div>
+                </div>
+            </div>	 </div>
 </div>
 
 	<!-- Overlay for mobile -->
@@ -513,6 +571,60 @@
 				});
 			}
 		}
+
+        function gantiTTD() {
+            const area = document.getElementById('area-ttd');
+            if (area) {
+                area.style.display = 'block';
+            }
+            const signatureImage = document.getElementById('signature-image');
+            if (signatureImage) {
+                const imageWrapper = signatureImage.closest('div.text-center');
+                if (imageWrapper) {
+                    imageWrapper.style.display = 'none';
+                }
+            }
+        }
+
+        function kirimTTD() {
+            const hpInput = document.querySelector("input[name='tlp']");
+            if (!hpInput) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No phone input found.' });
+                return;
+            }
+            let hp = hpInput.value.trim();
+            if (!hp) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No phone number entered.' });
+                return;
+            }
+            if (hp.startsWith('0')) {
+                hp = '62' + hp.substring(1);
+            }
+            hp = hp.replace(/\D/g, '');
+            const message = `SALAM SATU HATI,\n\nSilakan klik tautan berikut untuk melakukan tanda tangan digital:\n\nhttps://dashboard.azzahracomputertegal.com/service/ttd\n\nTerima kasih.`;
+            const waUrl = `https://wa.me/${hp}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function clearTTD() {
+            const canvas = document.getElementById("canvas-ttd");
+            if (canvas) {
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+            }
+        }
+
+        function simpanTTD() {
+            const canvas = document.getElementById("canvas-ttd");
+            if (!canvas) return;
+            const dataURL = canvas.toDataURL("image/png");
+            const pesan = document.getElementById("ttd-pesan");
+            if (pesan) {
+                pesan.textContent = "Tanda tangan berhasil disimpan.";
+            }
+            console.log("TTD saved:", dataURL);
+        }
 
 		<?php if ($this->session->userdata('send_wa')): ?>
 			<?php $wa_data = $this->session->userdata('send_wa'); $this->session->unset_userdata('send_wa'); ?>

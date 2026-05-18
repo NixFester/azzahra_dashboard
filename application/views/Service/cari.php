@@ -210,6 +210,7 @@
                     <div class="p-4" style="background:#f9fafb;">
 
                         <?php if(!empty($signature['signature_url'])): ?>
+                            
                         <div class="text-center mb-3">
                             <img src="<?= $signature['signature_url'] ?>" 
                                 style="border:1px solid #ddd; border-radius:8px; width:100%; background:#fff; padding:6px;">
@@ -217,17 +218,28 @@
                         <div class="text-center mb-3">
                             <button onclick="gantiTTD()" 
                                 class="button px-3 py-2 bg-yellow-500 text-white" 
-                                style="border-radius:8px; font-size:13px;">
+                                style="border-radius:8px; font-size:13px; margin-right:8px;">
                                 <i data-feather="refresh-cw" class="w-3 h-3" style="display:inline;"></i>
-                                Ganti Tanda Tangan
+                                Ganti TTD
+                            </button>
+                            <button onclick="kirimTTD()" 
+                                class="button px-3 py-2 bg-green-500 text-white" 
+                                style="border-radius:8px; font-size:13px;">
+                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
+                                Kirim link TTD Via WA
                             </button>
                         </div>
                         <div id="area-ttd" style="display:none;">
                         <?php else: ?>
                         <div id="area-ttd">
                         <?php endif; ?>
-
-                            <p style="color:#9ca3af; font-size:12px; margin-bottom:8px; text-align:center;">
+                            <button onclick="kirimTTD()" 
+                                class="button px-3 py-2 bg-green-500 text-white" 
+                                style="border-radius:8px; font-size:13px;">
+                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
+                                Kirim link TTD via WA 
+                            </button>
+                            <p style="color:#9ca3af; font-size:12px; margin-bottom:8px; margin-top:8px; text-align:center;">
                                 Gambar tanda tangan di dalam kotak berikut
                             </p>
                             <canvas id="canvas-ttd" width="400" height="160"
@@ -662,6 +674,20 @@ function simpanTTD() {
             pesan.style.color = 'red';
         }
     });
+}
+</script>
+<script>
+function kirimTTD() {
+    var hp = '<?= $trans['cos_hp'] ?>' || '';
+    if (!hp) { alert('Nomor HP customer tidak tersedia'); return; }
+    // format phone number
+    if (hp.startsWith('0')) hp = '62' + hp.substring(1);
+    hp = hp.replace(/\D/g, '');
+
+    var link = '<?= site_url('User/public_signature/'.$trans['trans_kode']) ?>';
+    var message = 'Tanda tangan digital Anda:\n' + link;
+    var wa = 'https://wa.me/' + hp + '?text=' + encodeURIComponent(message);
+    window.open(wa, '_blank');
 }
 </script>
 <?php $this->load->view('Template/footer'); ?>

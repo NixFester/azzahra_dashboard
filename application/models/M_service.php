@@ -842,6 +842,11 @@ public function getSignature($kode)
 {
     return $this->db->get_where('tb_signature', ['no_service' => $kode]);
 }
+
+public function deleteSignature($kode)
+{
+	$this->db->where('no_service', $kode)->delete('tb_signature');
+}
 }
 
 /* End of file M_service.php */
