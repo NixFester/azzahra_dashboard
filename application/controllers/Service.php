@@ -229,9 +229,13 @@ class Service extends CI_Controller {
 		);
 		$marking_result = $this->M_order->insert_order_part_marking($marking_data);
 		log_message('info', 'Order_part_marking insert result: ' . ($marking_result ? 'success' : 'failed'));
-
+		$kodetrans = $this->M_service->gettransId($id_costomer);
 		if ($this->input->is_ajax_request()) {
-			echo json_encode(['status' => 'success']);
+			echo json_encode([
+				'status' => 'success',
+				'trans_kode' => $kodetrans->trans_kode,
+				'id_costomer' => $id_costomer
+			]);
 			exit;
 		} else {
 			$this->session->set_flashdata('sukses', 'DI TAMBAHKAN');

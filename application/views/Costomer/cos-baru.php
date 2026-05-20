@@ -253,65 +253,8 @@
 			        </div>
 	        	</div>
 	        </div>
-	       </form>            <div class="intro-y box mt-5" style="border-radius:12px; overflow:hidden;">
-                <div class="p-3" style="background:#1a3c6e;">
-                    <h5 style="color:#fff; margin:0; font-size:14px;">
-                        <i data-feather="edit-3" class="w-4 h-4" style="display:inline; margin-right:6px;"></i>
-                        Tanda Tangan Pelanggan
-                    </h5>
-                </div>
-                <div class="p-4" style="background:#f9fafb;">
-                    <?php if (!empty($signature['signature_url'])): ?>
-                        <div class="text-center mb-3">
-                            <img id="signature-image" src="<?= $signature['signature_url'] ?>"
-                                style="border:1px solid #ddd; border-radius:8px; width:100%; background:#fff; padding:6px;">
-                        </div>
-                        <div class="text-center mb-3">
-                            <button onclick="gantiTTD()"
-                                class="button px-3 py-2 bg-yellow-500 text-white"
-                                style="border-radius:8px; font-size:13px; margin-right:8px;">
-                                <i data-feather="refresh-cw" class="w-3 h-3" style="display:inline;"></i>
-                                Ganti TTD
-                            </button>
-                            <button onclick="kirimTTD()"
-                                class="button px-3 py-2 bg-green-500 text-white"
-                                style="border-radius:8px; font-size:13px;">
-                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
-                                Kirim link TTD Via WA
-                            </button>
-                        </div>
-                        <div id="area-ttd" style="display:none;">
-                    <?php else: ?>
-                        <div id="area-ttd">
-                    <?php endif; ?>
-                            <button onclick="kirimTTD()"
-                                class="button px-3 py-2 bg-green-500 text-white"
-                                style="border-radius:8px; font-size:13px;">
-                                <i data-feather="send" class="w-3 h-3" style="display:inline;"></i>
-                                Kirim link TTD via WA
-                            </button>
-                            <p style="color:#9ca3af; font-size:12px; margin-bottom:8px; margin-top:8px; text-align:center;">
-                                Gambar tanda tangan di dalam kotak berikut
-                            </p>
-                            <canvas id="canvas-ttd" width="400" height="160"
-                             style="border:2px dashed #1a3c6e; border-radius:8px; background:#fff; cursor:crosshair; display:block; width:100%;"></canvas>
-                            <div style="display:flex; gap:8px; margin-top:10px; justify-content:center;">
-                                <button type="button" onclick="clearTTD()"
-                                    class="button px-3 py-2 border text-gray-600"
-                                    style="border-radius:8px; font-size:13px; flex:1;">
-                                    Hapus
-                                </button>
-                                <button type="button" onclick="simpanTTD()"
-                                    class="button px-3 py-2 text-white"
-                                    style="border-radius:8px; font-size:13px; flex:1; background:#1a3c6e;">
-                                    Simpan
-                                </button>
-                            </div>
-                            <div id="ttd-pesan" style="text-align:center; margin-top:8px; font-size:13px;"></div>
-                        </div>
-                </div>
-            </div>	 </div>
-</div>
+	       </form>            
+		   </div>
 
 	<!-- Overlay for mobile -->
 	<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
@@ -398,15 +341,17 @@
 				if (data.status === 'success') {
 					// Close modal
 					$('#add-new-costom').modal('hide');
+					// Open the public signature page in a new window
+					const publicSignatureUrl = '<?= site_url("User/public_signature/") ?>' + data.trans_kodet;
+					window.open(publicSignatureUrl, '_blank');
 					// Show SweetAlert2 success popup
 					Swal.fire({
 						icon: 'success',
 						title: 'Berhasil!',
-						text: 'DATA BERHASIL DI TAMBAHKAN',
+						text: 'DATA BERHASIL DI TAMBAHKAN. Halaman tanda tangan terbuka di jendela baru.',
 						confirmButtonText: 'OK'
 					}).then(() => {
-						// Redirect after popup is closed
-						window.location.href = '<?= site_url('Service/cos_baru') ?>';
+						window.location.reload();
 					});
 				} else {
 					Swal.fire({
