@@ -2,6 +2,7 @@
 application/logs/
 application/cache/
 application/libraries/
+application/config/
 
 # Composer
 vendor/
@@ -35,3 +36,5 @@ system/cache/
 .htaccess
 
 /backups/
+
+#config file
