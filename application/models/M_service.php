@@ -842,6 +842,20 @@ public function getSignature($kode)
 {
     return $this->db->get_where('tb_signature', ['no_service' => $kode]);
 }
+
+public function deleteSignature($kode)
+{
+	$this->db->where('no_service', $kode)->delete('tb_signature');
+}
+
+public function gettransId($kode)
+{
+	$this->db->select('*')
+			->from('transaksi')
+			->where('cos_kode', $kode);
+
+	return $this->db->get()->row();
+}
 }
 
 /* End of file M_service.php */

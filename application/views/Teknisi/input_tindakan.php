@@ -57,6 +57,7 @@
 							<h4 class="font-semibold text-gray-800"><?= $proses['cos_tipe'] . ' ' . $proses['cos_model'] ?></h4>
 							<p class="text-sm text-gray-600">Status: <?= $proses['cos_status']; ?></p>
 							<p class="text-sm text-gray-500">SN: <?= $proses['cos_no_seri'] ?></p>
+							<p class="text-sm text-gray-500">Password Device: <?= $proses['cos_pswd'] ?></p>
 						</div>
 					</div>
 

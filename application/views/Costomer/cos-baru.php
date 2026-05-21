@@ -1,5 +1,6 @@
-	<?php $this->load->view('Template/header'); ?>
-			<!-- Header -->
+<?php $this->load->view('Template/header'); ?>
+<?php if (!isset($signature)) $signature = []; ?>
+				<!-- Header -->
 			<header class="page-header">
 				<div class="mobile-menu-btn" onclick="toggleMobileSidebar()">
 					<i data-feather="menu"></i>
@@ -99,8 +100,8 @@
 					</table>
 				</div>
 			</div>
-			
-		</div>    
+
+			</div>    
 	</div>
 
 <!-- modal tambah cotomer-->
@@ -132,7 +133,7 @@
 			                    <input type="text" class="input w-full border flex-1" name="nama"  required oninvalid="this.setCustomValidity('Nama customer tidak boleh kosong ?')" oninput="setCustomValidity('')"placeholder="Masukan nama customer">
 			                </div>
 			                <div class="intro-y col-span-12 sm:col-span-6">
-			                    <div class="mb-2">No Tlep</div>
+			                    <div class="mb-2">No Telepon</div>
 			                    <input type="number" class="input w-full border flex-1" name="tlp" required oninvalid="this.setCustomValidity('No tlep customer tidak boleh kosong ?')" oninput="setCustomValidity('')" placeholder="Masukan no tlep customer">
 			                </div>
 			                <div class="intro-y col-span-12 sm:col-span-6">
@@ -149,6 +150,8 @@
 									
 									<option value="Tegal" selected>Tegal</option>
 									<option value="Cibubur">Cibubur</option>
+									<option value="Kampus Saintek">Kampus Saintek</option>
+									<option value="Kampus PKTJ">Kampus PKTJ</option>
 									
 								</select>
 							</div>
@@ -156,6 +159,7 @@
 			                    <div class="mb-2">Tanggal Lahir</div>
 			                    <input type="date" class="input w-full border flex-1" name="cos_tgl_lahir" required oninvalid="this.setCustomValidity('Tanggal lahir tidak boleh kosong ?')" oninput="setCustomValidity('')">
 			                </div>
+
 			            </div>
 			        </div>
 	        	</div>
@@ -249,9 +253,8 @@
 			        </div>
 	        	</div>
 	        </div>
-	       </form>
-	 </div>
-</div>
+	       </form>            
+		   </div>
 
 	<!-- Overlay for mobile -->
 	<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileSidebar()"></div>
@@ -338,15 +341,17 @@
 				if (data.status === 'success') {
 					// Close modal
 					$('#add-new-costom').modal('hide');
+					// Open the public signature page in a new window
+					const publicSignatureUrl = '<?= site_url("User/public_signature/") ?>' + data.trans_kodet;
+					window.open(publicSignatureUrl, '_blank');
 					// Show SweetAlert2 success popup
 					Swal.fire({
 						icon: 'success',
 						title: 'Berhasil!',
-						text: 'DATA BERHASIL DI TAMBAHKAN',
+						text: 'DATA BERHASIL DI TAMBAHKAN. Halaman tanda tangan terbuka di jendela baru.',
 						confirmButtonText: 'OK'
 					}).then(() => {
-						// Redirect after popup is closed
-						window.location.href = '<?= site_url('Service/cos_baru') ?>';
+						window.location.reload();
 					});
 				} else {
 					Swal.fire({
@@ -513,6 +518,60 @@
 				});
 			}
 		}
+
+        function gantiTTD() {
+            const area = document.getElementById('area-ttd');
+            if (area) {
+                area.style.display = 'block';
+            }
+            const signatureImage = document.getElementById('signature-image');
+            if (signatureImage) {
+                const imageWrapper = signatureImage.closest('div.text-center');
+                if (imageWrapper) {
+                    imageWrapper.style.display = 'none';
+                }
+            }
+        }
+
+        function kirimTTD() {
+            const hpInput = document.querySelector("input[name='tlp']");
+            if (!hpInput) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No phone input found.' });
+                return;
+            }
+            let hp = hpInput.value.trim();
+            if (!hp) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'No phone number entered.' });
+                return;
+            }
+            if (hp.startsWith('0')) {
+                hp = '62' + hp.substring(1);
+            }
+            hp = hp.replace(/\D/g, '');
+            const message = `SALAM SATU HATI,\n\nSilakan klik tautan berikut untuk melakukan tanda tangan digital:\n\nhttps://dashboard.azzahracomputertegal.com/service/ttd\n\nTerima kasih.`;
+            const waUrl = `https://wa.me/${hp}?text=${encodeURIComponent(message)}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function clearTTD() {
+            const canvas = document.getElementById("canvas-ttd");
+            if (canvas) {
+                const ctx = canvas.getContext("2d");
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+            }
+        }
+
+        function simpanTTD() {
+            const canvas = document.getElementById("canvas-ttd");
+            if (!canvas) return;
+            const dataURL = canvas.toDataURL("image/png");
+            const pesan = document.getElementById("ttd-pesan");
+            if (pesan) {
+                pesan.textContent = "Tanda tangan berhasil disimpan.";
+            }
+            console.log("TTD saved:", dataURL);
+        }
 
 		<?php if ($this->session->userdata('send_wa')): ?>
 			<?php $wa_data = $this->session->userdata('send_wa'); $this->session->unset_userdata('send_wa'); ?>

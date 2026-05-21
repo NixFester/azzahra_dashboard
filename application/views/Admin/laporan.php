@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	            </div>
             </form>
 			<?php if (isset($all_have_cabang) && $all_have_cabang && isset($payments_by_cabang) && is_array($payments_by_cabang)): ?>
-				<?php foreach (["Tegal", "Cibubur"] as $cabang): ?>
+				<?php foreach (["Tegal", "Cibubur", "Kampus Saintek", "Kampus PKTJ"] as $cabang): ?>
 					<div class="intro-y inbox box mt-5">
 						<div class="flex flex-col lg:flex-row border-b px-5 sm:px-20 pt-10 pb-10 sm:pb-20 text-center sm:text-left">
 							<div class="font-semibold text-theme-1 text-3xl">LAPORAN</div>

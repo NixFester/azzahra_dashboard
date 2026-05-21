@@ -329,9 +329,9 @@ class Admin extends CI_Controller {
 
 		if ($all_have_cabang) {
 			// Group payments by cabang
-			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => [], 'Kampus Saintek' => [], 'Kampus PKTJ' => []);
 			foreach ($payments as $p) {
-				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur' || $p['cabang'] === 'Kampus Saintek' || $p['cabang'] === 'Kampus PKTJ')) {
 					$payments_by_cabang[$p['cabang']][] = $p;
 				}
 			}
@@ -449,9 +449,9 @@ class Admin extends CI_Controller {
 		$payments = $this->M_admin->get_today_payments()->result_array();
 		$all_have_cabang = $this->M_admin->all_payments_have_cabang($payments);
 		if ($all_have_cabang) {
-			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => [], 'Kampus Saintek' => [], 'Kampus PKTJ' => []);
 			foreach ($payments as $p) {
-				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur' || $p['cabang'] === 'Kampus Saintek' || $p['cabang'] === 'Kampus PKTJ')) {
 					$payments_by_cabang[$p['cabang']][] = $p;
 				}
 			}
@@ -521,9 +521,9 @@ class Admin extends CI_Controller {
 		$payments = $this->M_admin->get_payments_range($tgl_awal, $tgl_akhir)->result_array();
 		$all_have_cabang = $this->M_admin->all_payments_have_cabang($payments);
 		if ($all_have_cabang) {
-			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => []);
+			$payments_by_cabang = array('Tegal' => [], 'Cibubur' => [], 'Kampus Saintek' => [], 'Kampus PKTJ' => []);
 			foreach ($payments as $p) {
-				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur')) {
+				if (isset($p['cabang']) && ($p['cabang'] === 'Tegal' || $p['cabang'] === 'Cibubur' || $p['cabang'] === 'Kampus Saintek' || $p['cabang'] === 'Kampus PKTJ')) {
 					$payments_by_cabang[$p['cabang']][] = $p;
 				}
 			}
