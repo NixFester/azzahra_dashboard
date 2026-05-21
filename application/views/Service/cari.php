@@ -641,8 +641,6 @@ function gantiTTD() {
 }
 
 function simpanTTD() {
-    // Tambahkan inisial sebelum disimpan
-    tambahInisial();
 
     var dataURL = canvas.toDataURL('image/png');
     var kode    = '<?= $trans['trans_kode'] ?>';
