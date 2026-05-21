@@ -628,13 +628,6 @@ function gantiTTD() {
     document.getElementById('area-ttd').style.display = 'block';
 }
 
-function tambahInisial() {
-    ctx.font         = 'italic 13px Arial';
-    ctx.fillStyle    = '#aaaaaa';
-    ctx.textAlign    = 'right';
-    ctx.fillText('<?= $trans['trans_kode'] ?>' + ' - ' + namaPelanggan, canvas.width - 10, canvas.height - 10);
-}
-
 function simpanTTD() {
     // Tambahkan inisial sebelum disimpan
     tambahInisial();
