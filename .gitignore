@@ -1,40 +1,42 @@
-# CodeIgniter 3
-application/logs/
-application/cache/
-application/libraries/
-application/config/
+# CodeIgniter 3 Specific
+user_guide/
+application/cache/*
+!application/cache/index.html
+application/logs/*
+!application/logs/index.html
 
-# Composer
-vendor/
-composer.lock
+# User Uploads / Media (keep index.html files)
+uploads/*
+!uploads/index.html
+!uploads/**/index.html
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Zip Archives & Backups
+*.zip
+*.tar
+*.gz
+*.rar
+*.7z
 
-# OS
+# SQL Database Dumps
+*.sql
+DB_MYSQL/
+
+# cPanel / Server Configurations & Logs
+error_log
+php.ini
+.user.ini
+*.shtml
+.well-known/
+
+# Temporary Test Files & Tokens
+test.php
+testinfo.php
+test.jpg
+tokenApiAzventory.txt
+
+# OS & Editor Files
 .DS_Store
 Thumbs.db
-
-# Environment
-.env
-.env.local
-
-# User guide
-user_guide/
-
-# System files
-system/logs/
-system/cache/
-
-# Misc
-*.log
-*.sql
-.htaccess
-
-/backups/
-
-#config file
+.idea/
+.vscode/
+*.swp

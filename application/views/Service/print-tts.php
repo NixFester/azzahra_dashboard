@@ -101,6 +101,26 @@ function maskPhone($phone) {
             white-space:normal;  /* teks di dalamnya boleh turun baris */
         }
 
+        /* TEKNISI SECTION */
+        .teknisi-section{
+            position: absolute;
+            right: 0;
+            top: 60px;
+            text-align: left;
+            font-size: 11px;
+            line-height: 1.8;
+        }
+        .teknisi-section .label{
+            font-weight: 600;
+            color: #555;
+        }
+        .teknisi-section .line{
+            display: inline-block;
+            
+            min-width: 150px;
+            margin-left: 5px;
+        }
+
         /* SECTION RINGKASAN */
         .summary-row{
             position: relative;
@@ -296,7 +316,7 @@ function maskPhone($phone) {
             .brand-box{
                 max-width: 60%;
             }
-            
+
             .brand-title {
                 font-size: 18px;
             }
@@ -345,7 +365,7 @@ function maskPhone($phone) {
         <div class="brand-box">
             <img src="<?php echo base_url('assets/image/logo_tts.png'); ?>" class="brand-logo" alt="Logo">
             <div>
-                
+
                 <div class="brand-sub">
                     Kantor Pusat  : Ruko Citraland Blok B/11, Kraton Tegal<br>
                     Kantor Cabang : Ruko Kranggan Permai RT.16 No.27, Bekasi<br>
@@ -358,7 +378,13 @@ function maskPhone($phone) {
         <!-- kolom kanan hanya informasi yang sudah ada -->
         <div class="contact-icons">
             <div>No. Invoice: <?php echo $data['cos_kode']; ?></div>
-            <div>Tanggal: <?php echo $data['cos_tanggal']; ?> <?php echo $data['cos_jam']; ?><</div>
+            <div>Tanggal: <?php echo $data['cos_tanggal']; ?> <?php echo $data['cos_jam']; ?></div>
+        </div>
+
+        <!-- TEKNISI INFO -->
+        <div class="teknisi-section">
+            <div><span class="label">TEKNISI PEMASANGAN:</span> <span class="line"></span></div>
+            <div style="margin-top: 25px;"><span class="label">TEKNISI PENGECEKAN:</span> <span class="line"></span></div>
         </div>
     </div>
 
@@ -449,10 +475,14 @@ function maskPhone($phone) {
         </div>
     </div>
 
+    <!-- KETERANGAN -->
+    <div style="margin-top: 15px;">
+        <strong>KETERANGAN TAMBAHAN:</strong>
+    </div>
+
 </div>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <!-- <script>window.print();</script> -->
 </body>
 </html>
-

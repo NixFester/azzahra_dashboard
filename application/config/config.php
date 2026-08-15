@@ -23,7 +23,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost/dashboardAzzahra/';
+$config['base_url'] = 'https://dashboard.azzahracomputertegal.com/';
+
 
 /*
 |--------------------------------------------------------------------------
@@ -223,7 +224,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 4;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -545,8 +546,6 @@ $config['laravel_voucher_path'] = 'C:/xampp/htdocs/api_e_service/storage/app/pub
 // Voucher image URL
 $config['voucher_image_url'] = 'https://api.azzahracomputertegal.com/api/storage/assets/Vocer/';
 // $config['voucher_image_url'] = 'http://192.168.1.21:8000/storage/assets/Vocer/';
-
-// azventory
 $config['azventory_api_key'] = '1|Ci58W5WrCPJgEmM1Mg35JIRFqCBWyZsU2n6sLnFAd4397a08';
 
-$config['enable_profiler'] = TRUE;
+

@@ -217,7 +217,7 @@ class Cetak extends CI_Controller {
         $pdf->Cell(190,8,'AZZAHRA COMPUTER',0,1,'C');
         $pdf->SetFont('times','',10);
         $pdf->Cell(190,4,'ALAMAT : RUKO CITRALAND B/11 JL.SIPELEM - TEGAL ',0,1,'C');
-        $pdf->Cell(190,4,'Telp. 0823-340909',0,1,'C');
+        $pdf->Cell(190,4,'Telp. 0283-340909',0,1,'C');
         $pdf->Cell(190,4,'WA : 0859-4200-1720',0,1,'C');
 
         $pdf->SetLineWidth(0.7);
@@ -411,7 +411,7 @@ private function _render_thermal_receipt(array $opts)
     $pdf->SetFont($font, 'B', 10);         // was 10 (unchanged, already 10)
     $pdf->Cell($w, 4, 'AZZAHRA COMPUTER', 0, 1, 'C');
     $pdf->SetFont($font, '', 8);           // was 7
-    $pdf->Cell($w, 3, 'Telp: 0823-340909  |  WA: 0859-4200-1720', 0, 1, 'C');
+    $pdf->Cell($w, 3, 'Telp: 0283-340909  |  WA: 0859-4200-1720', 0, 1, 'C');
 
     // ── Judul ────────────────────────────────────────────
     $pdf->Ln(1);
@@ -733,31 +733,31 @@ function print_5()
 function print_6()
 {
     $this->load->library('pdf');
- 
+
     $trans_kode = $this->uri->segment(3);
     if (!$trans_kode) {
         show_error('Kode transaksi tidak ditemukan');
         return;
     }
- 
+
     $trans = $this->db->get_where('transaksi', ['trans_kode' => $trans_kode])->row_array();
     if (!$trans) {
         show_error('Data transaksi tidak ditemukan');
         return;
     }
- 
+
     $customer = $this->db->get_where('costomer', ['id_costomer' => $trans['cos_kode']])->row_array();
     if (!$customer) {
         show_error('Data customer tidak ditemukan');
         return;
     }
- 
+
     $pdf = new FPDF('P', 'mm', 'A4');
     $pdf->setMargins(15, 15, 15);
     $pdf->SetAutoPageBreak(true, 15);
     $pdf->AddPage();
     $pdf->setTitle('Pengakuan Pelanggan');
- 
+
     $bulan_id = [
         1  => 'Januari', 2  => 'Februari', 3  => 'Maret',
         4  => 'April',   5  => 'Mei',       6  => 'Juni',
@@ -765,11 +765,27 @@ function print_6()
         10 => 'Oktober', 11 => 'November',  12 => 'Desember'
     ];
     $tanggal = date('d') . ' ' . $bulan_id[(int)date('n')] . ' ' . date('Y');
- 
+
+    // Helper: cURL download — works on cPanel where allow_url_fopen is Off
+    $fetch = function($url, $tmp_path) {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        $data = curl_exec($ch);
+        curl_close($ch);
+        if ($data !== false && strlen($data) > 0) {
+            file_put_contents($tmp_path, $data);
+            return file_exists($tmp_path) && filesize($tmp_path) > 0;
+        }
+        return false;
+    };
+
     // === PENGAKUAN PELANGGAN — no border, bold underline, Times ===
-    $pdf->SetFont('Times', 'B', 11);
+    $pdf->SetFont('Times', 'BU', 11);
     $pdf->Cell(180, 7, 'PENGAKUAN PELANGGAN', 0, 1, 'L');
- 
+
     // === Statement body text — bordered, Times regular ===
     $pdf->SetFont('Times', '', 10);
     $pdf->MultiCell(
@@ -779,15 +795,15 @@ function print_6()
         1,
         'J'
     );
- 
+
     // === Two-column signature table ===
-    $col_w  = 90;
-    $sig_w  = 50;
-    $sig_h  = 20;
-    $left_x = 15;
+    $col_w   = 90;
+    $sig_w   = 50;
+    $sig_h   = 20;
+    $left_x  = 15;
     $right_x = 15 + $col_w;
- 
-    // Label row — underlined, no bold, Times
+
+    // Label row
     $label_y = $pdf->GetY();
     $pdf->SetFont('Times', 'U', 10);
     $pdf->SetXY($left_x, $label_y);
@@ -795,54 +811,46 @@ function print_6()
     $pdf->SetXY($right_x, $label_y);
     $pdf->Cell($col_w, 6, 'nama teknisi:', 'LTR', 0, 'L');
     $pdf->Ln(6);
- 
+
     // Signature image row
     $sig_y = $pdf->GetY();
- 
+
     // --- Customer signature (dynamic from tb_signature) ---
     $this->db->where('no_service', $trans_kode);
     $sig_row = $this->db->get('tb_signature')->row_array();
- 
+
     if ($sig_row && !empty($sig_row['signature_url'])) {
         $tmp_file = sys_get_temp_dir() . '/sig_cust_' . preg_replace('/[^A-Za-z0-9_-]/', '_', $trans_kode) . '.png';
-        $img_data = @file_get_contents($sig_row['signature_url']);
-        if ($img_data !== false) {
-            @file_put_contents($tmp_file, $img_data);
-            if (file_exists($tmp_file) && filesize($tmp_file) > 0) {
-                $pdf->Image($tmp_file, $left_x + 5, $sig_y + 2, $sig_w, $sig_h);
-                @unlink($tmp_file);
-            }
+        if ($fetch($sig_row['signature_url'], $tmp_file)) {
+            $pdf->Image($tmp_file, $left_x + 5, $sig_y + 2, $sig_w, $sig_h);
+            @unlink($tmp_file);
         }
     }
- 
+
     // --- Technician signature (static Cloudinary URL) ---
-    $tech_url  = 'https://res.cloudinary.com/dbwvddsvb/image/upload/v1779239110/tanda_tangan/11930-MUHAMMAD_ALWI_ZAHIDAN.png';
-    $tech_tmp  = sys_get_temp_dir() . '/sig_tech_azzahra.png';
-    $tech_data = @file_get_contents($tech_url);
-    if ($tech_data !== false) {
-        @file_put_contents($tech_tmp, $tech_data);
-        if (file_exists($tech_tmp) && filesize($tech_tmp) > 0) {
-            $pdf->Image($tech_tmp, $right_x + 5, $sig_y + 2, $sig_w, $sig_h);
-            @unlink($tech_tmp);
-        }
+    $tech_url = 'https://res.cloudinary.com/dbwvddsvb/image/upload/v1779239110/tanda_tangan/11930-MUHAMMAD_ALWI_ZAHIDAN.png';
+    $tech_tmp = sys_get_temp_dir() . '/sig_tech_azzahra.png';
+    if ($fetch($tech_url, $tech_tmp)) {
+        $pdf->Image($tech_tmp, $right_x + 5, $sig_y + 2, $sig_w, $sig_h);
+        @unlink($tech_tmp);
     }
- 
-    // Draw borders only (no text) for signature space
+
+    // Draw borders only for signature space
     $pdf->SetXY($left_x, $sig_y);
     $pdf->Cell($col_w, $sig_h + 4, '', 'L', 0);
     $pdf->Cell($col_w, $sig_h + 4, '', 'LR', 1);
- 
-    // === Name row — Times regular ===
+
+    // === Name row ===
     $pdf->SetFont('Times', '', 10);
     $pdf->SetXY($left_x, $pdf->GetY());
     $pdf->Cell($col_w, 6, $customer['cos_nama'], 'L', 0, 'L');
     $pdf->Cell($col_w, 6, 'Azzahra Computer', 'LR', 1, 'L');
- 
-    // === Date row — closes the table with bottom border ===
+
+    // === Date row — closes the table ===
     $pdf->SetXY($left_x, $pdf->GetY());
     $pdf->Cell($col_w, 6, 'tanggal: ' . $tanggal, 'LB', 0, 'L');
     $pdf->Cell($col_w, 6, 'tanggal: ' . $tanggal, 'LRB', 1, 'L');
- 
+
     $pdf->Output('PENGAKUAN_PELANGGAN_' . $trans_kode . '.pdf', 'I');
 }
 

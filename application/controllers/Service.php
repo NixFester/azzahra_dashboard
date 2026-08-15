@@ -1210,9 +1210,7 @@ class Service extends CI_Controller {
 		'file'           => 'data:image/png;base64,' . $image_data,
 		'upload_preset'  => $upload_preset,
 		'folder'         => 'tanda_tangan',
-		'public_id'      => $kode . '-' . preg_replace('/\s+/', '_', strtoupper($this->M_service->trans($kode)->row()->cos_nama)),
-		'overwrite'      => 'true',
-		'invalidate'     => 'true',
+		'public_id' => $kode . '-' . preg_replace('/\s+/', '_', strtoupper($this->M_service->trans($kode)->row()->cos_nama)),
 	));
     
 

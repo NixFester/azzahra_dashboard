@@ -219,7 +219,7 @@ table td {
 <body>
 <div class="page">
 	<div class="header">
-		<div class="company-name">CV AZZAHRA COMPUTER</div>
+		<div class="company-name">AZZAHRA INOVASI TEKNOLOGI</div>
 		<div class="company-sub">AUTHORIZED SERVICE CENTER & INFRASTRUKTUR IT</div>
 		<div class="company-address">HEAD OFFICE : RUKO CITRALAND TEGAL BLOK B/11, TEGAL</div>
 		<div class="company-address">BRANCH OFFICE : RUKO KRANGGAN CIBUBUR, BLOK RT16/27, Telp.(0283)34.09.09</div>
