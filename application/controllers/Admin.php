@@ -8,6 +8,7 @@ class Admin extends CI_Controller {
 		$this->load->model('M_admin');
 		$this->load->model('M_order');
 		$this->load->model('M_customer');
+		$this->load->library('xendit_lib');
 		if($this->session->userdata('masuk') != TRUE){
 	      $url=base_url();
 	      redirect($url);
@@ -94,6 +95,81 @@ class Admin extends CI_Controller {
 				'trans'	=> $this->M_admin->cus_konf_bank()
 			);
 		$this->load->view('Admin/cus_konf_bank', $data);
+	}
+
+	public function create_xendit_invoice($dtl_kode = NULL)
+	{
+		if (!$dtl_kode) {
+			$dtl_kode = $this->input->post('dtl_kode');
+		}
+
+		$dtl = $this->M_admin->get_detail_by_kode($dtl_kode);
+		if (!$dtl) {
+			$this->session->set_flashdata('error', 'Detail transaksi tidak ditemukan.');
+			redirect('Admin/cus_konf_bank', 'refresh');
+			return;
+		}
+
+		$external_id = 'INV-' . $dtl['trans_kode'] . '-' . $dtl['dtl_kode'];
+		$amount = $dtl['dtl_jml_bayar'];
+		$email = !empty($dtl['cos_email']) ? $dtl['cos_email'] : 'customer@azzahracomputertegal.com';
+		$customer_name = !empty($dtl['cos_nama']) ? $dtl['cos_nama'] : 'Customer';
+		$description = 'Pembayaran Transaksi ' . $dtl['trans_kode'] . ' - Azzahra Computer';
+		$redirect_url = site_url('Admin/cus_konf_bank');
+
+		$res = $this->xendit_lib->create_invoice($external_id, $amount, $email, $description, $customer_name, $redirect_url);
+
+		if ($res['status'] && isset($res['data']['invoice_url'])) {
+			$update = array(
+				'xendit_invoice_id'  => $res['data']['id'],
+				'xendit_payment_url' => $res['data']['invoice_url'],
+				'xendit_status'      => $res['data']['status']
+			);
+			$this->M_admin->update_xendit_detail($dtl_kode, $update);
+
+			$this->session->set_flashdata('sukses', 'Invoice Xendit Berhasil Dibuat!');
+		} else {
+			$this->session->set_flashdata('error', 'Gagal membuat Invoice Xendit: ' . $res['message']);
+		}
+
+		redirect('Admin/cus_konf_bank', 'refresh');
+	}
+
+	public function check_xendit_status($dtl_kode = NULL)
+	{
+		if (!$dtl_kode) {
+			$dtl_kode = $this->input->post('dtl_kode');
+		}
+
+		$dtl = $this->M_admin->get_detail_by_kode($dtl_kode);
+		if (!$dtl || empty($dtl['xendit_invoice_id'])) {
+			$this->session->set_flashdata('error', 'Invoice Xendit belum dibuat.');
+			redirect('Admin/cus_konf_bank', 'refresh');
+			return;
+		}
+
+		$res = $this->xendit_lib->get_invoice($dtl['xendit_invoice_id']);
+
+		if ($res['status'] && isset($res['data']['status'])) {
+			$inv_status = $res['data']['status'];
+			$payment_method = isset($res['data']['payment_channel']) ? $res['data']['payment_channel'] : (isset($res['data']['payment_method']) ? $res['data']['payment_method'] : NULL);
+
+			$update = array(
+				'xendit_status'         => $inv_status,
+				'xendit_payment_method' => $payment_method
+			);
+
+			if (in_array($inv_status, array('PAID', 'SETTLED'))) {
+				$update['dtl_stt_stor'] = 'Disetorkan';
+			}
+
+			$this->M_admin->update_xendit_detail($dtl_kode, $update);
+			$this->session->set_flashdata('sukses', 'Status Xendit diperbarui: ' . $inv_status);
+		} else {
+			$this->session->set_flashdata('error', 'Gagal mengecek status Xendit: ' . $res['message']);
+		}
+
+		redirect('Admin/cus_konf_bank', 'refresh');
 	}
 	function cus_proses()
 	{

@@ -17,9 +17,14 @@ uploads/*
 *.rar
 *.7z
 
-# SQL Database Dumps
+# SQL Database Dumps & SQLite Databases
 *.sql
+*.sqlite
+*.db
 DB_MYSQL/
+
+# Sensitive Database Configuration
+application/config/database.php
 
 # cPanel / Server Configurations & Logs
 error_log

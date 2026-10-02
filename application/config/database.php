@@ -75,11 +75,11 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'azzahra2_azza',
-	'password' => 'azzahramultibrand',
-	'database' => 'azzahra2_azza',
-	'dbdriver' => 'mysqli',
+	'hostname' => '',
+	'username' => '',
+	'password' => '',
+	'database' => APPPATH . 'database/azzahra2_azza.sqlite',
+	'dbdriver' => 'sqlite3',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
@@ -97,11 +97,11 @@ $db['default'] = array(
 
 $db['absensi'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'azzahra2_login',
-	'password' => '12345',
-	'database' => 'azzahra2_absensi',
-	'dbdriver' => 'mysqli',
+	'hostname' => '',
+	'username' => '',
+	'password' => '',
+	'database' => APPPATH . 'database/azzahra2_absensi.sqlite',
+	'dbdriver' => 'sqlite3',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),

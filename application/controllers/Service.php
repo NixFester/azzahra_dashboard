@@ -565,6 +565,22 @@ class Service extends CI_Controller {
 		$this->load->view('Service/pelunasan', $data);
 	}
 
+	function save_discount()
+	{
+		$trans_kode = $this->input->post('trans_kode');
+		$discount   = (float) str_replace('.', '', $this->input->post('discount'));
+
+		if (!$trans_kode) {
+			echo json_encode(['status' => 'error', 'message' => 'Kode transaksi tidak ditemukan']);
+			return;
+		}
+
+		$this->db->where('trans_kode', $trans_kode);
+		$this->db->update('transaksi', ['trans_discount' => $discount]);
+
+		echo json_encode(['status' => 'ok', 'message' => 'Diskon berhasil disimpan']);
+	}
+
 	//print
 
 	function print_tts()

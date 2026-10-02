@@ -3,6 +3,31 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_admin extends CI_Model {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->_check_xendit_columns();
+	}
+
+	private function _check_xendit_columns()
+	{
+		if ($this->db->table_exists('transaksi_detail')) {
+			$fields = $this->db->list_fields('transaksi_detail');
+			if (!in_array('xendit_invoice_id', $fields)) {
+				$this->db->query("ALTER TABLE `transaksi_detail` ADD `xendit_invoice_id` VARCHAR(100) NULL DEFAULT NULL");
+			}
+			if (!in_array('xendit_payment_url', $fields)) {
+				$this->db->query("ALTER TABLE `transaksi_detail` ADD `xendit_payment_url` VARCHAR(255) NULL DEFAULT NULL");
+			}
+			if (!in_array('xendit_status', $fields)) {
+				$this->db->query("ALTER TABLE `transaksi_detail` ADD `xendit_status` VARCHAR(50) NULL DEFAULT NULL");
+			}
+			if (!in_array('xendit_payment_method', $fields)) {
+				$this->db->query("ALTER TABLE `transaksi_detail` ADD `xendit_payment_method` VARCHAR(50) NULL DEFAULT NULL");
+			}
+		}
+	}
+
 	//customer
 	
 	function baru()
@@ -27,7 +52,7 @@ class M_admin extends CI_Model {
 	}
 	function cus_konf_bank()
 	{
-		$this->db->select('*');
+		$this->db->select('transaksi_detail.*, transaksi.*, costomer.cos_nama, costomer.cos_hp, costomer.cos_email, karyawan.kry_nama');
 	    $this->db->from('costomer');
 	    $this->db->join('transaksi','costomer.id_costomer=transaksi.cos_kode');
 	    $this->db->join('transaksi_detail','transaksi.trans_kode=transaksi_detail.trans_kode');
@@ -37,6 +62,32 @@ class M_admin extends CI_Model {
 	    $this->db->where('transaksi_detail.dtl_stt_stor', 'Menunggu');	    
 	    $query = $this->db->get();
 	    return $query;
+	}
+
+	function get_detail_by_kode($dtl_kode)
+	{
+		$this->db->select('transaksi_detail.*, transaksi.*, costomer.cos_nama, costomer.cos_hp, costomer.cos_email');
+		$this->db->from('transaksi_detail');
+		$this->db->join('transaksi', 'transaksi_detail.trans_kode = transaksi.trans_kode');
+		$this->db->join('costomer', 'transaksi.cos_kode = costomer.id_costomer', 'left');
+		$this->db->where('transaksi_detail.dtl_kode', $dtl_kode);
+		return $this->db->get()->row_array();
+	}
+
+	function get_detail_by_invoice_id($invoice_id)
+	{
+		$this->db->select('transaksi_detail.*, transaksi.*, costomer.cos_nama, costomer.cos_hp, costomer.cos_email');
+		$this->db->from('transaksi_detail');
+		$this->db->join('transaksi', 'transaksi_detail.trans_kode = transaksi.trans_kode');
+		$this->db->join('costomer', 'transaksi.cos_kode = costomer.id_costomer', 'left');
+		$this->db->where('transaksi_detail.xendit_invoice_id', $invoice_id);
+		return $this->db->get()->row_array();
+	}
+
+	function update_xendit_detail($dtl_kode, $data)
+	{
+		$this->db->where('dtl_kode', $dtl_kode);
+		return $this->db->update('transaksi_detail', $data);
 	}
 	function bca()
 	{

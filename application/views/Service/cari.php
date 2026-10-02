@@ -198,7 +198,7 @@
                             </a>
                         </div>
                     </div>
-                </div>
+
                 <!-- TANDA TANGAN DIGITAL -->
                 <div class="box mt-5" style="border-radius:12px; overflow:hidden;">
                     <div class="p-3" style="background:#1a3c6e;">
@@ -263,6 +263,7 @@
                     </div>
                 </div>
                 <!-- END TANDA TANGAN -->
+                </div>
                 <div class="tab-content__pane" id="pelunasan">
                     <div class="pos__ticket box p-2 mt-5">
                         <?php
@@ -276,6 +277,20 @@
                             </a>
                         <?php } ?>
                         
+                    </div>
+                    <!-- Edit Diskon (Pelunasan tab) -->
+                    <div class="box p-5 mt-5">
+                        <div class="flex items-center mb-3">
+                            <i data-feather="tag" class="w-4 h-4 text-theme-1 mr-2"></i>
+                            <h4 class="font-medium text-base">Edit Diskon</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="input-discount-cari" class="input border text-right flex-1" value="<?= number_format($trans['trans_discount'], 0) ?>" onkeydown="return numbersonly(this, event);" onkeyup="javascript:tandaPemisahTitik(this);" placeholder="0">
+                            <button type="button" id="btn-save-discount-cari" class="button px-4 py-2 bg-theme-1 text-white rounded-lg text-sm font-semibold shadow hover:shadow-lg transform hover:scale-105 transition-all duration-200" onclick="saveDiscountCari()">
+                                <i data-feather="save" class="w-4 h-4 inline-block mr-1"></i> Simpan Diskon
+                            </button>
+                        </div>
+                        <small class="text-gray-500 mt-2 block">Diskon saat ini: <span class="font-semibold text-theme-9">Rp. <?= number_format($trans['trans_discount'], 0) ?>,-</span></small>
                     </div>
                     <form method="post" action="<?= site_url($role == 'cs' ? 'Service/pelunasan_save' : 'Kasir/pelunasan')?>">
                         <div class="box p-5 mt-5">
@@ -689,5 +704,65 @@ function kirimTTD() {
     var wa = 'https://wa.me/' + hp + '?text=' + encodeURIComponent(message);
     window.open(wa, '_blank');
 }
+</script>
+
+<!-- modal konfirmasi simpan diskon -->
+<div class="modal" id="modal-confirm-discount-cari">
+    <div class="modal__content p-8 intro-y box" style="max-width:420px;">
+        <div class="flex items-center mb-4">
+            <i data-feather="tag" class="w-6 h-6 text-theme-1 mr-3"></i>
+            <h3 class="font-semibold text-lg">Konfirmasi Diskon</h3>
+        </div>
+        <p class="text-gray-600 mb-2">Anda akan mengubah diskon menjadi:</p>
+        <p class="text-2xl font-bold text-theme-1 mb-1" id="confirm-discount-display-cari">Rp. 0,-</p>
+        <p class="text-sm text-gray-500 mb-6">Pastikan nominal sudah benar sebelum menyimpan.</p>
+        <div class="flex justify-end gap-3">
+            <button type="button" data-dismiss="modal" class="button border text-gray-700 px-5">Batal</button>
+            <button type="button" id="btn-confirm-discount-ok-cari" class="button bg-theme-1 text-white px-5">
+                <i data-feather="check" class="w-4 h-4 inline-block mr-1"></i> Ya, Simpan
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+function formatRupiahDiskon(angka) {
+    var num = String(angka).replace(/[^0-9]/g, '');
+    return 'Rp. ' + parseInt(num || 0).toLocaleString('id-ID') + ',-';
+}
+
+function saveDiscountCari() {
+    var raw = String($('#input-discount-cari').val()).replace(/\./g, '');
+    var disc = parseInt(raw) || 0;
+    $('#confirm-discount-display-cari').text(formatRupiahDiskon(disc));
+    $('#modal-confirm-discount-cari').modal('show');
+}
+
+$(document).ready(function() {
+    if (typeof feather !== 'undefined') feather.replace();
+
+    $('#btn-confirm-discount-ok-cari').on('click', function() {
+        var raw = String($('#input-discount-cari').val()).replace(/\./g, '');
+        var disc = parseInt(raw) || 0;
+        var trans_kode = '<?= $trans["trans_kode"] ?>';
+        $('#modal-confirm-discount-cari').modal('hide');
+        $('#btn-save-discount-cari').prop('disabled', true).html('<i data-feather="loader" class="w-4 h-4 inline-block mr-1 animate-spin"></i> Menyimpan...');
+        $.ajax({
+            url: '<?= site_url("Service/save_discount") ?>',
+            type: 'POST',
+            data: { trans_kode: trans_kode, discount: disc },
+            success: function(res) {
+                Swal.fire('Berhasil', 'Diskon berhasil disimpan', 'success').then(() => {
+                    location.reload();
+                });
+            },
+            error: function() {
+                Swal.fire('Error', 'Terjadi kesalahan saat menyimpan diskon', 'error');
+                $('#btn-save-discount-cari').prop('disabled', false).html('<i data-feather="save" class="w-4 h-4 inline-block mr-1"></i> Simpan Diskon');
+                if (typeof feather !== 'undefined') feather.replace();
+            }
+        });
+    });
+});
 </script>
 <?php $this->load->view('Template/footer'); ?>

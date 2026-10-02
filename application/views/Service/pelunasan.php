@@ -143,24 +143,38 @@
 		                                        	<?= "Rp. ".number_format($proses['trans_total'], 0).",-"; ?>	
 		                                        </div>
 		                                    </div>
-		                                    <div class="flex mt-4">
-		                                        <div class="mr-auto">Discount</div>
-		                                        <div>
-		                                        	<?= "Rp. ".number_format($proses['trans_discount'], 0).",-"; ?>		
+		                                    <div class="flex mt-4 items-center">
+		                                        <div class="mr-auto font-medium">Discount</div>
+		                                        <div class="flex items-center gap-2">
+		                                        	<input type="text" id="input-discount" class="input border text-right" style="width:130px;" value="<?= number_format($proses['trans_discount'], 0) ?>" onkeydown="return numbersonly(this, event);" onkeyup="javascript:tandaPemisahTitik(this); hitungKekurangan();" placeholder="0">
+		                                        	<button type="button" id="btn-save-discount" class="button px-3 py-1 bg-theme-1 text-white rounded-lg text-xs font-semibold shadow hover:shadow-lg transform hover:scale-105 transition-all duration-200" onclick="saveDiscount()">
+		                                        		<i data-feather="save" class="w-3 h-3 inline-block mr-1"></i> Simpan
+		                                        	</button>
 		                                        </div>
+		                                    </div>
+		                                    <div class="flex mt-1">
+		                                    	<small class="text-gray-500 mr-auto">Diskon saat ini: <span class="font-semibold text-theme-9">Rp. <?= number_format($proses['trans_discount'], 0) ?>,-</span></small>
 		                                    </div>
 		                                    <div class="flex mt-4">
 		                                        <div class="mr-auto">Down Payment</div>
 		                                        <div>
-		                                        	<?= "Rp. ".number_format($proses['dtl_jml_bayar'], 0).",-"; ?>	
+		                                        	<?= "Rp. ".number_format($proses['dtl_jml_bayar'], 0).","; ?>	
 		                                        </div>
 		                                    </div>
 		                                    <div class="flex mt-4">
 		                                        <div class="mr-auto">Kekurangan</div>
-		                                        <div class="text-theme-6">
-		                                        	<?= "Rp. ".number_format($proses['trans_total'] - $proses['trans_discount'] - $proses['dtl_jml_bayar'], 0).",-"; ?>	
+		                                        <div class="text-theme-6 font-bold" id="label-kekurangan">
+		                                        	<?= "Rp. ".number_format($proses['trans_total'] - $proses['trans_discount'] - $proses['dtl_jml_bayar'], 0).","; ?>	
 		                                        </div>
 		                                    </div>                                   
+	                                    <?php
+	                                    $js_trans_total = (int)$proses['trans_total'];
+	                                    $js_dp = (int)$proses['dtl_jml_bayar'];
+	                                    ?>
+	                                    <script>
+	                                    var _transTotal = <?= $js_trans_total ?>;
+	                                    var _dp        = <?= $js_dp ?>;
+	                                    </script>
 	                                    
 	                                </div>
                         		</div>
@@ -369,8 +383,73 @@
         </div>
        </div>
 
+       <!-- modal konfirmasi simpan diskon -->
+       <div class="modal" id="modal-confirm-discount">
+        <div class="modal__content p-8 intro-y box" style="max-width:420px;">
+        	<div class="flex items-center mb-4">
+        		<i data-feather="tag" class="w-6 h-6 text-theme-1 mr-3"></i>
+        		<h3 class="font-semibold text-lg">Konfirmasi Diskon</h3>
+        	</div>
+        	<p class="text-gray-600 mb-2">Anda akan mengubah diskon menjadi:</p>
+        	<p class="text-2xl font-bold text-theme-1 mb-1" id="confirm-discount-display">Rp. 0,-</p>
+        	<p class="text-sm text-gray-500 mb-6">Pastikan nominal sudah benar sebelum menyimpan.</p>
+        	<div class="flex justify-end gap-3">
+        		<button type="button" data-dismiss="modal" class="button border text-gray-700 px-5">Batal</button>
+        		<button type="button" id="btn-confirm-discount-ok" class="button bg-theme-1 text-white px-5">
+        			<i data-feather="check" class="w-4 h-4 inline-block mr-1"></i> Ya, Simpan
+        		</button>
+        	</div>
+        </div>
+       </div>
+
        <script>
+       function formatRupiah(angka) {
+           var num = String(angka).replace(/[^0-9]/g, '');
+           return 'Rp. ' + parseInt(num || 0).toLocaleString('id-ID') + ',-';
+       }
+
+       function hitungKekurangan() {
+           var raw = String($('#input-discount').val()).replace(/\./g, '');
+           var disc = parseInt(raw) || 0;
+           var kekurangan = _transTotal - disc - _dp;
+           $('#label-kekurangan').text(formatRupiah(kekurangan));
+       }
+
+       function saveDiscount() {
+           var raw = String($('#input-discount').val()).replace(/\./g, '');
+           var disc = parseInt(raw) || 0;
+           $('#confirm-discount-display').text(formatRupiah(disc));
+           $('#modal-confirm-discount').modal('show');
+       }
+
        $(document).ready(function() {
+           // Inisialisasi feather icons baru
+           if (typeof feather !== 'undefined') feather.replace();
+
+           // Confirm simpan diskon
+           $('#btn-confirm-discount-ok').on('click', function() {
+               var raw = String($('#input-discount').val()).replace(/\./g, '');
+               var disc = parseInt(raw) || 0;
+               var trans_kode = '<?= $proses["trans_kode"] ?>';
+               $('#modal-confirm-discount').modal('hide');
+               $('#btn-save-discount').prop('disabled', true).html('<i data-feather="loader" class="w-3 h-3 inline-block mr-1 animate-spin"></i> Menyimpan...');
+               $.ajax({
+                   url: '<?= site_url("Service/save_discount") ?>',
+                   type: 'POST',
+                   data: { trans_kode: trans_kode, discount: disc },
+                   success: function(res) {
+                       Swal.fire('Berhasil', 'Diskon berhasil disimpan', 'success').then(() => {
+                           location.reload();
+                       });
+                   },
+                   error: function() {
+                       Swal.fire('Error', 'Terjadi kesalahan saat menyimpan diskon', 'error');
+                       $('#btn-save-discount').prop('disabled', false).html('<i data-feather="save" class="w-3 h-3 inline-block mr-1"></i> Simpan');
+                       if (typeof feather !== 'undefined') feather.replace();
+                   }
+               });
+           });
+
            // Handle form submit for tambah tindakan
            $('#tambah-tindakan-form').on('submit', function(e) {
                e.preventDefault();
