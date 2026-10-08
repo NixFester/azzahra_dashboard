@@ -1,0 +1,37 @@
+# CodeIgniter core (re-downloadable, or installed via composer)
+/system/
+
+# Composer dependencies
+/vendor/
+
+# Logs and cache (keep the index.html that blocks directory listing)
+/application/logs/*
+/application/cache/*
+!application/logs/index.html
+!application/cache/index.html
+
+# Sessions (if stored in application/sessions)
+/application/sessions/*
+!application/sessions/index.html
+
+# User uploads
+/uploads/*
+!uploads/index.html
+
+# Config files with credentials / server-specific values
+/application/config/database.php
+
+# CI3 environment-specific config folders
+/application/config/development/
+/application/config/production/
+/application/config/testing/
+
+# OS / IDE junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Frontend deps (if any)
+node_modules/
